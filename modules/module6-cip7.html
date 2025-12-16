@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 6 – CIP-007 Security Management (Seattle City Light)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f8;
+      --text: #1f2933;
+      --accent: #0d6efd;
+      --accent-2: #1fbf92;
+      --accent-3: #f59e0b;
+      --border: #d0d7de;
+      --card: #ffffff;
+      --muted: #6c727a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1015;
+        --text: #e5e7eb;
+        --accent: #66b0ff;
+        --accent-2: #4ae3b6;
+        --accent-3: #fbbf24;
+        --border: #2d3748;
+        --card: #111827;
+        --muted: #94a3b8;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--accent), #38bdf8);
+      color: white;
+      padding: 2.25rem 1.75rem 2rem;
+      text-align: center;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    h1, h2, h3, h4 { margin-top: 0; color: var(--text); }
+
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 0.6rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      font-weight: 600;
+    }
+
+    nav a:hover { background: rgba(255, 255, 255, 0.24); }
+
+    .pill {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(13, 110, 253, 0.1);
+      color: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    ul { padding-left: 1.25rem; }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    details {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      background: rgba(13, 110, 253, 0.04);
+    }
+
+    summary { cursor: pointer; font-weight: 700; }
+
+    .checklist li { margin-bottom: 0.4rem; }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-2);
+      color: #0b1015;
+      border-radius: 6px;
+      padding: 0.25rem 0.5rem;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+
+    .table-like {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table-like div { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+
+    .table-like div:nth-child(2n) { background: rgba(13, 110, 253, 0.05); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem 1rem 3rem;
+      font-size: 0.9rem;
+    }
+
+    .status-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .status-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(145deg, rgba(13, 110, 253, 0.08), rgba(13, 110, 253, 0.02));
+    }
+
+    .muted { color: var(--muted); }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .timeline div {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      background: rgba(31, 191, 146, 0.04);
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+    }
+
+    .quiz {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      background: rgba(31, 191, 146, 0.05);
+      margin-top: 0.75rem;
+    }
+
+    .quiz ol { padding-left: 1.2rem; }
+
+    .quiz li { margin-bottom: 0.75rem; }
+
+    .tag { background: rgba(245, 158, 11, 0.2); color: #92400e; padding: 0.1rem 0.45rem; border-radius: 6px; font-weight: 700; }
+
+    .toc { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .toc a {
+      text-decoration: none;
+      color: var(--accent);
+      background: rgba(13, 110, 253, 0.08);
+      padding: 0.35rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid rgba(13, 110, 253, 0.2);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="pill">Module 6 · CIP-007 System Security Management</p>
+    <h1>CISR Training for Seattle City Light Personnel</h1>
+    <p>Protect Bulk Electric System cyber assets through secure configuration, patching, malware defense, logging, and account hygiene—tailored for everyday users and support staff.</p>
+    <nav aria-label="Module navigation">
+      <a href="#objectives">Objectives</a>
+      <a href="#overview">Overview</a>
+      <a href="#roles">Role Guidance</a>
+      <a href="#content">Detailed Content</a>
+      <a href="#checklist">Checklist</a>
+      <a href="#scenarios">Scenarios</a>
+      <a href="#quiz">Knowledge Check</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="objectives">
+      <h2>How to Use This Training</h2>
+      <div class="grid">
+        <div>
+          <h3>Learning Objectives</h3>
+          <ul>
+            <li>Explain why CIP-007 security controls matter for Seattle City Light’s reliability and public trust.</li>
+            <li>Recognize daily responsibilities for secure device configuration, patching, and malware prevention.</li>
+            <li>Follow account management and password practices that keep BES Cyber Systems protected.</li>
+            <li>Spot and report suspicious activity using logging and monitoring expectations.</li>
+            <li>Apply the Implementation Checklist to prepare evidence for audits and internal reviews.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Training Flow</h3>
+          <ol>
+            <li>Read the overview and role-specific guidance.</li>
+            <li>Work through each requirement section (R1–R6).</li>
+            <li>Complete the knowledge check and reflect on your role.</li>
+            <li>Use the checklist to verify real-world compliance steps.</li>
+          </ol>
+          <p class="muted">Estimated time: 25–35 minutes. Keep this file offline or printed for field reference.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview">
+      <h2>Module Overview</h2>
+      <p>CIP-007 (System Security Management) defines technical controls to keep Bulk Electric System (BES) Cyber Systems secure. For Seattle City Light employees—operators, engineers, or support staff—the standard translates into practical steps: lock down unnecessary services, apply patches on time, prevent and detect malware, monitor events, and manage accounts responsibly.</p>
+      <div class="grid">
+        <div>
+          <h3>Key CIP-007-6 Requirements</h3>
+          <ul>
+            <li><strong>R1 – Ports &amp; Services:</strong> Enable only what is needed; document exceptions.</li>
+            <li><strong>R2 – Security Patch Management:</strong> Track, evaluate, and install patches on time—or document mitigating measures.</li>
+            <li><strong>R3 – Malicious Code Prevention:</strong> Maintain anti-malware protection and signature updates.</li>
+            <li><strong>R4 – Security Event Monitoring:</strong> Log relevant events and review them regularly.</li>
+            <li><strong>R5 – Account Management:</strong> Authorize, review, and remove accounts; enforce strong authentication.</li>
+            <li><strong>R6 – System Access Controls:</strong> Harden interactive and remote access (e.g., lockouts, timeouts).</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Key Terms</h3>
+          <ul>
+            <li><strong>BES Cyber System (BCS):</strong> Assets whose failure could impact reliable grid operation.</li>
+            <li><strong>Mitigating Measure:</strong> Temporary control used when a patch cannot be applied.</li>
+            <li><strong>Least Functionality:</strong> Configuring devices to run only necessary services and ports.</li>
+            <li><strong>Security Event:</strong> A logged action that may indicate abnormal or risky behavior.</li>
+            <li><strong>Privileged Account:</strong> An account with admin, root, or elevated roles.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="status-cards" aria-label="Readiness cues">
+        <div class="status-card">
+          <strong>Ready for auditors?</strong>
+          <p class="muted">Keep approvals, screenshots, and configuration outputs in the compliance repository.</p>
+        </div>
+        <div class="status-card">
+          <strong>Field friendly</strong>
+          <p class="muted">Designed for offline/print use; includes quick checklists and evidence notes.</p>
+        </div>
+        <div class="status-card">
+          <strong>Emergency aware</strong>
+          <p class="muted">Scenarios highlight how to stay compliant under time pressure.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roles">
+      <h2>Role-Specific Guidance</h2>
+      <div class="two-col">
+        <div>
+          <h3>Operators &amp; Dispatch</h3>
+          <ul>
+            <li>Verify remote-access sessions use approved gateways and multi-factor authentication.</li>
+            <li>Escalate repeated failed logons or unexpected reboots to Cybersecurity Operations.</li>
+            <li>During switching or restoration, avoid disabling security tools unless authorized.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Engineers &amp; OT Support</h3>
+          <ul>
+            <li>Document service enablement with business justification and firewall/ACL protections.</li>
+            <li>Lead patch evaluations; record applicability, test outcomes, and mitigations.</li>
+            <li>Validate log forwarding, time sync, and anti-malware health after maintenance.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Field &amp; Vendor Coordinators</h3>
+          <ul>
+            <li>Control portable media: scan on approved jump hosts; log use and custody.</li>
+            <li>Limit vendor accounts to the minimum duration; disable immediately when work ends.</li>
+            <li>Capture evidence (photos of cabinet port blocks, screenshots of configs) while onsite.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="content">
+      <h2>Detailed Content</h2>
+      <div class="callout">Each subsection explains what to do, why it matters, and how Seattle City Light documents compliance.</div>
+
+      <div class="toc" aria-label="Quick jump">
+        <a href="#r1">R1 Ports &amp; Services</a>
+        <a href="#r2">R2 Patch Management</a>
+        <a href="#r3">R3 Malware Prevention</a>
+        <a href="#r4">R4 Event Monitoring</a>
+        <a href="#r5">R5 Accounts</a>
+        <a href="#r6">R6 Access Controls</a>
+      </div>
+
+      <h3 id="r1">1. Ports, Services, and Least Functionality (R1)</h3>
+      <p>Only run the services required for the job. Disable vendor defaults (e.g., Telnet, unused web consoles), and record any exceptions with justification and risk acceptance. Before enabling a new service, validate the business need, restrict it by firewall/ACL, and document who approved it.</p>
+      <ul class="checklist">
+        <li><span class="badge">DO</span> Request changes through the standard change-management ticket and keep approval evidence.</li>
+        <li><span class="badge">DO</span> Verify that new devices ship with unused ports closed; confirm with a quick <code>nmap</code> or built-in port report.</li>
+        <li><span class="badge">DON'T</span> Enable remote services (SSH/RDP) without access controls and logging.</li>
+      </ul>
+      <div class="two-col">
+        <div>
+          <h4>Evidence to Keep</h4>
+          <ul>
+            <li>Service/port baseline list with last review date and approver.</li>
+            <li>Firewall/ACL snapshots showing restrictions.</li>
+            <li>Change ticket numbers tied to each exception.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Field Quick Check</h4>
+          <div class="code-block" aria-label="Command example"># Linux example
+netstat -tulnp | grep -v LISTEN
+
+# Windows PowerShell
+Get-NetTCPConnection | Where-Object {$_.State -ne "Listen"}
+</div>
+        </div>
+      </div>
+
+      <h3 id="r2">2. Security Patch Management (R2)</h3>
+      <p>All BCS components must be assessed for vendor patches at least once every 35 days. Apply applicable patches within 35 days of availability, or document a mitigating measure if installation is deferred (e.g., compensating firewall rule, increased monitoring).</p>
+      <div class="two-col">
+        <div class="table-like">
+          <div><strong>Step</strong>: Check vendor advisories</div>
+          <div><strong>Evidence</strong>: Screenshot of advisory portal or automated report</div>
+          <div><strong>Step</strong>: Evaluate applicability and risk</div>
+          <div><strong>Evidence</strong>: Ticket notes showing assessment and decision</div>
+          <div><strong>Step</strong>: Apply patch or mitigating measure</div>
+          <div><strong>Evidence</strong>: Change record, success logs, or mitigation description</div>
+        </div>
+        <div>
+          <h4>Best Practices</h4>
+          <ul>
+            <li>Coordinate maintenance windows early to avoid emergency changes.</li>
+            <li>Test patches on representative non-production devices when available.</li>
+            <li>Capture before/after version info for audit trails.</li>
+          </ul>
+          <h4>Timeline Cue</h4>
+          <div class="timeline">
+            <div><strong>Day 0–5</strong><br />Vendor advisory review and risk rating.</div>
+            <div><strong>Day 5–20</strong><br />Testing on lab/representative systems.</div>
+            <div><strong>Day 20–35</strong><br />Production deployment or documented mitigation.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="r3">3. Malicious Code Prevention (R3)</h3>
+      <p>Keep anti-malware software active where technically feasible. Update signatures daily (or as configured by OT policy), and run scheduled scans during low-impact windows. For systems that cannot run anti-malware, apply alternative controls such as application allow lists and controlled media handling.</p>
+      <ul class="checklist">
+        <li><span class="badge">DO</span> Confirm real-time protection is enabled after system changes.</li>
+        <li><span class="badge">DO</span> Quarantine or isolate infected hosts and notify Cybersecurity Operations immediately.</li>
+        <li><span class="badge">DON'T</span> Insert removable media without scanning on an approved jump host.</li>
+      </ul>
+      <div class="two-col">
+        <div>
+          <h4>Evidence to Keep</h4>
+          <ul>
+            <li>Daily signature update logs and scan results.</li>
+            <li>Exception/compensating control approvals for systems without anti-malware.</li>
+            <li>Portable media scan logs and custody notes.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Response Tip</h4>
+          <p>If malware is suspected during operations, pause non-essential activity, isolate the device (network disconnect if safe), and call Cybersecurity Operations before rebooting to preserve evidence.</p>
+        </div>
+      </div>
+
+      <h3 id="r4">4. Security Event Monitoring (R4)</h3>
+      <p>BCS components must generate security event logs (logons, failed logons, admin actions, service changes). Forward logs to the designated collector when supported; otherwise, keep local logs and review them. Operators should know how to pull a quick report for investigations.</p>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Ensure time synchronization so event timestamps align with SOC investigations.</li>
+            <li>During incident response, preserve logs before rebooting or restoring images.</li>
+            <li>Use correlation alerts from the SOC as triggers for local checks or escalation.</li>
+          </ul>
+          <p class="tag">Pro tip</p>
+          <p>Bookmark the log locations for your primary systems (e.g., Windows Event Viewer custom views, syslog paths) so you can retrieve evidence quickly.</p>
+        </div>
+        <div>
+          <h4>Sample Events to Review Weekly</h4>
+          <div class="table-like">
+            <div>Repeated failed logons</div>
+            <div>New local admin account creation</div>
+            <div>Service start/stop outside change window</div>
+            <div>Configuration changes on relays or HMIs</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="r5">5. Account Management (R5)</h3>
+      <p>Accounts must be authorized, unique to individuals, and removed when no longer needed. Shared accounts should be avoided; if unavoidable, log and monitor their use closely.</p>
+      <div class="two-col">
+        <div>
+          <h4>Controls</h4>
+          <ul>
+            <li>Review account lists at least every 15 months; remove stale or contractor accounts promptly.</li>
+            <li>Use privileged access only for administrative tasks; perform daily work with standard accounts.</li>
+            <li>Keep joiner/mover/leaver tickets linked to account changes.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Evidence</h4>
+          <ul>
+            <li>Account review reports with dates and sign-off.</li>
+            <li>Access approval records and role definitions.</li>
+            <li>Time-bound vendor account logs and disablement proof.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 id="r6">6. System Access Controls (R6)</h3>
+      <p>Harden interactive and remote access. Apply strong authentication, inactivity timeouts, and failed-login lockouts. Enforce encryption for remote protocols (SSH, TLS, secure gateway) and avoid direct internet exposure.</p>
+      <ul>
+        <li>Set inactivity timeouts aligned to OT policy (e.g., 15 minutes for consoles where feasible).</li>
+        <li>Configure account lockouts after defined failed attempts; include alerting for lockout patterns.</li>
+        <li>Use session recording or logging for vendor remote work; remove access promptly when tasks finish.</li>
+      </ul>
+      <div class="two-col">
+        <div>
+          <h4>Configuration Reminders</h4>
+          <ul>
+            <li>Disable legacy protocols (e.g., SMBv1, SSLv3) unless approved.</li>
+            <li>Restrict jump host access to authorized personnel and keep MFA enforced.</li>
+            <li>Document timeout and lockout settings with screenshots after changes.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>What to Do in Emergencies</h4>
+          <p>If a control must be relaxed temporarily (e.g., longer timeout for restoration), obtain documented approval, set a timer to revert, and capture logs showing when the control was restored.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <h2>Implementation Checklist</h2>
+      <ul class="checklist">
+        <li><span class="badge">Ports</span> Verify unneeded ports/services are disabled and documented.</li>
+        <li><span class="badge">Patching</span> Confirm monthly patch review was completed and results recorded.</li>
+        <li><span class="badge">Anti-Malware</span> Check signatures and scan schedules; document exceptions.</li>
+        <li><span class="badge">Logging</span> Validate log forwarding and local retention; review for anomalies.</li>
+        <li><span class="badge">Accounts</span> Audit user lists, disable inactive accounts, and confirm timeout/lockout settings.</li>
+        <li><span class="badge">Evidence</span> Store screenshots, tickets, and approvals in the compliance repository.</li>
+      </ul>
+    </section>
+
+    <section id="scenarios">
+      <h2>Scenarios &amp; Responses</h2>
+      <details>
+        <summary>Scenario A – Emergency Patch Required</summary>
+        <p>A vendor releases a critical patch for a BCS server used in switching operations. Maintenance windows are limited.</p>
+        <ul>
+          <li>Open a change ticket with risk justification and planned rollback.</li>
+          <li>Coordinate with the control center to schedule during lowest operational impact.</li>
+          <li>Capture installation logs and version verification; update the patch register.</li>
+          <li>If timing slips, document a mitigating firewall rule until the patch is applied.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Scenario B – Suspicious USB Device</summary>
+        <p>A field engineer finds a USB drive near a substation control cabinet.</p>
+        <ul>
+          <li>Do not connect it to any BCS device. Bring it to an approved jump host for scanning or submit to Cybersecurity Operations.</li>
+          <li>Record the incident in the security ticketing system; include location and time.</li>
+          <li>Review local logs for any prior USB insertions on nearby devices.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Scenario C – New Remote Access Need</summary>
+        <p>A vendor requests remote troubleshooting access to a relay configuration workstation.</p>
+        <ul>
+          <li>Use the standard remote access gateway with multi-factor authentication; prohibit direct internet exposure.</li>
+          <li>Limit access duration and scope; disable the account after the task.</li>
+          <li>Enable session recording or logging; review for completeness after work is done.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Scenario D – Log Review Finds Anomaly</summary>
+        <p>The weekly review shows repeated failed logons on a relay HMI after hours.</p>
+        <ul>
+          <li>Escalate to Cybersecurity Operations with timestamps and source addresses.</li>
+          <li>Check physical access logs or camera footage if available.</li>
+          <li>Increase monitoring for that device and verify lockout thresholds are active.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section id="quiz">
+      <h2>Knowledge Checks</h2>
+      <div class="quiz" aria-label="Knowledge check list">
+        <ol>
+          <li><strong>Why does CIP-007 emphasize least functionality?</strong><br />Reducing open ports and services shrinks the attack surface and lowers the chance that malware or attackers can exploit unnecessary components.</li>
+          <li><strong>What should you do if a patch cannot be applied within 35 days?</strong><br />Document the reason, implement a mitigating measure (e.g., firewall rule or monitoring), and track the patch for later installation.</li>
+          <li><strong>How are suspicious log events handled?</strong><br />Forward logs to the designated collector when possible, review local logs regularly, and escalate anomalies to Cybersecurity Operations with timestamps and system details.</li>
+          <li><strong>When are shared accounts acceptable?</strong><br />Only when technically required; they must be tightly controlled, logged, and time-bound with documented approval.</li>
+          <li><strong>How often should account lists be reviewed?</strong><br />At least every 15 months, with immediate removal of stale or contractor accounts.</li>
+          <li><strong>What should you do with portable media?</strong><br />Scan on approved jump hosts before use, log the activity, and avoid direct insertion into BCS devices.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="resources">
+      <h2>Resources &amp; References</h2>
+      <ul>
+        <li><strong>NERC CIP-007-6:</strong> System Security Management requirements and guidelines.</li>
+        <li><strong>Seattle City Light Policies:</strong> Refer to internal OT security standards for patching cadence, anti-malware tools, and evidence storage locations.</li>
+        <li><strong>Change Management Portal:</strong> Use the official ticketing system for approvals, mitigations, and audit evidence.</li>
+        <li><strong>Cybersecurity Operations Contact:</strong> Report incidents, suspected malware, or logging anomalies immediately.</li>
+        <li><strong>Print Aid:</strong> Bring this file to the field or control room; highlight the checklist before maintenance windows.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Keep this file with your training materials. It is fully self-contained and can be printed or used offline for refresher training.</p>
+  </footer>
+</body>
+</html>
