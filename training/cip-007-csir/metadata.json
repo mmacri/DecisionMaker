@@ -1,0 +1,177 @@
+{
+  "moduleId": "csir",
+  "mode": "csir",
+  "contentPack": "training/cip-007-csir",
+  "trainingName": "CIP-007 Cyber Security Incident Response",
+  "title": "CIP-007 CSIR Training",
+  "estimatedTime": "45\u201360 minutes",
+  "requireRoleSelection": true,
+  "statusBadges": {
+    "notStarted": "Not Started",
+    "inProgress": "In Progress",
+    "ready": "Ready for Audit",
+    "completed": "Completed"
+  },
+  "nav": [
+    {
+      "id": "dashboard",
+      "label": "My Training",
+      "href": "csir.html"
+    },
+    {
+      "id": "orientation",
+      "label": "Phase 0 \u2014 Orientation",
+      "href": "csir-orientation.html"
+    },
+    {
+      "id": "scope",
+      "label": "Phase 1 \u2014 Scope & Applicability",
+      "href": "csir-scope.html"
+    },
+    {
+      "id": "plan",
+      "label": "Phase 2 \u2014 CSIR Plan",
+      "href": "csir-plan.html"
+    },
+    {
+      "id": "execution",
+      "label": "Phase 3 \u2014 Role Execution",
+      "href": "csir-roles.html"
+    },
+    {
+      "id": "etiquette",
+      "label": "Phase 4 \u2014 Audit Etiquette",
+      "href": "csir-etiquette.html"
+    },
+    {
+      "id": "mock",
+      "label": "Phase 5 \u2014 Mock Audit",
+      "href": "csir-mock.html"
+    },
+    {
+      "id": "final-check",
+      "label": "Phase 6 \u2014 Final Knowledge Check",
+      "href": "csir-final.html"
+    },
+    {
+      "id": "certificate",
+      "label": "Certificate",
+      "href": "csir-certificate.html"
+    },
+    {
+      "id": "resources",
+      "label": "Resources",
+      "href": "csir-resources.html",
+      "optional": true
+    }
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "label": "Orientation"
+    },
+    {
+      "number": 2,
+      "label": "Scope"
+    },
+    {
+      "number": 3,
+      "label": "Plan"
+    },
+    {
+      "number": 4,
+      "label": "Role Practice"
+    },
+    {
+      "number": 5,
+      "label": "Audit Etiquette"
+    },
+    {
+      "number": 6,
+      "label": "Mock Audit"
+    },
+    {
+      "number": 7,
+      "label": "Finalize"
+    }
+  ],
+  "pageStepMap": {
+    "dashboard": 1,
+    "orientation": 1,
+    "scope": 2,
+    "plan": 3,
+    "execution": 4,
+    "etiquette": 5,
+    "mock": 6,
+    "final-check": 7,
+    "certificate": 7,
+    "resources": 7
+  },
+  "phases": [
+    {
+      "title": "Phase 0 \u2014 Orientation",
+      "description": "Purpose and audit mapping",
+      "badge": "Orientation",
+      "pages": [
+        "dashboard",
+        "orientation"
+      ]
+    },
+    {
+      "title": "Phase 1 \u2014 Scope & Applicability",
+      "description": "Who and what is covered",
+      "badge": "Scope",
+      "pages": [
+        "scope"
+      ]
+    },
+    {
+      "title": "Phase 2 \u2014 CSIR Plan",
+      "description": "Step-by-step plan expectations",
+      "badge": "Plan",
+      "pages": [
+        "plan"
+      ]
+    },
+    {
+      "title": "Phase 3 \u2014 Role Execution",
+      "description": "Responsibilities by audience",
+      "badge": "Roles",
+      "pages": [
+        "execution"
+      ]
+    },
+    {
+      "title": "Phase 4 \u2014 Audit Etiquette",
+      "description": "Interview skills and responses",
+      "badge": "Audit",
+      "pages": [
+        "etiquette"
+      ]
+    },
+    {
+      "title": "Phase 5 \u2014 Mock Audit",
+      "description": "Practice questions",
+      "badge": "Practice",
+      "pages": [
+        "mock"
+      ]
+    },
+    {
+      "title": "Phase 6 \u2014 Final Check",
+      "description": "Scenario knowledge check & certificate",
+      "badge": "Final",
+      "pages": [
+        "final-check",
+        "certificate",
+        "resources"
+      ]
+    }
+  ],
+  "pageRequirements": {
+    "orientation": "orientationAck",
+    "scope": "scopeCheck",
+    "final-check": "quizPassed",
+    "certificate": "certificateIssued"
+  }
+}

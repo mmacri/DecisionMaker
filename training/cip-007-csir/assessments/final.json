@@ -1,0 +1,94 @@
+{
+  "quiz": {
+    "passScore": 80,
+    "questions": [
+      {
+        "prompt": "Mid-shift, an alarm indicates potential malware on an HMI serving a Medium impact BES Cyber System. What is your first documented action?",
+        "options": [
+          "Take the HMI offline immediately",
+          "Validate the indicator, document time, and notify the declaring authority",
+          "Call the vendor for help",
+          "Wait for more alerts"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Immediate shutdown without validation may create more risk.",
+          "Correct\u2014validate, timestamp, and notify the person authorized to declare.",
+          "Vendors are engaged after validation and declaration.",
+          "Waiting risks missing escalation windows."
+        ],
+        "roles": [
+          "Control Center Operator",
+          "OT / SCADA Engineer",
+          "IT / SOC"
+        ],
+        "lens": "Detection to declaration"
+      },
+      {
+        "prompt": "Leadership asks if CIP-008 must be triggered after an event contained within the control center. What is the proper response?",
+        "options": [
+          "Trigger CIP-008 immediately",
+          "Reference the documented thresholds and note they were not met",
+          "Say it is optional",
+          "Decline to answer"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Triggering without criteria can create audit noise.",
+          "Correct\u2014cite the documented thresholds and decision log.",
+          "CIP-008 is not optional when criteria are met.",
+          "You should provide the documented rationale."
+        ],
+        "roles": [
+          "Incident Commander / Leadership",
+          "Compliance / GRC"
+        ],
+        "lens": "CIP-007 to CIP-008 handoff"
+      },
+      {
+        "prompt": "An auditor asks where chain-of-custody for collected logs is stored.",
+        "options": [
+          "In the ticketing system with hash values",
+          "In personal notes",
+          "It is not tracked",
+          "In a shared drive without access control"
+        ],
+        "answer": 0,
+        "feedback": [
+          "Correct\u2014tickets with hashes and handlers prove custody.",
+          "Personal notes are not defensible.",
+          "Lack of tracking fails CIP expectations.",
+          "Uncontrolled storage is not acceptable."
+        ],
+        "roles": [
+          "IT / SOC",
+          "Compliance / GRC",
+          "Incident Commander / Leadership"
+        ],
+        "lens": "Evidence handling"
+      },
+      {
+        "prompt": "During a mock audit, you are asked to explain why a transient cyber asset was allowed on a BES Cyber System network.",
+        "options": [
+          "Because it was convenient",
+          "Because it followed documented entry/exit checks and logging",
+          "Because the vendor insisted",
+          "Because the operator approved verbally"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Convenience does not meet CIP requirements.",
+          "Correct\u2014entry/exit controls and logging are required.",
+          "Vendor pressure is not justification.",
+          "Verbal approval without evidence is insufficient."
+        ],
+        "roles": [
+          "OT / SCADA Engineer",
+          "Compliance / GRC",
+          "Auditor / Observer (read-only)"
+        ],
+        "lens": "Transient device control"
+      }
+    ]
+  }
+}

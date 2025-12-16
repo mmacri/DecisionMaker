@@ -1,0 +1,244 @@
+{
+  "roleOptions": [
+    "Control Center Operator",
+    "OT / SCADA Engineer",
+    "IT / SOC",
+    "Compliance / GRC",
+    "Incident Commander / Leadership",
+    "Auditor / Observer (read-only)"
+  ],
+  "roleHighlights": {
+    "orientation": {
+      "Control Center Operator": "Be ready to explain how operations would recognize and declare an incident during a shift handoff.",
+      "OT / SCADA Engineer": "Map each SCADA alarm path to who can declare an incident.",
+      "IT / SOC": "Tie CSIR triggers to your SOC runbook IDs for quick evidence retrieval.",
+      "Compliance / GRC": "Note which phases generate auditable artifacts automatically.",
+      "Incident Commander / Leadership": "Focus on when to formally declare vs. monitor and what must be logged.",
+      "Auditor / Observer (read-only)": "Observe how the training enforces gated progress and evidence of acknowledgement."
+    },
+    "scope": {
+      "Control Center Operator": "Operators must know which consoles are BES Cyber Assets and which transient devices are prohibited.",
+      "OT / SCADA Engineer": "Tie transient device handling to maintenance playbooks.",
+      "IT / SOC": "Clarify how monitoring tools classify BES vs enterprise assets.",
+      "Compliance / GRC": "Capture how scope ties to impact ratings in your evidence matrix.",
+      "Incident Commander / Leadership": "Be able to state who can expand scope during an incident.",
+      "Auditor / Observer (read-only)": "Document how scope answers align to audit requests."
+    },
+    "plan": {
+      "Control Center Operator": "Keep the detection-to-declaration timer visible during drills.",
+      "OT / SCADA Engineer": "Match each plan step to an engineering owner for evidence follow-up.",
+      "IT / SOC": "Highlight correlation rules that map to CIP-007 triggers.",
+      "Compliance / GRC": "Note which plan outputs belong in the compliance evidence binder.",
+      "Incident Commander / Leadership": "Decide when to notify RC/BA/TO leadership per documented timelines.",
+      "Auditor / Observer (read-only)": "Verify the plan references CIP-008 for declaration handoff only."
+    },
+    "execution": {
+      "Control Center Operator": "Know what you say vs. what you escalate\u2014never speculate cause.",
+      "OT / SCADA Engineer": "Stay within documented changes; note evidence capture steps.",
+      "IT / SOC": "Tie every action to a ticket number and timestamp.",
+      "Compliance / GRC": "Ensure logs/time sources are synchronized for defensible evidence.",
+      "Incident Commander / Leadership": "Protect chain-of-custody decisions and approvals.",
+      "Auditor / Observer (read-only)": "Capture how roles stay inside script; no improvisation."
+    },
+    "etiquette": {
+      "Control Center Operator": "If you do not know, offer to retrieve the log excerpt\u2014never guess.",
+      "OT / SCADA Engineer": "Avoid deep dives into architecture unless asked; cite approved diagrams.",
+      "IT / SOC": "Map answers to ticket numbers to avoid open-ended questions.",
+      "Compliance / GRC": "Frame every answer with time stamps and evidence locations.",
+      "Incident Commander / Leadership": "Model concise answers and defer to SMEs for specifics.",
+      "Auditor / Observer (read-only)": "Observe the deferral language and how it keeps scope narrow."
+    },
+    "mock": {
+      "Control Center Operator": "Practice short answers that reference the CSIR plan page.",
+      "OT / SCADA Engineer": "Stick to documented patching/forensics limits when questioned.",
+      "IT / SOC": "Use SOC alert IDs in answers to show traceability.",
+      "Compliance / GRC": "Connect each answer to evidence repositories.",
+      "Incident Commander / Leadership": "Demonstrate calm escalation language.",
+      "Auditor / Observer (read-only)": "Gauge whether answers avoid speculation."
+    },
+    "quiz": {
+      "Control Center Operator": "Expect scenario questions about declaring incidents mid-shift.",
+      "OT / SCADA Engineer": "Expect device rebuild/forensics boundaries questions.",
+      "IT / SOC": "Expect correlation/escalation timers.",
+      "Compliance / GRC": "Expect evidence trail alignment.",
+      "Incident Commander / Leadership": "Expect decision timing and communication.",
+      "Auditor / Observer (read-only)": "Awareness check only."
+    }
+  },
+  "execution": {
+    "shared": [
+      "All roles timestamp actions with the same authoritative clock.",
+      "Record ticket or log IDs for every action and communication.",
+      "Never speculate root cause during an audit interview\u2014stick to documented facts."
+    ],
+    "Control Center Operator": {
+      "responsibilities": [
+        "Recognize operational impacts and trigger declaration per shift guide.",
+        "Stabilize the system and avoid unauthorized changes.",
+        "Capture console messages and alarms for evidence."
+      ],
+      "expectations": [
+        "Know who can declare and who must be notified.",
+        "Show evidence of alarms acknowledged and tickets opened.",
+        "Demonstrate awareness of transient device rules."
+      ],
+      "never": [
+        "Speculate on malware or cause.",
+        "Bypass documented communication paths.",
+        "Share screenshots without removing non-evidence information."
+      ]
+    },
+    "OT / SCADA Engineer": {
+      "responsibilities": [
+        "Validate signals and device health without jeopardizing forensics.",
+        "Support containment using approved methods.",
+        "Document configuration states before changes."
+      ],
+      "expectations": [
+        "Map actions to change approvals or maintenance windows.",
+        "Protect evidence locations and hashes.",
+        "Align with CIP-008 declaration if triggered."
+      ],
+      "never": [
+        "Image devices without authorization.",
+        "Erase or overwrite volatile data before capture.",
+        "Perform vendor updates outside approved steps."
+      ]
+    },
+    "IT / SOC": {
+      "responsibilities": [
+        "Correlate alerts, validate severity, and coordinate with OT leads.",
+        "Document escalation timers and ticket references.",
+        "Collect and preserve logs from monitored systems."
+      ],
+      "expectations": [
+        "Show correlation rules and alert IDs.",
+        "Demonstrate who was notified and when.",
+        "Prove monitoring coverage of BES Cyber Systems."
+      ],
+      "never": [
+        "Push enterprise tools into OT without change approval.",
+        "Close alerts without OT concurrence.",
+        "Guess at operational impact."
+      ]
+    },
+    "Compliance / GRC": {
+      "responsibilities": [
+        "Ensure evidence is cataloged and retained per policy.",
+        "Track decisions against documented plan language.",
+        "Prepare audit exhibits and interview briefs."
+      ],
+      "expectations": [
+        "Know where time-synced records live.",
+        "Show traceability from indicator to declaration to recovery.",
+        "Explain differences between CIP-007 CSIR and CIP-008."
+      ],
+      "never": [
+        "Edit technical records without SME review.",
+        "Promise artifacts you cannot produce.",
+        "Deviate from scripted interview deferrals."
+      ]
+    },
+    "Incident Commander / Leadership": {
+      "responsibilities": [
+        "Authorize declaration, external notifications, and containment steps.",
+        "Protect safety and reliability while directing resources.",
+        "Approve communications and ensure chain-of-custody."
+      ],
+      "expectations": [
+        "Cite the timer between detection and leadership notification.",
+        "Show decision logs and who was engaged.",
+        "Demonstrate when CIP-008 was triggered (if applicable)."
+      ],
+      "never": [
+        "Override evidence handling without documentation.",
+        "Commit to root cause during live operations.",
+        "Skip formal declaration when criteria are met."
+      ]
+    },
+    "Auditor / Observer (read-only)": {
+      "responsibilities": [
+        "Observe that roles follow the script and note variances.",
+        "Capture which artifacts prove each phase.",
+        "Report clarity and consistency gaps."
+      ],
+      "expectations": [
+        "Recognize the audit trail for each step.",
+        "Understand deferral language and when it is used.",
+        "Identify any scope or timing conflicts."
+      ],
+      "never": [
+        "Direct the response team.",
+        "Request unsanctioned evidence.",
+        "Change role selections mid-exercise."
+      ]
+    }
+  },
+  "roleRequirements": {
+    "Control Center Operator": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "OT / SCADA Engineer": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "IT / SOC": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Compliance / GRC": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Incident Commander / Leadership": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Auditor / Observer (read-only)": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "resources"
+    ]
+  }
+}
