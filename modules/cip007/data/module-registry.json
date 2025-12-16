@@ -1,0 +1,9 @@
+[
+  {
+    "id": "cip007",
+    "title": "CIP-007: System Security Management",
+    "path": "../cip007/index.html",
+    "estimatedTime": "25–35 minutes",
+    "audience": ["OT Operators", "System Administrators", "Security Team", "Compliance/Audit"]
+  }
+]
