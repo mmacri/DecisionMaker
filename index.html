@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CISR Managed Training | CIP-007 Security Management</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --border: #1f2937;
+      --card: #0b1221;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      --radius: 14px;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f7f8;
+        --panel: #ffffff;
+        --text: #0f172a;
+        --muted: #4b5563;
+        --accent: #0d6efd;
+        --accent-2: #16a34a;
+        --border: #d8dee9;
+        --card: #ffffff;
+        --shadow: 0 14px 50px rgba(15, 23, 42, 0.16);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.12), transparent 32%),
+        radial-gradient(circle at 90% 40%, rgba(34, 197, 94, 0.1), transparent 28%),
+        var(--bg);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.7);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem 1rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.01em;
+    }
+
+    header p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1rem;
+      padding: 1rem 1.25rem 2rem;
+    }
+
+    aside {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      position: sticky;
+      top: 90px;
+      height: fit-content;
+    }
+
+    .module-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.09), rgba(34, 197, 94, 0.08));
+    }
+
+    .module-card h3 {
+      margin: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--text);
+      width: fit-content;
+    }
+
+    button, .link-btn {
+      font: inherit;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.85rem;
+      background: linear-gradient(160deg, var(--card), rgba(56, 189, 248, 0.08));
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button:hover, .link-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+      border-color: var(--accent);
+    }
+
+    button:focus-visible, .link-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .viewer {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 80vh;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .toc {
+      margin: 1rem 0 0;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      background: rgba(15, 23, 42, 0.45);
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .toc strong { display: block; margin-bottom: 0.5rem; }
+
+    .toc a {
+      color: var(--accent);
+      text-decoration: none;
+      display: block;
+      padding: 0.35rem 0.25rem;
+      border-radius: 8px;
+    }
+
+    .toc a:hover { background: rgba(56, 189, 248, 0.12); }
+
+    .embed {
+      border: none;
+      width: 100%;
+      height: calc(100vh - 200px);
+      border-radius: 12px;
+      background: var(--card);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .status .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.14);
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .embed { height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CISR Managed Training</h1>
+    <p>Live, self-contained delivery of CIP-007 Security Management content sourced from the official GitHub materials.</p>
+  </header>
+
+  <div class="layout">
+    <aside aria-label="Module navigation">
+      <div class="module-card">
+        <h3>Module 6 – CIP-007 System Security Management</h3>
+        <p class="badge">CISR Ready</p>
+        <p>Use the controls below to load and review the audited training module with zero external dependencies.</p>
+        <div class="controls">
+          <button id="launch">Launch training module</button>
+          <a class="link-btn" id="open-tab" href="modules/module6-cip7.html" target="_blank" rel="noopener">Open in new tab</a>
+          <div class="status"><span class="dot" aria-hidden="true"></span><span id="status-text">Module cached locally</span></div>
+        </div>
+      </div>
+
+      <div class="toc" id="toc" aria-label="Table of contents">
+        <strong>Quick navigator</strong>
+        <p style="margin:0;color:var(--muted);">Launch the module to view sections and jump to requirements.</p>
+      </div>
+
+      <div class="footer-note">
+        The viewer embeds the published module directly from <code>modules/module6-cip7.html</code>, matching the content on
+        the GitHub site. All assets are local for disconnected or audit-ready use.
+      </div>
+    </aside>
+
+    <main class="viewer" aria-live="polite">
+      <iframe id="module-frame" class="embed" title="CIP-007 Training Module" src="about:blank"></iframe>
+    </main>
+  </div>
+
+  <script>
+    const frame = document.getElementById('module-frame');
+    const toc = document.getElementById('toc');
+    const statusText = document.getElementById('status-text');
+    const moduleConfig = {
+      id: 'module6-cip7',
+      title: 'Module 6 – CIP-007 Security Management',
+      path: 'modules/module6-cip7.html'
+    };
+
+    async function loadModule() {
+      statusText.textContent = 'Loading module…';
+      frame.src = moduleConfig.path;
+
+      try {
+        const response = await fetch(moduleConfig.path);
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        renderToc(doc);
+        statusText.textContent = 'Module ready — navigation updated';
+      } catch (error) {
+        statusText.textContent = 'Unable to load module preview';
+      }
+    }
+
+    function renderToc(doc) {
+      const headings = Array.from(doc.querySelectorAll('main h2, main h3'));
+      if (!headings.length) {
+        toc.innerHTML = '<strong>Quick navigator</strong><p style="margin:0;color:var(--muted);">No sections found.</p>';
+        return;
+      }
+
+      const list = document.createElement('div');
+      headings.forEach((heading) => {
+        const anchor = heading.id || heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const link = document.createElement('a');
+        link.href = `${moduleConfig.path}#${anchor}`;
+        link.textContent = heading.textContent.trim();
+        list.appendChild(link);
+      });
+
+      toc.innerHTML = '<strong>Quick navigator</strong>';
+      toc.appendChild(list);
+    }
+
+    document.getElementById('launch').addEventListener('click', loadModule);
+
+    // Auto-load on first paint for a managed experience
+    loadModule();
+  </script>
+</body>
+</html>
