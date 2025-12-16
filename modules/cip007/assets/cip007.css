@@ -21,3 +21,74 @@
 .resource-list li { margin-bottom: 0.35rem; }
 
 .printable { background: #fff; color: #000; padding: 1rem; border-radius: 12px; }
+
+/* CSIR enhancements */
+.global-nav {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-pill {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  background: var(--card);
+  font-weight: 600;
+}
+
+.role-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+
+.role-modal__card {
+  background: var(--panel);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  max-width: 640px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.role-chip {
+  border: 1px solid var(--border);
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.phase-card .badge { align-self: flex-start; }
+.phase-card .phase-head { display:flex; justify-content: space-between; gap: 0.5rem; }
+.dashboard { display: grid; gap: 1rem; }
+.dashboard-head { display: grid; gap: 0.75rem; grid-template-columns: 1.4fr 1fr; align-items: stretch; }
+.status-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.phase-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.progress-meter.large { height: 12px; }
+.phase-callout { background: rgba(56,189,248,0.08); padding: 0.9rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 1rem; }
+.knowledge-check { padding: 0.85rem; border: 1px dashed var(--border); border-radius: 12px; margin-top: 0.75rem; }
+.mock-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.mock-option { display: block; width: 100%; text-align: left; margin-top: 0.35rem; padding: 0.55rem 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); cursor: pointer; }
+.field { display: grid; gap: 0.4rem; margin: 1rem 0; }
+.field input { padding: 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.mock-card .feedback.good { color: var(--accent-2); }
+.mock-card .feedback.bad { color: #f87171; }
+@media (max-width: 1024px) {
+  .dashboard-head { grid-template-columns: 1fr; }
+}

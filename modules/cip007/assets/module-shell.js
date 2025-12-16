@@ -23,6 +23,7 @@
     const saved = JSON.parse(localStorage.getItem(`decisionmaker_${id}_state`) || '{}');
     return {
       role: saved.role || null,
+      userName: saved.userName || '',
       completed: new Set(saved.completed || []),
       quizPassed: saved.quizPassed || false,
       lastVisited: saved.lastVisited || null
@@ -34,6 +35,7 @@
       `decisionmaker_${id}_state`,
       JSON.stringify({
         role: data.role,
+        userName: data.userName,
         completed: Array.from(data.completed),
         quizPassed: data.quizPassed,
         lastVisited: data.lastVisited
@@ -49,6 +51,7 @@
 
     const stepNumber = content.pageStepMap[pageId] || 1;
     const stepLabel = (content.steps.find((s) => s.number === stepNumber) || {}).label || '';
+    const phase = getPhaseForPage(content, pageId);
 
     container.innerHTML = `
       <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
@@ -56,9 +59,7 @@
         ${buildSidebar(content, state, pageId)}
         <main class="module-main">
           <div class="top-bar">
-            <div>
-              <a href="../../index.html">Back to Modules</a>
-            </div>
+            <div class="global-nav">${renderGlobalNav(content)}</div>
             <div class="progress">
               <span>${state.completed.size} / ${content.nav.length} complete</span>
               <div class="progress-meter"><span style="width: ${(state.completed.size / content.nav.length) * 100}%"></span></div>
@@ -69,8 +70,10 @@
             </div>
           </div>
           <div class="step-banner">
-            <div><strong>Step ${stepNumber} of ${content.steps.length}</strong> — ${stepLabel}</div>
-            <div class="status-chip">${content.title}</div>
+            <div><strong>Step ${stepNumber} of ${content.steps.length}</strong> — ${stepLabel}${
+      phase ? ` • ${phase.title}` : ''
+    }</div>
+            <div class="status-chip">${phase ? phase.badge || content.title : content.title}</div>
           </div>
           <div class="content-card" id="page-content"></div>
           ${buildBottomCta(content, pageId, state)}
@@ -92,8 +95,22 @@
       });
     }
 
+    renderRoleModal(content, state);
     populateRoles(content, state);
     renderPage(content, pageId, state);
+  }
+
+  function renderGlobalNav(content) {
+    const items = content.globalNav || [
+      { label: 'Home', href: '../../index.html' },
+      { label: 'My Training', href: content.nav?.find((n) => n.id === 'dashboard')?.href || '#' },
+      { label: 'Practice', href: content.nav?.find((n) => n.id === 'mock')?.href || '#' },
+      { label: 'Resources', href: content.nav?.find((n) => n.id === 'resources')?.href || '#' },
+      { label: 'About', href: '../../index.html#about' }
+    ];
+    return items
+      .map((item) => `<a class="nav-pill" href="${item.href}">${item.label}</a>`)
+      .join('');
   }
 
   function populateRoles(content, state) {
@@ -115,10 +132,41 @@
     });
   }
 
+  function renderRoleModal(content, state) {
+    if (!content.requireRoleSelection) return;
+    if (state.role) return;
+    const modal = document.createElement('div');
+    modal.className = 'role-modal';
+    modal.innerHTML = `
+      <div class="role-modal__card">
+        <h3>Select your audience role</h3>
+        <p>This tailors required vs awareness items, expectations, and audit focus.</p>
+        <div class="role-grid">
+          ${content.roleOptions
+            .map((role) => `<button class="role-chip" data-role="${role}">${role}</button>`)
+            .join('')}
+        </div>
+        <p class="hint">You can change this later from the role dropdown.</p>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      const btn = e.target.closest('.role-chip');
+      if (!btn) return;
+      state.role = btn.dataset.role;
+      saveState(moduleId, state);
+      modal.remove();
+      populateRoles(content, state);
+      renderPage(content, document.body.dataset.pageId, state);
+    });
+  }
+
   function buildSidebar(content, state, currentPage) {
     const navItems = content.nav
       .map((item) => {
-        const locked = item.id === 'checklist' && !state.quizPassed;
+        const locked =
+          (item.id === 'checklist' && !state.quizPassed) ||
+          (item.id === 'certificate' && content.mode === 'csir' && !state.quizPassed);
         const classes = [
           'nav-link',
           currentPage === item.id ? 'current' : '',
@@ -149,7 +197,9 @@
     const idx = content.nav.findIndex((n) => n.id === pageId);
     const prev = content.nav[idx - 1];
     const next = content.nav[idx + 1];
-    const nextLocked = next && next.id === 'checklist' && !state.quizPassed;
+    const nextLocked =
+      next &&
+      ((next.id === 'checklist' && !state.quizPassed) || (next.id === 'certificate' && !state.quizPassed && content.mode === 'csir'));
     const prevLink = prev
       ? `<a href="${prev.href}" aria-label="Previous">◀ Previous</a>`
       : '<span></span>';
@@ -160,7 +210,7 @@
   }
 
   function markComplete(content, pageId, state) {
-    if (pageId === 'checklist' && !state.quizPassed) return;
+    if ((pageId === 'checklist' || pageId === 'certificate') && !state.quizPassed) return;
     if (!state.completed.has(pageId)) {
       state.completed.add(pageId);
       saveState(moduleId, state);
@@ -173,50 +223,90 @@
 
     const role = state.role || content.roleOptions[0];
 
-    switch (pageId) {
-      case 'index':
-        target.innerHTML = renderLanding(content);
-        break;
-      case 'intro':
-        target.innerHTML = renderIntro(content, role);
-        break;
-      case 'flow':
-        target.innerHTML = renderFlow(content, role);
-        break;
-      case 'roles':
-        target.innerHTML = renderRoles(content, role);
-        break;
-      case 'overview':
-        target.innerHTML = renderOverview(content, role);
-        break;
-      case 'r1':
-      case 'r2':
-      case 'r3':
-      case 'r4':
-      case 'r5':
-      case 'r6':
-        target.innerHTML = renderRequirement(content, pageId, role);
-        break;
-      case 'scenarios':
-        target.innerHTML = renderScenarios(content, role);
-        break;
-      case 'quiz':
-        target.innerHTML = renderQuiz(content, state);
-        break;
-      case 'checklist':
-        target.innerHTML = renderChecklist(content, state);
-        break;
-      case 'resources':
-        target.innerHTML = renderResources(content, role);
-        break;
-      case 'complete':
-        target.innerHTML = renderCompletion(content, role);
-        break;
-      default:
-        target.innerHTML = '<p>Content coming soon.</p>';
+    if (content.mode === 'csir') {
+      switch (pageId) {
+        case 'dashboard':
+          target.innerHTML = renderDashboard(content, state);
+          attachDashboardHandlers(content, state);
+          break;
+        case 'orientation':
+          target.innerHTML = renderOrientation(content, role);
+          break;
+        case 'scope':
+          target.innerHTML = renderScope(content, role);
+          break;
+        case 'plan':
+          target.innerHTML = renderPlan(content, role);
+          break;
+        case 'execution':
+          target.innerHTML = renderExecution(content, role);
+          break;
+        case 'etiquette':
+          target.innerHTML = renderEtiquette(content, role);
+          break;
+        case 'mock':
+          target.innerHTML = renderMock(content, role);
+          attachMockHandlers();
+          break;
+        case 'final-check':
+          target.innerHTML = renderQuiz(content, state);
+          break;
+        case 'certificate':
+          target.innerHTML = renderCertificate(content, state, role);
+          attachCertificateHandler(content, state);
+          break;
+        case 'resources':
+          target.innerHTML = renderResources(content, role);
+          break;
+        default:
+          target.innerHTML = '<p>Content coming soon.</p>';
+      }
+    } else {
+      switch (pageId) {
+        case 'index':
+          target.innerHTML = renderLanding(content);
+          break;
+        case 'intro':
+          target.innerHTML = renderIntro(content, role);
+          break;
+        case 'flow':
+          target.innerHTML = renderFlow(content, role);
+          break;
+        case 'roles':
+          target.innerHTML = renderRoles(content, role);
+          break;
+        case 'overview':
+          target.innerHTML = renderOverview(content, role);
+          break;
+        case 'r1':
+        case 'r2':
+        case 'r3':
+        case 'r4':
+        case 'r5':
+        case 'r6':
+          target.innerHTML = renderRequirement(content, pageId, role);
+          break;
+        case 'scenarios':
+          target.innerHTML = renderScenarios(content, role);
+          break;
+        case 'quiz':
+          target.innerHTML = renderQuiz(content, state);
+          break;
+        case 'checklist':
+          target.innerHTML = renderChecklist(content, state);
+          break;
+        case 'resources':
+          target.innerHTML = renderResources(content, role);
+          break;
+        case 'complete':
+          target.innerHTML = renderCompletion(content, role);
+          break;
+        default:
+          target.innerHTML = '<p>Content coming soon.</p>';
+      }
     }
 
-    if (pageId === 'quiz') attachQuizHandlers(content, state);
+    if (pageId === 'quiz' || pageId === 'final-check') attachQuizHandlers(content, state);
     if (pageId === 'checklist' && state.quizPassed) attachChecklistHandlers(content);
     if (pageId === 'complete') attachCompletionHandler(content);
   }
@@ -225,6 +315,11 @@
     const callouts = content.roleHighlights && content.roleHighlights[pageId];
     if (!callouts) return '';
     return `<div class="callout role-callout"><strong>For your role (${role}):</strong> ${callouts[role]}</div>`;
+  }
+
+  function getPhaseForPage(content, pageId) {
+    if (!content.phases) return null;
+    return content.phases.find((p) => p.pages.includes(pageId)) || null;
   }
 
   function renderLanding(content) {
@@ -409,27 +504,33 @@
       if (!result) return;
       result.style.display = 'block';
       if (score >= content.quiz.passScore) {
-        result.innerHTML = `<strong>Score: ${score}%</strong> — Passed! Checklist unlocked.`;
+        result.innerHTML = `<strong>Score: ${score}%</strong> — Passed! Checklist${
+          content.mode === 'csir' ? ' and certificate' : ''
+        } unlocked.`;
         state.quizPassed = true;
         saveState(moduleId, state);
-        unlockChecklistNav();
+        unlockChecklistNav(content.mode === 'csir');
       } else {
         result.innerHTML = `<strong>Score: ${score}%</strong> — You need ${content.quiz.passScore}% to pass. Review the requirements and try again.`;
       }
     };
   }
 
-  function unlockChecklistNav() {
+  function unlockChecklistNav(includeCertificate) {
     document.querySelectorAll('.nav-link').forEach((link) => {
       if (link.textContent.includes('Operational Checklist')) {
         link.classList.remove('locked');
         link.href = 'checklist.html';
       }
+      if (includeCertificate && link.textContent.includes('Certificate')) {
+        link.classList.remove('locked');
+        link.href = 'certificate.html';
+      }
     });
     const nextBtn = document.querySelector('.bottom-cta a.primary.disabled');
     if (nextBtn) {
       nextBtn.classList.remove('disabled');
-      nextBtn.href = 'checklist.html';
+      nextBtn.href = includeCertificate ? 'certificate.html' : 'checklist.html';
     }
   }
 
@@ -529,5 +630,171 @@
       <p class="notice">To build the next module (e.g., CIP-005 or CIP-008), duplicate <code>data/cip007.content.json</code>, update IDs and nav, and register it in <code>data/module-registry.json</code>. The shared shell will render it automatically.</p>
       <button class="nav-toggle" id="download-cert">Download completion note</button>
     `;
+  }
+
+  function renderDashboard(content, state) {
+    const percent = Math.round((state.completed.size / content.nav.length) * 100);
+    const phases = (content.phases || []).map((phase) => {
+      const done = phase.pages.filter((p) => state.completed.has(p)).length;
+      const pct = Math.round((done / phase.pages.length) * 100);
+      return `<div class="card phase-card"><div class="phase-head"><div><strong>${phase.title}</strong><p>${phase.description}</p></div><span class="badge">${pct}%</span></div><div class="progress-meter"><span style="width:${pct}%;"></span></div><p class="meta">${done}/${phase.pages.length} steps complete</p></div>`;
+    });
+    const resume = content.nav.find((n) => !state.completed.has(n.id)) || content.nav[content.nav.length - 1];
+    return `
+      <div class="dashboard">
+        <div class="dashboard-head">
+          <div>
+            <p class="tag">My Training</p>
+            <h2>${content.trainingName || content.title}</h2>
+            <p class="lead">Track progress, resume the next step, and confirm audit-ready status.</p>
+            <div class="status-row"><span class="badge">Overall ${percent}%</span><span class="badge">${
+              content.statusBadges?.[
+                percent === 0 ? 'notStarted' : percent === 100 ? 'completed' : state.quizPassed ? 'ready' : 'inProgress'
+              ] || 'In Progress'
+            }</span></div>
+          </div>
+          <div class="card">
+            <p class="meta">Completion</p>
+            <div class="progress-meter large"><span style="width:${percent}%"></span></div>
+            <p class="meta">${state.completed.size} of ${content.nav.length} steps</p>
+            <a class="primary" href="${resume.href}" id="resume-btn">Resume where you left off</a>
+          </div>
+        </div>
+        <div class="phase-grid">${phases.join('')}</div>
+      </div>
+    `;
+  }
+
+  function attachDashboardHandlers(content, state) {
+    const btn = document.getElementById('resume-btn');
+    if (!btn) return;
+    const next = content.nav.find((n) => !state.completed.has(n.id));
+    if (next) btn.href = next.href;
+  }
+
+  function renderOrientation(content, role) {
+    const section = content.orientation;
+    return `
+      <div class="phase-callout"><strong>Why this matters:</strong> ${section.purpose}</div>
+      <div class="list-grid">${section.topics.map((t) => `<div class="card"><strong>${t.title}</strong><p>${t.detail}</p></div>`).join('')}</div>
+      <div class="callout">✔ Gate: ${section.gate}</div>
+      ${renderRoleCallout(content, 'orientation', role) || ''}
+    `;
+  }
+
+  function renderScope(content, role) {
+    const section = content.scope;
+    return `
+      <h2 class="section-title">Scope & Applicability</h2>
+      <div class="list-grid">${section.points.map((p) => `<div class="card"><strong>${p.title}</strong><p>${p.detail}</p></div>`).join('')}</div>
+      <div class="knowledge-check">${section.check}</div>
+      ${renderRoleCallout(content, 'scope', role) || ''}
+    `;
+  }
+
+  function renderPlan(content, role) {
+    const section = content.plan;
+    const items = section.steps
+      .map((step, idx) => `<div class="card"><strong>${idx + 1}. ${step.title}</strong><p>${step.detail}</p><p class="meta">${step.audit}</p></div>`)
+      .join('');
+    return `
+      <h2 class="section-title">CSIR Plan Deep Dive</h2>
+      <p class="lead">${section.lead}</p>
+      <div class="list-grid">${items}</div>
+      <div class="callout">${section.note}</div>
+      ${renderRoleCallout(content, 'plan', role) || ''}
+    `;
+  }
+
+  function renderExecution(content, role) {
+    const block = content.execution[role] || content.execution['Control Center Operator'];
+    const shared = content.execution.shared;
+    return `
+      <h2 class="section-title">Role-Based Execution</h2>
+      <div class="grid two-col">
+        <div class="card"><strong>Your responsibilities</strong><ul>${block.responsibilities.map((r) => `<li>${r}</li>`).join('')}</ul></div>
+        <div class="card"><strong>What auditors expect you to know</strong><ul>${block.expectations.map((r) => `<li>${r}</li>`).join('')}</ul></div>
+        <div class="card"><strong>What you should never guess</strong><ul>${block.never.map((r) => `<li>${r}</li>`).join('')}</ul></div>
+        <div class="card"><strong>Shared signals</strong><ul>${shared.map((r) => `<li>${r}</li>`).join('')}</ul></div>
+      </div>
+    `;
+  }
+
+  function renderEtiquette(content, role) {
+    const section = content.etiquette;
+    const examples = section.examples
+      .map((ex) => `<div class="scenario"><strong>${ex.prompt}</strong><p>❌ ${ex.bad}</p><p>✅ ${ex.good}</p></div>`)
+      .join('');
+    return `
+      <h2 class="section-title">Audit Etiquette & Interview Training</h2>
+      <ul>${section.rules.map((r) => `<li>${r}</li>`).join('')}</ul>
+      <div class="list-grid">${examples}</div>
+      ${renderRoleCallout(content, 'etiquette', role) || ''}
+    `;
+  }
+
+  function renderMock(content, role) {
+    const scenarios = content.mock.questions
+      .map(
+        (q, idx) => `
+        <div class="card mock-card" data-correct="${q.answer}">
+          <p><strong>Scenario ${idx + 1}:</strong> ${q.prompt}</p>
+          ${q.options.map((opt, oIdx) => `<button class="mock-option" data-idx="${oIdx}">${opt}</button>`).join('')}
+          <div class="feedback" aria-live="polite"></div>
+          <div class="meta">Audit lens: ${q.audit}</div>
+        </div>`
+      )
+      .join('');
+    return `
+      <h2 class="section-title">Mock Audit Scenario</h2>
+      <p class="lead">Pick the response; see why it passes or creates risk.</p>
+      <div class="mock-grid">${scenarios}</div>
+      ${renderRoleCallout(content, 'mock', role) || ''}
+    `;
+  }
+
+  function attachMockHandlers() {
+    document.querySelectorAll('.mock-card').forEach((card) => {
+      const correct = parseInt(card.dataset.correct, 10);
+      card.addEventListener('click', (e) => {
+        const btn = e.target.closest('.mock-option');
+        if (!btn) return;
+        const idx = parseInt(btn.dataset.idx, 10);
+        const feedback = card.querySelector('.feedback');
+        if (feedback) {
+          feedback.textContent = idx === correct ? 'Passes audit intent — stays within documented boundaries.' : 'Creates audit risk — revisit the documented CSIR steps first.';
+          feedback.className = `feedback ${idx === correct ? 'good' : 'bad'}`;
+        }
+      });
+    });
+  }
+
+  function renderCertificate(content, state) {
+    return `
+      <h2 class="section-title">Audit-Ready Completion Certificate</h2>
+      <p class="lead">Capture your name to generate a downloadable record for audit binders.</p>
+      <label class="field"><span>Your name</span><input type="text" id="cert-name" value="${state.userName || ''}" placeholder="Full name"></label>
+      <button id="download-cert" class="primary">Download certificate</button>
+      <div class="callout">This certifies that the individual has completed role-based CSIR training aligned to NERC CIP-007 audit expectations.</div>
+    `;
+  }
+
+  function attachCertificateHandler(content, state) {
+    const btn = document.getElementById('download-cert');
+    const nameInput = document.getElementById('cert-name');
+    if (!btn || !nameInput) return;
+    btn.onclick = () => {
+      const name = nameInput.value || 'Participant';
+      state.userName = name;
+      saveState(moduleId, state);
+      const details = `Training Name: ${content.trainingName || content.title}\nParticipant: ${name}\nCompletion: ${new Date().toLocaleString()}\nStatement: This certifies that the individual has completed role-based CSIR training aligned to NERC CIP-007 audit expectations.`;
+      const blob = new Blob([details], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${content.moduleId}-certificate.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
   }
 })();
