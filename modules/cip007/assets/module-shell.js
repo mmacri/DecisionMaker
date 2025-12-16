@@ -6,11 +6,11 @@
   const pageId = document.body.dataset.pageId || 'intro';
   const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
   const contentPath = `${basePath}/data/${moduleId}.content.json`;
+  const packPath = container.dataset.contentPack;
 
   const state = loadState(moduleId);
 
-  fetch(contentPath)
-    .then((r) => r.json())
+  loadContent(contentPath, packPath)
     .then((content) => {
       renderShell(content, pageId, state);
     })
@@ -26,7 +26,9 @@
       userName: saved.userName || '',
       completed: new Set(saved.completed || []),
       quizPassed: saved.quizPassed || false,
-      lastVisited: saved.lastVisited || null
+      lastVisited: saved.lastVisited || null,
+      gates: saved.gates || {},
+      certificateIssued: saved.certificateIssued || false
     };
   }
 
@@ -38,17 +40,139 @@
         userName: data.userName,
         completed: Array.from(data.completed),
         quizPassed: data.quizPassed,
-        lastVisited: data.lastVisited
+        lastVisited: data.lastVisited,
+        gates: data.gates,
+        certificateIssued: data.certificateIssued
       })
     );
   }
 
+  async function loadContent(contentPath, packPath) {
+    if (packPath) {
+      try {
+        const pack = await loadContentPack(packPath);
+        if (pack) return pack;
+      } catch (err) {
+        console.warn('Falling back to legacy content file after pack load failure', err);
+      }
+    }
+    const response = await fetch(contentPath);
+    return response.json();
+  }
+
+  async function loadContentPack(packPath) {
+    const normalize = (path) => (path.endsWith('/') ? path.slice(0, -1) : path);
+    const base = normalize(packPath);
+    const loaders = [
+      fetchJson(`${base}/metadata.json`),
+      fetchJson(`${base}/phases.json`),
+      fetchJson(`${base}/roles.json`),
+      fetchJson(`${base}/scenarios/mock.json`),
+      fetchJson(`${base}/assessments/final.json`),
+      fetchJson(`${base}/etiquette/content.json`),
+      fetchJson(`${base}/certificate.json`)
+    ];
+
+    const [metadata, phases, roles, mock, final, etiquette, certificate] = await Promise.all(loaders);
+    if (!metadata || !phases) return null;
+
+    const content = {
+      ...metadata,
+      ...phases,
+      ...etiquette,
+      mock: mock?.mock || mock,
+      quiz: final?.quiz || final,
+      certificateTemplate: certificate || metadata.certificateTemplate || null
+    };
+
+    if (roles) {
+      content.roleOptions = roles.roleOptions || metadata.roleOptions || [];
+      content.roleHighlights = roles.roleHighlights || {};
+      content.execution = roles.execution || phases.execution || {};
+      content.roleRequirements = roles.roleRequirements || {};
+      content.roleCertificates = roles.certificateLabels || {};
+    }
+
+    return content;
+  }
+
+  function fetchJson(path) {
+    return fetch(path)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+
+  function getActiveRole(content, state) {
+    return state.role || content.roleOptions?.[0] || 'Participant';
+  }
+
+  function getRequiredPages(content, role) {
+    const roleMap = content.roleRequirements || {};
+    if (role && roleMap[role] && roleMap[role].length) return roleMap[role];
+    return (content.nav || []).filter((item) => !item.optional).map((item) => item.id);
+  }
+
+  function calculateProgress(content, state, role) {
+    const required = getRequiredPages(content, role);
+    const completedCount = required.filter((id) => state.completed.has(id)).length;
+    const percent = required.length ? Math.round((completedCount / required.length) * 100) : 0;
+    return { completed: completedCount, total: required.length || 1, percent };
+  }
+
+  function evaluateRequirement(key, state) {
+    switch (key) {
+      case 'orientationAck':
+        return !!state.gates?.orientationAck;
+      case 'scopeCheck':
+        return !!state.gates?.scopeCheck;
+      case 'quizPassed':
+        return !!state.quizPassed;
+      case 'certificateIssued':
+        return !!state.certificateIssued;
+      default:
+        return true;
+    }
+  }
+
+  function canAdvance(pageId, state, content) {
+    const requirement = (content.pageRequirements || {})[pageId];
+    if (!requirement) return true;
+    return evaluateRequirement(requirement, state);
+  }
+
+  function isNavLocked(pageId, state, content, role) {
+    const requiresQuiz = getRequiredPages(content, role).includes('final-check');
+    if (pageId === 'certificate' && content.mode === 'csir') {
+      const quizReady = requiresQuiz ? state.quizPassed : true;
+      const requiredBeforeCert = getRequiredPages(content, role).filter((id) => id !== 'certificate');
+      const completedBeforeCert = requiredBeforeCert.filter((id) => state.completed.has(id)).length;
+      const readyForCert = requiredBeforeCert.length ? completedBeforeCert === requiredBeforeCert.length : true;
+      return !quizReady || !readyForCert;
+    }
+    return false;
+  }
+
+  function shouldAutoComplete(pageId, content) {
+    const requirements = content.pageRequirements || {};
+    if (requirements[pageId]) return false;
+    if (pageId === 'final-check' || pageId === 'certificate') return false;
+    return true;
+  }
+
+  function getQuizQuestions(content, role) {
+    const questions = content.quiz?.questions || [];
+    if (!role) return questions;
+    return questions.filter((q) => !q.roles || q.roles.includes(role));
+  }
+
   function renderShell(content, pageId, state) {
+    const role = getActiveRole(content, state);
     state.lastVisited = window.location.pathname;
-    markComplete(content, pageId, state);
+    markComplete(content, pageId, state, role);
     saveState(moduleId, state);
     document.title = `${content.title} | DecisionMaker`;
 
+    const progress = calculateProgress(content, state, role);
     const stepNumber = content.pageStepMap[pageId] || 1;
     const stepLabel = (content.steps.find((s) => s.number === stepNumber) || {}).label || '';
     const phase = getPhaseForPage(content, pageId);
@@ -56,13 +180,13 @@
     container.innerHTML = `
       <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
       <div class="module-layout">
-        ${buildSidebar(content, state, pageId)}
+        ${buildSidebar(content, state, pageId, role)}
         <main class="module-main">
           <div class="top-bar">
             <div class="global-nav">${renderGlobalNav(content)}</div>
             <div class="progress">
-              <span>${state.completed.size} / ${content.nav.length} complete</span>
-              <div class="progress-meter"><span style="width: ${(state.completed.size / content.nav.length) * 100}%"></span></div>
+              <span>${progress.completed} / ${progress.total} required</span>
+              <div class="progress-meter"><span style="width: ${progress.percent}%"></span></div>
             </div>
             <div class="role-select">
               <label for="role-picker">Your role</label>
@@ -128,7 +252,7 @@
     select.addEventListener('change', (e) => {
       state.role = e.target.value;
       saveState(moduleId, state);
-      renderPage(content, document.body.dataset.pageId, state);
+      renderShell(content, document.body.dataset.pageId, state);
     });
   }
 
@@ -157,16 +281,14 @@
       saveState(moduleId, state);
       modal.remove();
       populateRoles(content, state);
-      renderPage(content, document.body.dataset.pageId, state);
+      renderShell(content, document.body.dataset.pageId, state);
     });
   }
 
-  function buildSidebar(content, state, currentPage) {
+  function buildSidebar(content, state, currentPage, role) {
     const navItems = content.nav
       .map((item) => {
-        const locked =
-          (item.id === 'checklist' && !state.quizPassed) ||
-          (item.id === 'certificate' && content.mode === 'csir' && !state.quizPassed);
+        const locked = isNavLocked(item.id, state, content, role);
         const classes = [
           'nav-link',
           currentPage === item.id ? 'current' : '',
@@ -194,12 +316,14 @@
   }
 
   function buildBottomCta(content, pageId, state) {
+    const role = getActiveRole(content, state);
     const idx = content.nav.findIndex((n) => n.id === pageId);
     const prev = content.nav[idx - 1];
     const next = content.nav[idx + 1];
+    const gateLocked = !canAdvance(pageId, state, content);
     const nextLocked =
       next &&
-      ((next.id === 'checklist' && !state.quizPassed) || (next.id === 'certificate' && !state.quizPassed && content.mode === 'csir'));
+      (gateLocked || (next.id === 'certificate' && isNavLocked(next.id, state, content, role)));
     const prevLink = prev
       ? `<a href="${prev.href}" aria-label="Previous">◀ Previous</a>`
       : '<span></span>';
@@ -209,8 +333,9 @@
     return `<div class="bottom-cta">${prevLink}${nextLink}</div>`;
   }
 
-  function markComplete(content, pageId, state) {
-    if ((pageId === 'checklist' || pageId === 'certificate') && !state.quizPassed) return;
+  function markComplete(content, pageId, state, role) {
+    const requirement = (content.pageRequirements || {})[pageId];
+    if (requirement && !evaluateRequirement(requirement, state)) return;
     if (!state.completed.has(pageId)) {
       state.completed.add(pageId);
       saveState(moduleId, state);
@@ -221,7 +346,10 @@
     const target = document.getElementById('page-content');
     if (!target) return;
 
-    const role = state.role || content.roleOptions[0];
+    const role = getActiveRole(content, state);
+    if (shouldAutoComplete(pageId, content)) {
+      markComplete(content, pageId, state, role);
+    }
 
     if (content.mode === 'csir') {
       switch (pageId) {
@@ -253,7 +381,7 @@
           break;
         case 'certificate':
           target.innerHTML = renderCertificate(content, state, role);
-          attachCertificateHandler(content, state);
+          attachCertificateHandler(content, state, role);
           break;
         case 'resources':
           target.innerHTML = renderResources(content, role);
@@ -306,6 +434,8 @@
       }
     }
 
+    if (pageId === 'orientation') attachOrientationGate(content, state);
+    if (pageId === 'scope') attachScopeCheck(content, state);
     if (pageId === 'quiz' || pageId === 'final-check') attachQuizHandlers(content, state);
     if (pageId === 'checklist' && state.quizPassed) attachChecklistHandlers(content);
     if (pageId === 'complete') attachCompletionHandler(content);
@@ -441,13 +571,15 @@
   }
 
   function renderQuiz(content, state) {
+    const role = getActiveRole(content, state);
     const quizPassed = state.quizPassed;
-    const questions = content.quiz.questions
+    const questions = getQuizQuestions(content, role)
       .map((q, idx) => {
         const name = `q${idx}`;
         return `
           <div class="quiz-question" data-index="${idx}">
-            <p><strong>Q${idx + 1}. ${q.prompt}</strong></p>
+            <p><strong>Scenario ${idx + 1}.</strong> ${q.prompt}</p>
+            <p class="meta">Role lens: ${q.lens || 'All roles'}</p>
             <div class="quiz-options">
               ${q.options
                 .map(
@@ -471,7 +603,7 @@
       ${questions}
       <button id="submit-quiz" class="nav-toggle">Submit answers</button>
       <div id="quiz-result" class="callout" style="display:none;"></div>
-      ${renderRoleCallout(content, 'quiz', state.role || content.roleOptions[0])}
+      ${renderRoleCallout(content, 'quiz', role)}
     `;
   }
 
@@ -479,14 +611,16 @@
     const submit = document.getElementById('submit-quiz');
     if (!submit) return;
     submit.onclick = () => {
-      const answers = content.quiz.questions.map((_, idx) => {
+      const role = getActiveRole(content, state);
+      const questions = getQuizQuestions(content, role);
+      const answers = questions.map((_, idx) => {
         const checked = document.querySelector(`input[name="q${idx}"]:checked`);
         return checked ? parseInt(checked.value, 10) : null;
       });
 
       let correct = 0;
       answers.forEach((ans, idx) => {
-        const q = content.quiz.questions[idx];
+        const q = questions[idx];
         const feedbackEl = document.getElementById(`feedback-${idx}`);
         if (ans === null) {
           feedbackEl.textContent = 'Pick an answer to see feedback.';
@@ -499,7 +633,7 @@
         feedbackEl.style.color = isCorrect ? 'var(--accent-2)' : 'var(--danger)';
       });
 
-      const score = Math.round((correct / content.quiz.questions.length) * 100);
+      const score = Math.round((correct / questions.length) * 100);
       const result = document.getElementById('quiz-result');
       if (!result) return;
       result.style.display = 'block';
@@ -510,6 +644,7 @@
         state.quizPassed = true;
         saveState(moduleId, state);
         unlockChecklistNav(content.mode === 'csir');
+        markComplete(content, 'final-check', state, role);
       } else {
         result.innerHTML = `<strong>Score: ${score}%</strong> — You need ${content.quiz.passScore}% to pass. Review the requirements and try again.`;
       }
@@ -605,18 +740,33 @@
   }
 
   function renderResources(content) {
+    const resources = content.resources || {};
+    if (resources.policies || resources.tools || resources.contacts) {
+      return `
+        <h2 class="section-title">Resources</h2>
+        <div class="list-grid">
+          <div class="card"><strong>Policies & Procedures</strong><ul>${(resources.policies || [])
+            .map((p) => `<li>${p}</li>`)
+            .join('')}</ul></div>
+          <div class="card"><strong>Tools in use</strong><ul>${(resources.tools || [])
+            .map((p) => `<li>${p}</li>`)
+            .join('')}</ul></div>
+          <div class="card"><strong>Who to ask</strong><ul>${(resources.contacts || [])
+            .map((p) => `<li>${p}</li>`)
+            .join('')}</ul></div>
+        </div>
+      `;
+    }
+
+    const links = (resources.links || [])
+      .map((link) => `<li><a href="${link.url}" target="_blank" rel="noopener">${link.label}</a></li>`)
+      .join('');
+    const notes = (resources.notes || []).map((note) => `<li>${note}</li>`).join('');
     return `
       <h2 class="section-title">Resources</h2>
       <div class="list-grid">
-        <div class="card"><strong>Policies & Procedures</strong><ul>${content.resources.policies
-          .map((p) => `<li>${p}</li>`)
-          .join('')}</ul></div>
-        <div class="card"><strong>Tools in use</strong><ul>${content.resources.tools
-          .map((p) => `<li>${p}</li>`)
-          .join('')}</ul></div>
-        <div class="card"><strong>Who to ask</strong><ul>${content.resources.contacts
-          .map((p) => `<li>${p}</li>`)
-          .join('')}</ul></div>
+        <div class="card"><strong>Reference links</strong><ul>${links}</ul></div>
+        <div class="card"><strong>Audit notes</strong><ul>${notes}</ul></div>
       </div>
     `;
   }
@@ -633,30 +783,43 @@
   }
 
   function renderDashboard(content, state) {
-    const percent = Math.round((state.completed.size / content.nav.length) * 100);
+    const role = getActiveRole(content, state);
+    const requiredPages = getRequiredPages(content, role);
+    const progress = calculateProgress(content, state, role);
+    const requiresQuiz = requiredPages.includes('final-check');
+    const auditReady = requiresQuiz ? state.quizPassed : true;
     const phases = (content.phases || []).map((phase) => {
-      const done = phase.pages.filter((p) => state.completed.has(p)).length;
-      const pct = Math.round((done / phase.pages.length) * 100);
-      return `<div class="card phase-card"><div class="phase-head"><div><strong>${phase.title}</strong><p>${phase.description}</p></div><span class="badge">${pct}%</span></div><div class="progress-meter"><span style="width:${pct}%;"></span></div><p class="meta">${done}/${phase.pages.length} steps complete</p></div>`;
+      const relevantPages = phase.pages.filter((p) => requiredPages.includes(p));
+      const total = relevantPages.length || phase.pages.length;
+      const done = relevantPages.filter((p) => state.completed.has(p)).length;
+      const pct = total ? Math.round((done / total) * 100) : 100;
+      return `<div class="card phase-card"><div class="phase-head"><div><strong>${phase.title}</strong><p>${phase.description}</p></div><span class="badge">${pct}%</span></div><div class="progress-meter"><span style="width:${pct}%;"></span></div><p class="meta">${done}/${total} role-required steps</p></div>`;
     });
-    const resume = content.nav.find((n) => !state.completed.has(n.id)) || content.nav[content.nav.length - 1];
+    const resumeId = requiredPages.find((id) => !state.completed.has(id));
+    const resume = content.nav.find((n) => n.id === resumeId) || content.nav[content.nav.length - 1];
+    const statusKey =
+      progress.percent === 0
+        ? 'notStarted'
+        : progress.percent === 100 && auditReady
+        ? 'completed'
+        : auditReady
+        ? 'ready'
+        : 'inProgress';
+    const statusLabel = content.statusBadges?.[statusKey] || statusKey;
+
     return `
       <div class="dashboard">
         <div class="dashboard-head">
           <div>
-            <p class="tag">My Training</p>
+            <p class="tag">My Training • ${role}</p>
             <h2>${content.trainingName || content.title}</h2>
             <p class="lead">Track progress, resume the next step, and confirm audit-ready status.</p>
-            <div class="status-row"><span class="badge">Overall ${percent}%</span><span class="badge">${
-              content.statusBadges?.[
-                percent === 0 ? 'notStarted' : percent === 100 ? 'completed' : state.quizPassed ? 'ready' : 'inProgress'
-              ] || 'In Progress'
-            }</span></div>
+            <div class="status-row"><span class="badge">Overall ${progress.percent}%</span><span class="badge">${statusLabel}</span></div>
           </div>
           <div class="card">
             <p class="meta">Completion</p>
-            <div class="progress-meter large"><span style="width:${percent}%"></span></div>
-            <p class="meta">${state.completed.size} of ${content.nav.length} steps</p>
+            <div class="progress-meter large"><span style="width:${progress.percent}%"></span></div>
+            <p class="meta">${progress.completed} of ${progress.total} role-required steps</p>
             <a class="primary" href="${resume.href}" id="resume-btn">Resume where you left off</a>
           </div>
         </div>
@@ -668,7 +831,9 @@
   function attachDashboardHandlers(content, state) {
     const btn = document.getElementById('resume-btn');
     if (!btn) return;
-    const next = content.nav.find((n) => !state.completed.has(n.id));
+    const requiredPages = getRequiredPages(content, getActiveRole(content, state));
+    const nextId = requiredPages.find((id) => !state.completed.has(id));
+    const next = content.nav.find((n) => n.id === nextId);
     if (next) btn.href = next.href;
   }
 
@@ -677,7 +842,8 @@
     return `
       <div class="phase-callout"><strong>Why this matters:</strong> ${section.purpose}</div>
       <div class="list-grid">${section.topics.map((t) => `<div class="card"><strong>${t.title}</strong><p>${t.detail}</p></div>`).join('')}</div>
-      <div class="callout">✔ Gate: ${section.gate}</div>
+      <label class="checklist-item" style="margin-top:1rem;"><input type="checkbox" id="orientation-ack"> ${section.gate}</label>
+      <div class="callout warning">You must acknowledge before moving to Scope & Applicability.</div>
       ${renderRoleCallout(content, 'orientation', role) || ''}
     `;
   }
@@ -687,7 +853,17 @@
     return `
       <h2 class="section-title">Scope & Applicability</h2>
       <div class="list-grid">${section.points.map((p) => `<div class="card"><strong>${p.title}</strong><p>${p.detail}</p></div>`).join('')}</div>
-      <div class="knowledge-check">${section.check}</div>
+      <div class="knowledge-check">
+        <p><strong>${section.check.question}</strong></p>
+        ${section.check.options
+          .map(
+            (opt, idx) =>
+              `<label class="checklist-item"><input type="radio" name="scope-check" value="${idx}"> ${opt}</label>`
+          )
+          .join('')}
+        <button id="scope-check-submit" class="nav-toggle">Submit scope check</button>
+        <div id="scope-feedback" class="callout" aria-live="polite"></div>
+      </div>
       ${renderRoleCallout(content, 'scope', role) || ''}
     `;
   }
@@ -769,32 +945,114 @@
     });
   }
 
-  function renderCertificate(content, state) {
+  function attachOrientationGate(content, state) {
+    const checkbox = document.getElementById('orientation-ack');
+    if (!checkbox) return;
+    checkbox.checked = !!state.gates?.orientationAck;
+    checkbox.addEventListener('change', (e) => {
+      state.gates.orientationAck = e.target.checked;
+      if (!state.gates.orientationAck && state.completed.has('orientation')) {
+        state.completed.delete('orientation');
+      } else if (state.gates.orientationAck) {
+        markComplete(content, 'orientation', state, getActiveRole(content, state));
+      }
+      saveState(moduleId, state);
+      renderShell(content, document.body.dataset.pageId, state);
+    });
+  }
+
+  function attachScopeCheck(content, state) {
+    const submit = document.getElementById('scope-check-submit');
+    const feedback = document.getElementById('scope-feedback');
+    if (!submit || !feedback) return;
+    const role = getActiveRole(content, state);
+    submit.addEventListener('click', () => {
+      const selected = document.querySelector('input[name="scope-check"]:checked');
+      if (!selected) {
+        feedback.textContent = 'Select an answer to continue.';
+        feedback.className = 'callout warning';
+        return;
+      }
+      const answer = parseInt(selected.value, 10);
+      const question = content.scope.check;
+      const correct = question.answer === answer;
+      feedback.textContent = correct ? question.success : question.rationale;
+      feedback.className = `callout ${correct ? 'good' : 'warning'}`;
+      if (correct) {
+        state.gates.scopeCheck = true;
+        markComplete(content, 'scope', state, role);
+        saveState(moduleId, state);
+        renderShell(content, document.body.dataset.pageId, state);
+      }
+    });
+  }
+
+  function renderCertificate(content, state, role) {
+    const progress = calculateProgress(content, state, role);
+    const ready = progress.percent === 100 && state.quizPassed;
+    const template = content.certificateTemplate || {
+      statement: 'Completed role-based CSIR training aligned to NERC CIP-007 audit expectations.',
+      trainingName: content.trainingName || content.title,
+      issuer: 'DecisionMaker Training Engine'
+    };
+    const status = ready
+      ? `<div class="callout good">All required phases complete. Knowledge check passed. Certificate will include your role (${role}).</div>`
+      : `<div class="callout warning">Finish all required phases (${progress.percent}% complete) and pass the Final Knowledge Check to enable download.</div>`;
+    const issued = state.certificateIssued
+      ? `<p class="meta">A certificate has already been generated. You can regenerate to refresh the timestamp.</p>`
+      : '';
     return `
       <h2 class="section-title">Audit-Ready Completion Certificate</h2>
       <p class="lead">Capture your name to generate a downloadable record for audit binders.</p>
+      ${status}
       <label class="field"><span>Your name</span><input type="text" id="cert-name" value="${state.userName || ''}" placeholder="Full name"></label>
-      <button id="download-cert" class="primary">Download certificate</button>
-      <div class="callout">This certifies that the individual has completed role-based CSIR training aligned to NERC CIP-007 audit expectations.</div>
+      <p class="meta">Role: <strong>${role}</strong></p>
+      <button id="download-cert" class="primary" ${ready ? '' : 'disabled'}>Download certificate</button>
+      ${issued}
+      <div class="callout">${template.statement}</div>
     `;
   }
 
-  function attachCertificateHandler(content, state) {
+  function attachCertificateHandler(content, state, role) {
     const btn = document.getElementById('download-cert');
     const nameInput = document.getElementById('cert-name');
     if (!btn || !nameInput) return;
+    const ready = calculateProgress(content, state, role).percent === 100 && state.quizPassed;
+    if (!ready) {
+      btn.disabled = true;
+      return;
+    }
     btn.onclick = () => {
       const name = nameInput.value || 'Participant';
       state.userName = name;
-      saveState(moduleId, state);
-      const details = `Training Name: ${content.trainingName || content.title}\nParticipant: ${name}\nCompletion: ${new Date().toLocaleString()}\nStatement: This certifies that the individual has completed role-based CSIR training aligned to NERC CIP-007 audit expectations.`;
-      const blob = new Blob([details], { type: 'text/plain' });
+      state.certificateIssued = true;
+      const completion = new Date();
+      const template = content.certificateTemplate || {};
+      const statement = template.statement ||
+        'Completed role-based CSIR training aligned to NERC CIP-007 audit expectations.';
+      const trainingName = template.trainingName || content.trainingName || content.title;
+      const issuer = template.issuer || 'DecisionMaker Training Engine';
+      const certificateHtml = `
+        <html><head><meta charset="utf-8"><title>${trainingName} Certificate</title>
+          <style>body{font-family:Inter,Segoe UI,sans-serif;padding:24px;background:#f8fafc;color:#0f172a;} .cert{border:2px solid #0f172a;padding:24px;border-radius:14px;max-width:800px;margin:0 auto;background:#fff;} h1{margin-top:0;} .meta{color:#334155;} .tag{display:inline-block;padding:4px 8px;border:1px solid #e2e8f0;border-radius:8px;margin-right:8px;}</style>
+        </head><body>
+          <div class="cert">
+            <p class="tag">${issuer}</p>
+            <h1>${trainingName}</h1>
+            <p>This certifies that <strong>${name}</strong> (${role}) completed the training on <strong>${completion.toLocaleString()}</strong>.</p>
+            <p class="meta">Statement: ${statement}</p>
+          </div>
+        </body></html>`;
+      const blob = new Blob([certificateHtml], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${content.moduleId}-certificate.txt`;
+      a.download = `${content.moduleId}-certificate.html`;
       a.click();
       URL.revokeObjectURL(url);
+      markComplete(content, 'certificate', state, role);
+      saveState(moduleId, state);
+      renderShell(content, document.body.dataset.pageId, state);
     };
   }
 })();

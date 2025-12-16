@@ -1,0 +1,27 @@
+{
+  "etiquette": {
+    "rules": [
+      "Answer only what is asked\u2014no extra systems, no theories.",
+      "Use \u201cI will confirm\u201d when unsure; never guess.",
+      "State the evidence location and ticket ID instead of storytelling.",
+      "Pause, breathe, and defer to the documented CSIR steps."
+    ],
+    "examples": [
+      {
+        "prompt": "What if an auditor asks for a system you do not own?",
+        "bad": "I think OT SecOps handles it.",
+        "good": "That system is handled by OT SecOps; I will have their on-call provide the evidence."
+      },
+      {
+        "prompt": "Asked about cause before investigation?",
+        "bad": "It was likely malware.",
+        "good": "We have not completed forensics; evidence collection is underway per CSIR step 3."
+      },
+      {
+        "prompt": "Asked why you did not declare earlier?",
+        "bad": "We were busy and missed it.",
+        "good": "The indicator was validated at 09:05 and declared at 09:12 within the documented 15-minute window."
+      }
+    ]
+  }
+}

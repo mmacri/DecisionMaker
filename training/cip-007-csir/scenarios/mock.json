@@ -1,0 +1,42 @@
+{
+  "mock": {
+    "questions": [
+      {
+        "prompt": "An auditor asks: who can declare a cyber security incident for a control center outage?",
+        "options": [
+          "Any operator on shift",
+          "Only the Incident Commander",
+          "Anyone with SOC access",
+          "Only Compliance"
+        ],
+        "answer": 0,
+        "audit": "Operators must know the documented declaration authority.",
+        "lens": "Declaration authority"
+      },
+      {
+        "prompt": "During a review, the auditor asks for evidence of time synchronization between logs and operator actions.",
+        "options": [
+          "Provide screenshots of clocks and event logs",
+          "Explain that clocks are close enough",
+          "Offer to rebuild NTP",
+          "State it is out of scope"
+        ],
+        "answer": 0,
+        "audit": "Auditability depends on synchronized time sources.",
+        "lens": "Evidence integrity"
+      },
+      {
+        "prompt": "You are asked why CIP-008 was referenced but not invoked.",
+        "options": [
+          "Because we prefer CIP-007 only",
+          "Because impact criteria for CIP-008 were not met",
+          "Because leadership was unavailable",
+          "Because logs were incomplete"
+        ],
+        "answer": 1,
+        "audit": "Auditors expect rationale tied to documented thresholds.",
+        "lens": "Threshold clarity"
+      }
+    ]
+  }
+}
