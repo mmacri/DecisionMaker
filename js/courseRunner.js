@@ -1,320 +1,468 @@
-import { loadProgress, saveProgress, markStepCompleted, setQuizScore, setFinalExamScore, setCompletedAt, resetProgress } from './storage.js';
+import {
+  clearIfDifferentCourse,
+  loadProgress,
+  saveProgress,
+  setActiveStep,
+  markStepCompleted,
+  setQuizScore,
+  setInteractionScore,
+  setAcknowledgements,
+  setFinalExamScore,
+  unlockChecklist,
+  setCompletedAt,
+} from './storage.js';
+import { requireRoleAndName } from './router.js';
+import { renderQuiz, bindQuiz } from './quiz.js';
 
 async function fetchPack(courseId = 'scl-csir') {
   const res = await fetch(`contentpacks/${courseId}/pack.json`);
   return res.json();
 }
 
-function ensureProfile(progress) {
-  if (!progress.roleId) {
-    window.location.href = 'role.html';
+function byId(id) { return document.getElementById(id); }
+
+function renderContentBlock(block, roleLabel) {
+  switch (block.kind) {
+    case 'markdown':
+      return `<div class="content-block"><p>${block.text}</p></div>`;
+    case 'bullets':
+      return `<div class="content-block"><ul class="list">${block.items.map((i) => `<li>${i}</li>`).join('')}</ul></div>`;
+    case 'callout': {
+      const toneClass = block.tone === 'warning' ? 'warning' : block.tone === 'accent' ? 'accent' : 'callout';
+      return `<div class="content-block ${toneClass}"><h3>${block.title || ''}</h3><p>${block.text}</p></div>`;
+    }
+    case 'timeline':
+      return `<div class="content-block"><div class="timeline">${block.items.map((p) => `<div class="phase"><div class="title">${p.title}</div><div class="small">${p.text}</div></div>`).join('')}</div></div>`;
+    case 'matrix':
+      return `<div class="content-block"><table class="matrix"><thead><tr>${block.headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${block.rows.map((r) => `<tr><th>${r.label}</th>${r.values.map((v) => `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case 'accordion':
+      return `<div class="content-block accordion">${block.items.map((item) => `<details data-title="${item.title}"><summary>${item.title}</summary><div class="small"><strong>You are responsible for</strong><ul class="list">${item.responsible.map((i) => `<li>${i}</li>`).join('')}</ul><strong>You are NOT responsible for</strong><ul class="list">${item.notResponsible.map((i) => `<li>${i}</li>`).join('')}</ul><strong>Evidence you typically touch</strong><ul class="list">${item.evidence.map((i) => `<li>${i}</li>`).join('')}</ul></div></details>`).join('')}</div>`;
+    default:
+      return '';
   }
-  if (!progress.learnerName) {
-    window.location.href = 'profile.html';
+}
+
+function renderContent(step, progress, roleLabel) {
+  const blocks = (step.contentBlocks || []).map((b) => renderContentBlock(b, roleLabel)).join('');
+  let quizHtml = '';
+  if (step.knowledgeCheck) {
+    const existing = progress.quizScores[step.id];
+    quizHtml = renderQuiz(step.id, step.knowledgeCheck, existing);
   }
+  let interactionHtml = '';
+  if (step.interaction) {
+    interactionHtml = buildInteraction(step, progress);
+  }
+  let ctaHtml = '';
+  if (step.ctaLabel) {
+    ctaHtml = `<button class="button" id="cta-${step.id}">${step.ctaLabel}</button>`;
+  }
+  return `<div class="panel content-area">${blocks}${interactionHtml}${quizHtml}${ctaHtml}</div>`;
 }
 
-function renderContentBlocks(blocks) {
-  return blocks.map((block) => {
-    if (block.type === 'text') {
-      return `<div class="content-block"><h3>${block.heading}</h3><p>${block.body}</p></div>`;
-    }
-    if (block.type === 'list') {
-      const items = block.items.map((item) => `<li>${item}</li>`).join('');
-      return `<div class="content-block"><h3>${block.heading}</h3><ul class="list">${items}</ul></div>`;
-    }
-    if (block.type === 'callout') {
-      return `<div class="content-block callout"><h3>${block.heading}</h3><p>${block.body}</p></div>`;
-    }
-    if (block.type === 'table') {
-      const head = block.columns.map((col) => `<th>${col}</th>`).join('');
-      const rows = block.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
-      return `<div class="content-block"><h3>${block.heading}</h3><table class="table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
-    }
-    return '';
-  }).join('');
+function buildInteraction(step, progress) {
+  const kind = step.interaction.kind;
+  if (kind === 'classification') {
+    return `<div class="content-block"><h3>${step.interaction.prompt}</h3>${step.interaction.items.map((item, idx) => {
+      const selectName = `${step.id}-class-${idx}`;
+      const existing = progress.interactionScores[step.id];
+      const disabled = existing?.passed ? 'disabled' : '';
+      return `<div class="question"><div class="small">${item.text}</div><select name="${selectName}" ${disabled}>${['', ...step.interaction.options].map((opt) => `<option value="${opt}">${opt || 'Select'}</option>`).join('')}</select><div class="small muted">${item.why}</div></div>`;
+    }).join('')}<button class="button" id="interaction-${step.id}" ${progress.interactionScores[step.id]?.passed ? 'disabled' : ''}>Submit classifications</button>${interactionResult(step, progress)}</div>`;
+  }
+  if (kind === 'matching') {
+    return `<div class="content-block"><h3>${step.interaction.prompt}</h3>${step.interaction.items.map((item, idx) => {
+      const selectName = `${step.id}-match-${idx}`;
+      const disabled = progress.interactionScores[step.id]?.passed ? 'disabled' : '';
+      return `<div class="question"><div class="small">${item.text}</div><select name="${selectName}" ${disabled}>${['', ...step.interaction.options].map((opt) => `<option value="${opt}">${opt || 'Select severity'}</option>`).join('')}</select></div>`;
+    }).join('')}<button class="button" id="interaction-${step.id}" ${progress.interactionScores[step.id]?.passed ? 'disabled' : ''}>Check matches</button>${interactionResult(step, progress)}</div>`;
+  }
+  if (kind === 'acknowledgement') {
+    const existing = progress.acknowledgements[step.id] || 0;
+    const disabled = existing >= (step.interaction.items?.length || 0);
+    return `<div class="content-block"><h3>${step.interaction.prompt}</h3><ul class="checklist">${step.interaction.items.map((item, idx) => `<li><label><input type="checkbox" data-ack="${step.id}" value="${idx}" ${disabled ? 'checked disabled' : ''}>${item}</label></li>`).join('')}</ul><div class="small">Check all that apply.</div></div>`;
+  }
+  if (kind === 'accordion') {
+    return `<div class="content-block"><h3>${step.interaction.prompt}</h3>${renderContentBlock({ kind: 'accordion', items: step.interaction.items })}<div id="accordionStatus" class="small"></div></div>`;
+  }
+  return '';
 }
 
-function buildQuizHtml(step, existingScore) {
-  if (!step.knowledgeCheck || step.knowledgeCheck.type !== 'quiz') return '';
-  const { questions } = step.knowledgeCheck;
-  const alreadyPassed = existingScore && existingScore.passed;
-  const questionHtml = questions.map((q, idx) => {
-    const options = q.options.map((opt, optIdx) => {
-      const id = `${step.id}-q${idx}-o${optIdx}`;
-      return `<label><input type="radio" name="${step.id}-q${idx}" value="${optIdx}" ${alreadyPassed ? 'disabled' : ''}>${opt}</label>`;
-    }).join('');
-    return `<div class="question"><div class="small">${q.prompt}</div>${options}</div>`;
-  }).join('');
-  const resultText = existingScore ? `<div class="result">Score: ${existingScore.score}/${existingScore.total} (${existingScore.percent}%)</div>` : '';
-  return `<div class="quiz" data-step="${step.id}"><h4>Knowledge Check</h4>${questionHtml}<button class="button" ${alreadyPassed ? 'disabled' : ''}>Submit answers</button>${resultText}</div>`;
+function interactionResult(step, progress) {
+  const existing = progress.interactionScores[step.id];
+  if (!existing) return '';
+  return `<div class="result">Score: ${existing.score}/${existing.total} (${existing.percent}%)${existing.passed ? ' • Passed' : ''}</div>`;
 }
 
-function updateProgressUi(progressFill, progressText, completedCount, total) {
-  const percent = Math.round((completedCount / total) * 100);
-  progressFill.style.width = `${percent}%`;
-  progressText.textContent = `${completedCount} / ${total} steps complete (${percent}%)`;
-}
-
-function computeProgressCounts(progress, steps, finalExam) {
-  const finalComplete = progress.finalExamScore && Math.round((progress.finalExamScore.score / progress.finalExamScore.total) * 100) >= finalExam.passingScore;
-  return {
-    completed: progress.completedSteps.length + (finalComplete ? 1 : 0),
-    total: steps.length
-  };
-}
-
-function showLockedModal() {
-  const modal = document.getElementById('lockedModal');
-  modal.showModal();
-}
-
-function renderStep(step, container, progress) {
-  const existingScore = progress.quizScores[step.id];
-  const body = renderContentBlocks(step.contentBlocks);
-  const quiz = buildQuizHtml(step, existingScore);
-  container.innerHTML = `
-    <div class="panel content-area">
-      <div class="status-pill">${step.title}</div>
-      ${body}
-      ${quiz}
-    </div>
-  `;
-}
-
-function handleQuiz(container, step, progress, onPassed) {
-  const quizEl = container.querySelector('.quiz');
-  if (!quizEl) return;
-  const button = quizEl.querySelector('button');
-  button.addEventListener('click', () => {
-    const { questions, passingScore } = step.knowledgeCheck;
-    let correct = 0;
-    let answered = 0;
-    questions.forEach((q, idx) => {
-      const selected = container.querySelector(`input[name="${step.id}-q${idx}"]:checked`);
-      if (selected) {
-        answered += 1;
-        if (Number(selected.value) === q.answer) correct += 1;
+function evaluateInteraction(step, container, onPassed) {
+  const kind = step.interaction.kind;
+  if (kind === 'classification' || kind === 'matching') {
+    const button = container.querySelector(`#interaction-${step.id}`);
+    if (!button || button.disabled) return;
+    button.addEventListener('click', () => {
+      let correct = 0;
+      const total = step.interaction.items.length;
+      step.interaction.items.forEach((item, idx) => {
+        const select = container.querySelector(`select[name="${step.id}-${kind === 'classification' ? 'class' : 'match'}-${idx}"]`);
+        if (select && select.value === item.answer) correct += 1;
+      });
+      const percent = Math.round((correct / total) * 100);
+      setInteractionScore(step.id, correct, total, step.interaction.passingScore);
+      const result = container.querySelector('.result') || document.createElement('div');
+      result.className = 'result';
+      result.textContent = `Score: ${correct}/${total} (${percent}%)${percent >= step.interaction.passingScore ? ' • Passed' : ' • Try again'}`;
+      if (!container.querySelector('.result')) container.querySelector('.content-block').appendChild(result);
+      if (percent >= step.interaction.passingScore) {
+        button.disabled = true;
+        onPassed();
       }
     });
-    if (answered < questions.length) {
-      alert('Please answer every question.');
-      return;
-    }
-    const percent = Math.round((correct / questions.length) * 100);
-    const passed = percent >= passingScore;
-    setQuizScore(step.id, correct, questions.length, passingScore);
-    const result = quizEl.querySelector('.result') || document.createElement('div');
-    result.className = 'result';
-    result.textContent = `Score: ${correct}/${questions.length} (${percent}%) ${passed ? '✓ Passed' : '– Try again'}`;
-    if (!quizEl.querySelector('.result')) {
-      quizEl.appendChild(result);
-    }
-    if (passed) {
-      button.disabled = true;
-      onPassed();
-    }
-  });
+  }
+  if (kind === 'acknowledgement') {
+    const checkboxes = container.querySelectorAll('input[data-ack]');
+    const total = step.interaction.items.length;
+    checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+      const checked = Array.from(container.querySelectorAll('input[data-ack]:checked')).length;
+      setAcknowledgements(step.id, checked);
+      if (checked >= total) {
+        markStepCompleted(step.id);
+        onPassed();
+      }
+    }));
+  }
+  if (kind === 'accordion') {
+    const details = container.querySelectorAll('details');
+    const opened = new Set();
+    details.forEach((d) => d.addEventListener('toggle', () => {
+      if (d.open) opened.add(d.dataset.title);
+      const status = container.querySelector('#accordionStatus');
+      if (status) status.textContent = `${opened.size} roles viewed`;
+      const progress = loadProgress();
+      const roleTitle = document.querySelector('[data-role-label]')?.dataset.roleLabel;
+      const hasOwn = roleTitle ? opened.has(roleTitle) : true;
+      if (hasOwn && opened.size >= 2) {
+        markStepCompleted(step.id);
+        onPassed();
+      }
+    }));
+  }
 }
 
-function buildStepper(steps, progress) {
-  const list = document.getElementById('stepList');
+function buildStepper(steps, requiredStepIds, progress) {
+  const list = byId('stepList');
   list.innerHTML = '';
   steps.forEach((step, idx) => {
-    const li = document.createElement('div');
-    li.className = 'step';
-    li.dataset.id = step.id;
-    li.innerHTML = `<span class="badge">${idx + 1}</span><div><div>${step.title}</div><div class="small">${step.subtitle || ''}</div></div>`;
-    list.appendChild(li);
+    const required = requiredStepIds.includes(step.id);
+    const div = document.createElement('div');
+    div.className = 'step';
+    div.dataset.id = step.id;
+    div.innerHTML = `<div class="badge">${String(idx + 1).padStart(2, '0')}</div><div><div>${step.title}</div><div class="meta">${required ? 'Required' : 'Optional'}${step.type === 'exam' ? ' • Final exam' : ''}${step.lockedUntilExam ? ' • Unlocks after exam' : ''}</div></div>`;
+    list.appendChild(div);
   });
 }
 
-function computeUnlocked(stepIndex, steps, progress) {
-  if (stepIndex === 0) return true;
-  const prevStep = steps[stepIndex - 1];
-  return progress.completedSteps.includes(prevStep.id);
+function computeUnlocked(index, steps, progress) {
+  if (index <= 0) return true;
+  if (index >= steps.length) return true;
+  if (index === 0) return true;
+  const prev = steps[index - 1];
+  if (steps[index].lockedUntilExam) {
+    return progress.finalExamScore?.passed;
+  }
+  return progress.completedSteps.includes(prev.id);
 }
 
 function refreshStepperState(steps, progress, activeId) {
-  const entries = document.querySelectorAll('#stepList .step');
-  entries.forEach((el, idx) => {
+  const nodes = Array.from(document.querySelectorAll('#stepList .step'));
+  nodes.forEach((node, idx) => {
     const stepId = steps[idx].id;
-    el.classList.toggle('active', stepId === activeId);
-    el.classList.toggle('completed', progress.completedSteps.includes(stepId));
     const locked = !computeUnlocked(idx, steps, progress);
-    el.classList.toggle('locked', locked);
+    node.classList.toggle('active', stepId === activeId);
+    node.classList.toggle('completed', progress.completedSteps.includes(stepId));
+    node.classList.toggle('locked', locked);
   });
 }
 
-function showCompletionBanner(passed) {
-  const banner = document.getElementById('completionBanner');
-  if (!banner) return;
-  banner.style.display = passed ? 'block' : 'none';
+function computeProgress(steps, progress) {
+  const completed = steps.filter((s) => progress.completedSteps.includes(s.id)).length;
+  const total = steps.length;
+  return { completed, total, percent: Math.round((completed / total) * 100) };
 }
 
-function setupDrawerToggle() {
-  const toggle = document.getElementById('drawerToggle');
-  const drawer = document.getElementById('drawer');
-  toggle?.addEventListener('click', () => {
-    drawer.classList.toggle('open');
-  });
+function updateProgressBar(progressData) {
+  byId('progressText').textContent = `${progressData.completed} / ${progressData.total} steps complete (${progressData.percent}%)`;
+  document.querySelector('.progress-fill').style.width = `${progressData.percent}%`;
 }
 
-function handleNavigationButtons(currentIndex, steps, progress, onNavigate) {
-  const backBtn = document.getElementById('backBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  backBtn.disabled = currentIndex === 0;
-  const lastIndex = steps.length - 1;
-  const locked = !computeUnlocked(currentIndex + 1, steps, progress) && currentIndex !== lastIndex;
-  nextBtn.disabled = currentIndex === lastIndex || locked;
-  backBtn.onclick = () => currentIndex > 0 && onNavigate(currentIndex - 1);
-  nextBtn.onclick = () => {
-    if (currentIndex < lastIndex) {
-      if (!computeUnlocked(currentIndex + 1, steps, progress)) {
-        showLockedModal();
-        return;
-      }
-      onNavigate(currentIndex + 1);
-    }
-  };
-}
-
-function attemptCourseComplete(progress, steps, finalExam) {
-  const requiredIds = steps.map((s) => s.id);
-  const allStepsDone = requiredIds.every((id) => progress.completedSteps.includes(id));
-  const finalScore = progress.finalExamScore;
-  if (allStepsDone && finalScore && Math.round((finalScore.score / finalScore.total) * 100) >= finalExam.passingScore) {
+function ensureCompletionState(steps, progress, pack) {
+  const requiredIds = pack.roles.find((r) => r.id === progress.roleId)?.requiredStepIds || [];
+  const allSteps = requiredIds.every((id) => progress.completedSteps.includes(id));
+  const examPassed = progress.finalExamScore?.passed && progress.finalExamScore.percent >= pack.finalExam.passingScore;
+  if (allSteps && examPassed) {
+    unlockChecklist();
     if (!progress.completedAt) setCompletedAt(new Date().toISOString());
-    document.getElementById('certificateLink').style.display = 'inline-flex';
-    showCompletionBanner(true);
+    byId('certificateLink').style.display = 'inline-flex';
+    byId('completionBanner').style.display = 'block';
   }
 }
 
-async function initCourseRunner() {
-  const progress = loadProgress();
-  const params = new URLSearchParams(window.location.search);
-  const courseId = params.get('course') || 'scl-csir';
-  progress.courseId = courseId;
-  saveProgress(progress);
-  ensureProfile(progress);
-  const pack = await fetchPack(courseId);
-  document.getElementById('courseTitle').textContent = pack.meta.title;
-  document.getElementById('courseMeta').textContent = `${pack.meta.version} • Est. ${pack.meta.estMinutes} minutes`;
-  document.getElementById('learnerInfo').textContent = `${progress.learnerName} • ${pack.roles.find((r) => r.id === progress.roleId)?.label || progress.roleId}`;
+function renderStep(step, pack, progress, roleLabel) {
+  const content = renderContent(step, progress, roleLabel);
+  byId('content').innerHTML = content;
 
-  const stepsForRole = pack.steps.filter((step) => !step.requiredForRoles || step.requiredForRoles.length === 0 || step.requiredForRoles.includes(progress.roleId));
-  const steps = [...stepsForRole, { id: 'final-exam', title: 'Final Exam', subtitle: 'Pass to unlock your certificate', isFinal: true }];
-  buildStepper(steps, progress);
-  setupDrawerToggle();
+  if (step.contentBlocks && step.contentBlocks.length > 0) {
+    setActiveStep(step.id);
+  }
 
-  const contentContainer = document.getElementById('content');
-  const progressFill = document.querySelector('.progress-fill');
-  const progressText = document.getElementById('progressText');
-  const modalClose = document.getElementById('closeModal');
-  modalClose?.addEventListener('click', () => document.getElementById('lockedModal').close());
+  if (step.ctaLabel) {
+    const btn = byId(`cta-${step.id}`);
+    btn?.addEventListener('click', () => {
+      markStepCompleted(step.id);
+      navigateRelative(1);
+    });
+  }
 
-  let current = 0;
+  if (step.knowledgeCheck) {
+    bindQuiz(step.id, step.knowledgeCheck, byId('content'), () => {
+      markStepCompleted(step.id);
+      updateAfterCompletion();
+    });
+  }
 
-  const navigate = (index) => {
-    current = index;
-    const step = steps[index];
-    const progressState = loadProgress();
-    refreshStepperState(steps, progressState, step.id);
-    const counts = computeProgressCounts(progressState, steps, pack.finalExam);
-    updateProgressUi(progressFill, progressText, counts.completed, counts.total);
-    handleNavigationButtons(current, steps, progressState, navigate);
+  if (step.interaction) {
+    evaluateInteraction(step, byId('content'), () => {
+      markStepCompleted(step.id);
+      updateAfterCompletion();
+    });
+  }
 
-    if (step.isFinal) {
-      renderFinalExam(pack.finalExam, contentContainer, progressState, () => {
-        attemptCourseComplete(loadProgress(), stepsForRole, pack.finalExam);
-        const countsAfterExam = computeProgressCounts(loadProgress(), steps, pack.finalExam);
-        updateProgressUi(progressFill, progressText, countsAfterExam.completed, countsAfterExam.total);
-      });
-    } else {
-      renderStep(step, contentContainer, progressState);
-      handleQuiz(contentContainer, step, progressState, () => {
-        markStepCompleted(step.id);
-        attemptCourseComplete(loadProgress(), stepsForRole, pack.finalExam);
-        const latestProgress = loadProgress();
-        refreshStepperState(steps, latestProgress, step.id);
-        const countsLatest = computeProgressCounts(latestProgress, steps, pack.finalExam);
-        updateProgressUi(progressFill, progressText, countsLatest.completed, countsLatest.total);
-        handleNavigationButtons(current, steps, latestProgress, navigate);
-      });
-    }
-  };
-
-  document.getElementById('stepList').addEventListener('click', (e) => {
-    const target = e.target.closest('.step');
-    if (!target) return;
-    const idx = Array.from(document.getElementById('stepList').children).indexOf(target);
-    if (!computeUnlocked(idx, steps, loadProgress())) {
-      showLockedModal();
-      return;
-    }
-    navigate(idx);
-  });
-
-  const progressState = loadProgress();
-  refreshStepperState(steps, progressState, steps[0].id);
-  const countsInitial = computeProgressCounts(progressState, steps, pack.finalExam);
-  updateProgressUi(progressFill, progressText, countsInitial.completed, countsInitial.total);
-  navigate(0);
-  attemptCourseComplete(progressState, stepsForRole, pack.finalExam);
+  if (step.completionCriteria?.includes('viewed')) {
+    markStepCompleted(step.id);
+    updateAfterCompletion();
+  }
 }
 
-function renderFinalExam(finalExam, container, progress, onPassed) {
+let stepsCache = [];
+let packCache;
+let roleLabelCache = '';
+let currentIndex = 0;
+
+function isStepCompleted(step, progress) {
+  if (progress.completedSteps.includes(step.id)) return true;
+  const criteria = step.completionCriteria || [];
+  if (criteria.includes('examPassed')) return progress.finalExamScore?.passed;
+  if (criteria.includes('quizPassed')) return progress.quizScores[step.id]?.passed;
+  if (criteria.includes('interactionPassed')) return progress.interactionScores[step.id]?.passed;
+  if (criteria.includes('acknowledged')) {
+    const needed = step.interaction?.items?.length || 0;
+    return (progress.acknowledgements[step.id] || 0) >= needed;
+  }
+  if (criteria.includes('cta')) return progress.completedSteps.includes(step.id);
+  if (criteria.includes('viewed')) return progress.viewedSteps.includes(step.id) || progress.completedSteps.includes(step.id);
+  return false;
+}
+
+function updateAfterCompletion() {
+  const progress = loadProgress();
+  const progressData = computeProgress(stepsCache, progress);
+  refreshStepperState(stepsCache, progress, stepsCache[currentIndex].id);
+  updateProgressBar(progressData);
+  ensureCompletionState(stepsCache, progress, packCache);
+  bindNavButtons(progress);
+}
+
+function bindNavButtons(progress) {
+  const backBtn = byId('backBtn');
+  const nextBtn = byId('nextBtn');
+  backBtn.disabled = currentIndex === 0;
+  const lockedNext = !computeUnlocked(currentIndex + 1, stepsCache, progress) || !isStepCompleted(stepsCache[currentIndex], progress);
+  const isLast = currentIndex === stepsCache.length - 1;
+  nextBtn.disabled = isLast || lockedNext;
+  backBtn.onclick = () => currentIndex > 0 && navigateTo(currentIndex - 1);
+  nextBtn.onclick = () => {
+    if (isLast) return;
+    if (lockedNext) {
+      byId('lockedModal').showModal();
+      return;
+    }
+    navigateTo(currentIndex + 1);
+  };
+}
+
+function renderExam(step, pack, progress) {
   const existing = progress.finalExamScore;
-  const alreadyPassed = existing && existing.percent >= finalExam.passingScore;
-  const questionHtml = finalExam.questions.map((q, idx) => {
-    const options = q.options.map((opt, optIdx) => `<label><input type="radio" name="final-q${idx}" value="${optIdx}" ${alreadyPassed ? 'disabled' : ''}>${opt}</label>`).join('');
+  const alreadyPassed = existing?.passed && existing.percent >= pack.finalExam.passingScore;
+  const questionHtml = pack.finalExam.questions.map((q, idx) => {
+    const options = q.options.map((opt, optIdx) => `<label><input type="radio" name="exam-q${idx}" value="${optIdx}" ${alreadyPassed ? 'disabled' : ''}>${opt}</label>`).join('');
     return `<div class="question"><div class="small">${q.prompt}</div>${options}</div>`;
   }).join('');
-  const scoreText = existing ? `<div class="result">Score: ${existing.score}/${existing.total} (${Math.round((existing.score / existing.total) * 100)}%)${alreadyPassed ? ' ✓ Passed' : ''}</div>` : '';
-  container.innerHTML = `
-    <div class="panel content-area">
-      <div class="status-pill">${finalExam.title || 'Final Exam'}</div>
-      <p class="small">Pass the final to generate your certificate.</p>
-      <div class="quiz" data-step="final">${questionHtml}<button class="button" ${alreadyPassed ? 'disabled' : ''}>Submit final exam</button>${scoreText}</div>
-    </div>
-  `;
-
-  const button = container.querySelector('button');
+  byId('content').innerHTML = `<div class="panel content-area"><div class="status-pill">Final exam</div><p class="small">Pass with ${pack.finalExam.passingScore}% or better to unlock the checklist and certificate.</p><div class="quiz">${questionHtml}<button class="button" id="submitFinal" ${alreadyPassed ? 'disabled' : ''}>Submit final exam</button>${existing ? `<div class="result">Score: ${existing.score}/${existing.total} (${existing.percent}%)${alreadyPassed ? ' • Passed' : ''}</div>` : ''}</div></div>`;
   if (alreadyPassed) return;
-  button.addEventListener('click', () => {
+  byId('submitFinal').addEventListener('click', () => {
     let correct = 0;
-    let answered = 0;
-    finalExam.questions.forEach((q, idx) => {
-      const selected = container.querySelector(`input[name="final-q${idx}"]:checked`);
-      if (selected) {
-        answered += 1;
-        if (Number(selected.value) === q.answer) correct += 1;
-      }
+    pack.finalExam.questions.forEach((q, idx) => {
+      const selected = document.querySelector(`input[name="exam-q${idx}"]:checked`);
+      if (selected && Number(selected.value) === q.answer) correct += 1;
     });
-    if (answered < finalExam.questions.length) {
+    if (document.querySelectorAll('.quiz input:checked').length < pack.finalExam.questions.length) {
       alert('Please answer every question.');
       return;
     }
-    setFinalExamScore(correct, finalExam.questions.length);
-    const percent = Math.round((correct / finalExam.questions.length) * 100);
-    const result = container.querySelector('.result') || document.createElement('div');
-    result.className = 'result';
-    result.textContent = `Score: ${correct}/${finalExam.questions.length} (${percent}%) ${percent >= finalExam.passingScore ? '✓ Passed' : '– Try again'}`;
-    if (!container.querySelector('.result')) container.querySelector('.quiz').appendChild(result);
-    if (percent >= finalExam.passingScore) {
-      button.disabled = true;
-      onPassed();
+    setFinalExamScore(correct, pack.finalExam.questions.length, pack.finalExam.passingScore);
+    if (Math.round((correct / pack.finalExam.questions.length) * 100) >= pack.finalExam.passingScore) {
+      markStepCompleted(step.id);
+      unlockChecklist();
+      setCompletedAt(new Date().toISOString());
     }
+    updateAfterCompletion();
+    renderExam(step, pack, loadProgress());
   });
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('courseTitle')) {
-    initCourseRunner();
+function renderDownload(step, progress) {
+  const locked = step.lockedUntilExam && !(progress.finalExamScore?.passed);
+  const note = locked ? '<div class="banner">Pass the final exam to unlock downloads.</div>' : '';
+  const btnState = locked ? 'disabled' : '';
+  const content = renderContent(step, progress, roleLabelCache);
+  byId('content').innerHTML = `${content}<div class="footer-actions"><button class="button" id="downloadChecklistPdf" ${btnState}>Download checklist PDF</button><button class="button secondary" id="downloadChecklistPng" ${btnState}>Download checklist PNG</button></div>${note}`;
+  if (!locked) {
+    const checklistText = ['Prevent: keep backups/images current, maintain monitoring/logging on critical systems, update contact lists monthly.', 'Detect: recognize anomalies, verify maintenance windows, escalate suspicious indicators promptly.', 'Respond: report quickly, preserve evidence, follow leadership direction, document actions.'].join('\n');
+    byId('downloadChecklistPdf').addEventListener('click', () => downloadChecklistPdf(checklistText));
+    byId('downloadChecklistPng').addEventListener('click', () => downloadChecklistPng());
+    markStepCompleted(step.id);
   }
-  const resetBtn = document.getElementById('resetProgress');
-  resetBtn?.addEventListener('click', () => {
-    resetProgress();
+}
+
+async function downloadChecklistPng() {
+  const panel = byId('content');
+  const canvas = await html2canvas(panel, { scale: 2 });
+  const link = document.createElement('a');
+  link.download = 'scl-csir-checklist.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function downloadChecklistPdf(text) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('Seattle City Light – OT CSIR Operational Checklist', 50, 70);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(12);
+  doc.text(text, 50, 100, { maxWidth: 500 });
+  doc.save('scl-csir-checklist.pdf');
+}
+
+function renderCompletion(step, progress) {
+  const panel = document.createElement('div');
+  panel.className = 'panel content-area certificate-card';
+  panel.innerHTML = `<div class="tag">Next steps</div><h2>Completion confirmed</h2><div class="certificate-meta">${progress.learnerName || 'Learner'} • ${roleLabelCache}</div><p class="small">Download your certificate as PDF or PNG. You can also capture a completion screenshot for records.</p><div class="footer-actions" style="justify-content:center;"> <a class="button" href="certificate.html">Open certificate</a> <button class="button secondary" id="resetFromCompletion">Reset training</button></div>`;
+  byId('content').innerHTML = '';
+  byId('content').appendChild(panel);
+  markStepCompleted(step.id);
+  byId('resetFromCompletion').addEventListener('click', () => {
+    byId('resetProgress').click();
+  });
+}
+
+function navigateTo(index) {
+  currentIndex = index;
+  const progress = loadProgress();
+  const step = stepsCache[index];
+  setActiveStep(step.id);
+  refreshStepperState(stepsCache, progress, step.id);
+  updateProgressBar(computeProgress(stepsCache, progress));
+  bindNavButtons(progress);
+  const role = packCache.roles.find((r) => r.id === progress.roleId);
+  roleLabelCache = role?.label || progress.roleId;
+  document.querySelector('[data-role-label]')?.setAttribute('data-role-label', roleLabelCache);
+
+  if (step.type === 'exam') {
+    renderExam(step, packCache, progress);
+  } else if (step.type === 'download') {
+    renderDownload(step, progress);
+  } else if (step.type === 'complete') {
+    renderCompletion(step, progress);
+  } else {
+    renderStep(step, packCache, progress, roleLabelCache);
+  }
+}
+
+function navigateRelative(delta) {
+  const target = currentIndex + delta;
+  if (target >= 0 && target < stepsCache.length) navigateTo(target);
+}
+
+function setupDrawer() {
+  const toggle = byId('drawerToggle');
+  const overlay = byId('drawerOverlay');
+  const mobile = byId('drawerMobile');
+  const openDrawer = () => { overlay.classList.add('open'); mobile.classList.add('open'); };
+  const closeDrawer = () => { overlay.classList.remove('open'); mobile.classList.remove('open'); };
+  toggle?.addEventListener('click', openDrawer);
+  overlay?.addEventListener('click', closeDrawer);
+  mobile?.addEventListener('click', (e) => { if (e.target.classList.contains('step')) closeDrawer(); });
+}
+
+async function initCourseRunner() {
+  if (!requireRoleAndName()) return;
+  packCache = await fetchPack('scl-csir');
+  let progress = clearIfDifferentCourse(packCache.course.version);
+  progress = loadProgress();
+  const role = packCache.roles.find((r) => r.id === progress.roleId);
+  roleLabelCache = role?.label || 'Role';
+  document.querySelector('[data-role-label]')?.setAttribute('data-role-label', roleLabelCache);
+  byId('courseTitle').textContent = packCache.course.title;
+  byId('courseMeta').textContent = `${packCache.course.version} • Est. ${role?.estMinutes || packCache.course.estMinutes} minutes`;
+  byId('learnerInfo').textContent = `${progress.learnerName} • ${roleLabelCache}`;
+
+  stepsCache = packCache.steps;
+  buildStepper(stepsCache, role.requiredStepIds, progress);
+  setupDrawer();
+
+  const list = byId('stepList');
+  list.addEventListener('click', (e) => {
+    const target = e.target.closest('.step');
+    if (!target) return;
+    const idx = Array.from(list.children).indexOf(target);
+    if (!computeUnlocked(idx, stepsCache, loadProgress())) {
+      byId('lockedModal').showModal();
+      return;
+    }
+    navigateTo(idx);
+  });
+
+  const mobileList = byId('drawerMobile');
+  if (mobileList) {
+    mobileList.innerHTML = list.innerHTML;
+    mobileList.addEventListener('click', (e) => {
+      const t = e.target.closest('.step');
+      if (!t) return;
+      const idx = Array.from(mobileList.children).indexOf(t);
+      if (!computeUnlocked(idx, stepsCache, loadProgress())) {
+        byId('lockedModal').showModal();
+        return;
+      }
+      navigateTo(idx);
+      byId('drawerOverlay').classList.remove('open');
+      byId('drawerMobile').classList.remove('open');
+    });
+  }
+
+  const initialIndex = stepsCache.findIndex((s) => !isStepCompleted(s, progress)) === -1 ? 0 : stepsCache.findIndex((s) => !isStepCompleted(s, progress));
+  navigateTo(initialIndex >= 0 ? initialIndex : 0);
+  ensureCompletionState(stepsCache, progress, packCache);
+
+  byId('closeModal')?.addEventListener('click', () => byId('lockedModal').close());
+  byId('resetProgress')?.addEventListener('click', () => {
+    byId('confirmReset').showModal();
+  });
+  byId('confirmResetYes')?.addEventListener('click', () => {
+    localStorage.clear();
     window.location.href = 'role.html';
   });
-});
+  byId('confirmResetNo')?.addEventListener('click', () => byId('confirmReset').close());
+}
+
+window.addEventListener('DOMContentLoaded', initCourseRunner);

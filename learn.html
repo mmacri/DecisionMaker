@@ -6,61 +6,71 @@
   <title>CSIR Course Runner</title>
   <link rel="stylesheet" href="css/theme.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="page">
+<body class="page" data-role-label="">
   <header class="header">
     <div class="header-inner">
-      <div class="brand"><img src="assets/logo.svg" alt="">Course Runner</div>
+      <div class="brand"><img src="assets/logo.svg" alt="">SCL OT CSIR Training</div>
       <div class="status-pill" id="learnerInfo">Loading...</div>
       <div class="status-pill" id="courseMeta"></div>
     </div>
   </header>
 
-  <main class="container">
-    <div class="panel" style="padding:16px; margin-bottom:16px;">
+  <div class="drawer-toggle"><button id="drawerToggle" class="button secondary">View steps</button></div>
+  <div id="drawerOverlay" class="drawer-overlay"></div>
+  <aside class="sidebar panel">
+    <div class="stepper">
+      <h4>Guided steps</h4>
+      <div id="stepList"></div>
+    </div>
+  </aside>
+  <aside id="drawerMobile" class="drawer-mobile"></aside>
+
+  <main class="container main-with-sidebar">
+    <div class="panel" style="padding:16px; margin-bottom:16px; position:sticky; top:16px; z-index:10;">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
         <div>
           <div class="pill">Seattle City Light – OT CSIR Training</div>
           <h2 id="courseTitle" class="section-title" style="margin:6px 0;">Loading...</h2>
-          <p class="section-sub" style="margin:0;">Steps are locked until you view the content and pass the knowledge check. Final exam unlocks your certificate.</p>
+          <p class="section-sub" style="margin:0;">Steps are locked until you complete the current activity. Final exam unlocks the checklist and certificate.</p>
         </div>
-        <div class="progress" style="min-width:240px;">
+        <div class="progress">
           <div class="small" id="progressText">0% complete</div>
           <div class="progress-bar"><div class="progress-fill"></div></div>
         </div>
       </div>
     </div>
 
-    <div class="layout">
-      <div class="drawer-toggle"><button id="drawerToggle" class="button secondary">Toggle steps</button></div>
-      <aside class="panel drawer" id="drawer">
-        <div class="stepper">
-          <h4>Guided steps</h4>
-          <div id="stepList"></div>
-        </div>
-      </aside>
-      <section id="content" class="content-area"></section>
-    </div>
+    <section id="content" class="content-area"></section>
 
     <div class="footer-actions">
-      <div class="alert">Steps remain locked until you view the page and pass the quiz. Final exam unlocks the certificate.</div>
-      <div style="display:flex; gap:8px;">
-        <a href="profile.html" class="button secondary">Back</a>
+      <div class="alert">Complete steps in order. Next stays locked until you finish the current step.</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button id="backBtn" class="button secondary">Previous</button>
         <button id="nextBtn" class="button">Next</button>
-        <a href="certificate.html" id="certificateLink" class="button" style="display:none;">View Certificate</a>
-        <button id="resetProgress" class="button secondary">Reset</button>
+        <a href="certificate.html" id="certificateLink" class="button" style="display:none;">Certificate</a>
+        <button id="resetProgress" class="button secondary">Reset training</button>
       </div>
     </div>
   </main>
 
-  <dialog id="lockedModal" class="panel" style="max-width:480px;">
-    <h3>Finish the current step first</h3>
-    <p class="small">To keep the workflow realistic, you must view each step and pass its knowledge check before moving on.</p>
+  <dialog id="lockedModal" class="modal panel">
+    <h3>Finish this step to continue</h3>
+    <p class="small">Each activity must be completed before moving forward. This keeps the CSIR workflow realistic.</p>
     <button id="closeModal" class="button">Close</button>
   </dialog>
 
-  <div id="completionBanner" class="banner" style="display:none; max-width:1180px; margin:20px auto;">All steps complete and final exam passed. Continue to the certificate.</div>
+  <dialog id="confirmReset" class="modal panel">
+    <h3>Reset all progress?</h3>
+    <p class="small">This clears your role, name, quizzes, and exam results stored in localStorage.</p>
+    <div class="footer-actions">
+      <button id="confirmResetNo" class="button secondary">Cancel</button>
+      <button id="confirmResetYes" class="button">Reset now</button>
+    </div>
+  </dialog>
+
+  <div id="completionBanner" class="banner" style="display:none; max-width:1180px; margin:20px auto;">All required steps and the final exam are complete. Checklist and certificate are unlocked.</div>
 
   <script type="module" src="js/courseRunner.js"></script>
 </body>
