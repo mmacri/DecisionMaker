@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DecisionMaker Release 1 — Fix Left Nav Visibility & Scrolling</title>
+  <title>DecisionMaker Release 2 — Guided Flow Engine + Progress + Resume</title>
   <style>
     html, body { height: 100%; margin: 0; }
-    body { overflow: hidden; font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; background: #f8fafc; color: #0f172a; }
+    body { overflow: hidden; font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; background: #f6f7fb; color: #0f172a; }
 
     .app-shell {
       display: flex;
@@ -21,15 +21,16 @@
       top: 0;
       overflow: hidden;
       border-right: 1px solid rgba(0,0,0,0.08);
-      background: #fff;
+      background: #ffffff;
       padding: 16px 14px;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
     }
 
     .sidebar-title {
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 800;
       margin: 0 0 12px;
+      color: #111827;
     }
 
     .nav-groups {
@@ -52,102 +53,71 @@
       padding: 10px 12px;
       cursor: pointer;
       font-weight: 700;
-      background: #fff;
+      background: #ffffff;
+      color: #111827;
     }
 
-    .accordion-header span {
-      font-size: 0.9rem;
-    }
-
+    .accordion-header span { font-size: 0.9rem; }
     .accordion-toggle { transition: transform 0.2s ease; }
     .accordion.open .accordion-toggle { transform: rotate(90deg); }
 
-    .accordion-panel {
-      display: none;
-      padding: 6px 0 10px;
-    }
-
+    .accordion-panel { display: none; padding: 6px 0 10px; }
     .accordion.open .accordion-panel { display: block; }
 
     .nav-list { list-style: none; margin: 0; padding: 0; }
 
     .nav-link {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       padding: 8px 14px;
       color: #0f172a;
       border-left: 3px solid transparent;
       text-decoration: none;
       font-weight: 600;
-      transition: background 0.15s ease, border-color 0.15s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
     .nav-link:hover { background: #eef2ff; border-color: #4f46e5; }
     .nav-link.active { background: #e0e7ff; border-color: #4f46e5; color: #312e81; }
+    .nav-link .nav-check { font-size: 0.9rem; color: #16a34a; opacity: 0; transition: opacity 0.2s ease; }
+    .nav-link.completed .nav-check { opacity: 1; }
 
     .app-main {
       flex: 1;
       height: 100vh;
       overflow-y: auto;
       padding: 24px;
-      background: #f8fafc;
+      background: #f6f7fb;
       position: relative;
     }
 
-    .progress-header {
+    .flow-header{
       position: sticky;
       top: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: #f8fafc;
-      padding: 10px 14px 6px;
-      margin: -12px -4px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-
-    .progress-text {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-weight: 700;
-    }
-
-    .progress-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .progress-button {
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(0,0,0,0.12);
+      z-index: 50;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding: 12px 16px;
       background: #fff;
-      cursor: pointer;
-      font-weight: 700;
-      transition: background 0.15s ease, transform 0.15s ease;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
-
-    .progress-button:hover { background: #eef2ff; transform: translateY(-1px); }
-    .progress-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    .content-card { scroll-margin-top: 100px; }
-    .content-card.completed { border-color: #22c55e; box-shadow: 0 8px 30px rgba(34,197,94,0.15); }
-    .content-card .section-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .badge { background: #e0f2fe; color: #075985; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
-    .mark-complete {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(0,0,0,0.12);
-      background: #fff;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-    .mark-complete:hover { background: #ecfdf3; transform: translateY(-1px); }
-    .mark-complete.completed { background: #dcfce7; border-color: #22c55e; color: #166534; }
+    .flow-left { display: flex; flex-direction: column; gap: 6px; }
+    .flow-breadcrumb{ font-weight: 700; color: #111827; }
+    .flow-progress{ font-size: 0.9rem; opacity: 0.8; }
+    .flow-actions{ display: flex; align-items: center; gap: 8px; }
+    .flow-actions button { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.12); background: #fff; cursor: pointer; font-weight: 700; transition: background 0.15s ease, transform 0.15s ease; }
+    .flow-actions button:hover { background: #eef2ff; transform: translateY(-1px); }
+    .flow-actions button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-primary { background: #4f46e5; color: #fff; border-color: #4338ca; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-secondary { background: #f8fafc; }
 
     .content-card {
       background: #fff;
@@ -156,10 +126,17 @@
       padding: 20px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.05);
       margin-bottom: 18px;
+      scroll-margin-top: 120px;
     }
 
     .content-card h2 { margin-top: 0; margin-bottom: 10px; }
     .content-card p { margin: 0 0 12px; line-height: 1.5; }
+    .content-card .section-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 12px; flex-wrap: wrap; }
+    .content-card .badge { background: #e0f2fe; color: #075985; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
+    .content-card.completed { border-color: #22c55e; box-shadow: 0 8px 30px rgba(34,197,94,0.15); }
+
+    .section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 12px; }
+    .note { background: #f8fafc; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; padding: 12px; font-size: 0.95rem; }
   </style>
 </head>
 <body>
@@ -169,196 +146,251 @@
       <div class="nav-groups">
         <div class="accordion open" data-group="start">
           <div class="accordion-header">
-            <span>Start</span>
+            <span>Overview</span>
             <span class="accordion-toggle">▶</span>
           </div>
           <div class="accordion-panel">
             <ul class="nav-list">
-              <li><a class="nav-link" href="#landing">Landing</a></li>
-              <li><a class="nav-link" href="#orientation">Orientation</a></li>
+              <li><a class="nav-link" href="#landing">Landing <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#intro">Introduction <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#training-flow">Training Flow <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#role-guidance">Role Guidance <span class="nav-check">✓</span></a></li>
             </ul>
           </div>
         </div>
-        <div class="accordion" data-group="learn">
+        <div class="accordion" data-group="requirements">
           <div class="accordion-header">
-            <span>Learn</span>
+            <span>Requirements</span>
             <span class="accordion-toggle">▶</span>
           </div>
           <div class="accordion-panel">
             <ul class="nav-list">
-              <li><a class="nav-link" href="#requirements">Requirements overview</a></li>
-              <li><a class="nav-link" href="#roles">Roles & responsibilities</a></li>
+              <li><a class="nav-link" href="#requirements-overview">Requirements Overview <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r1">R1 – Ports & Services <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r2">R2 – Patch Management <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r3">R3 – Malware Prevention <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r4">R4 – Security Event Monitoring <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r5">R5 – Account Management <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#r6">R6 – Interactive Remote Access <span class="nav-check">✓</span></a></li>
             </ul>
           </div>
         </div>
-        <div class="accordion" data-group="do">
+        <div class="accordion" data-group="practice">
           <div class="accordion-header">
-            <span>Do (Phases)</span>
+            <span>Practice</span>
             <span class="accordion-toggle">▶</span>
           </div>
           <div class="accordion-panel">
             <ul class="nav-list">
-              <li><a class="nav-link" href="#prepare">Prepare</a></li>
-              <li><a class="nav-link" href="#respond">Respond</a></li>
-              <li><a class="nav-link" href="#recover">Recover</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="accordion" data-group="operate">
-          <div class="accordion-header">
-            <span>Operate</span>
-            <span class="accordion-toggle">▶</span>
-          </div>
-          <div class="accordion-panel">
-            <ul class="nav-list">
-              <li><a class="nav-link" href="#operate">Ongoing operations</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="accordion" data-group="finish">
-          <div class="accordion-header">
-            <span>Finish</span>
-            <span class="accordion-toggle">▶</span>
-          </div>
-          <div class="accordion-panel">
-            <ul class="nav-list">
-              <li><a class="nav-link" href="#finish">Complete & certify</a></li>
+              <li><a class="nav-link" href="#scenarios">Scenarios <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#knowledge-check">Knowledge Check <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#checklist">Operational Checklist <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#resources">Resources <span class="nav-check">✓</span></a></li>
+              <li><a class="nav-link" href="#completion">Completion <span class="nav-check">✓</span></a></li>
             </ul>
           </div>
         </div>
       </div>
     </aside>
     <main class="app-main">
-      <div class="progress-header">
-        <div class="progress-text">
-          <div>You are here: <span id="current-section-title">Landing</span></div>
-          <div>Progress: <span id="progress-counter">0 / 7</span></div>
+      <div class="flow-header">
+        <div class="flow-left">
+          <div class="flow-breadcrumb">You are here: <span id="flowCurrentTitle"></span></div>
+          <div class="flow-progress">Progress: <span id="flowDoneCount"></span>/<span id="flowTotalCount"></span></div>
         </div>
-        <div class="progress-actions">
-          <button class="progress-button" id="back-button">◀ Back</button>
-          <button class="progress-button" id="next-button">Next ▶</button>
+        <div class="flow-actions">
+          <button id="flowResumeBtn" class="btn-secondary">Resume</button>
+          <button id="flowBackBtn" class="btn-secondary">Back</button>
+          <button id="flowNextBtn" class="btn-primary">Next</button>
         </div>
       </div>
+
       <section id="landing" class="content-card">
         <div class="section-meta">
           <h2>Redirecting to the CIP-007 Guided Training</h2>
-          <button class="mark-complete" data-section="landing">Mark complete</button>
+          <span class="badge">Start</span>
         </div>
-        <p class="badge">Start</p>
         <p>The long-scroll version has been replaced with a multi-page guided experience. Use the navigation to jump to the area you want to review.</p>
         <p>If you are not redirected automatically, <a href="./cip007/setup.html">open the new guided module.</a></p>
       </section>
-      <section id="orientation" class="content-card">
+
+      <section id="intro" class="content-card">
         <div class="section-meta">
-          <h2>Orientation</h2>
-          <button class="mark-complete" data-section="orientation">Mark complete</button>
+          <h2>Introduction</h2>
+          <span class="badge">Start</span>
         </div>
-        <p class="badge">Start</p>
-        <p>Get familiar with how the guided training is organized and how to navigate between sections without losing your place.</p>
+        <p>Welcome to the CIP-007 guided experience. Everything you need is organized into clear steps with progress tracking so you always know what comes next.</p>
       </section>
-      <section id="requirements" class="content-card">
+
+      <section id="training-flow" class="content-card">
         <div class="section-meta">
-          <h2>Requirements overview</h2>
-          <button class="mark-complete" data-section="requirements">Mark complete</button>
+          <h2>Training Flow</h2>
+          <span class="badge">Orientation</span>
         </div>
-        <p class="badge">Learn</p>
+        <p>Follow the Back and Next buttons or select a section from the left navigation. Your spot is saved automatically so you can resume without losing your place.</p>
+        <div class="note">Tip: Completed sections show a checkmark in the navigation when you advance with the Next button.</div>
+      </section>
+
+      <section id="role-guidance" class="content-card">
+        <div class="section-meta">
+          <h2>Role Guidance</h2>
+          <span class="badge">Orientation</span>
+        </div>
+        <p>Use this module to align responsibilities across operations, compliance, and technical teams. Progress tracking helps each role stay synchronized.</p>
+      </section>
+
+      <section id="requirements-overview" class="content-card">
+        <div class="section-meta">
+          <h2>Requirements Overview</h2>
+          <span class="badge">Requirements</span>
+        </div>
         <p>Summaries and quick references for CIP-007 expectations sit here. Expand specific areas in the navigation to jump straight to details.</p>
       </section>
-      <section id="roles" class="content-card">
+
+      <section id="r1" class="content-card">
         <div class="section-meta">
-          <h2>Roles & responsibilities</h2>
-          <button class="mark-complete" data-section="roles">Mark complete</button>
+          <h2>R1 – Ports & Services</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Learn</p>
-        <p>Keep track of which responsibilities belong to which roles so you can coordinate efficiently throughout the module.</p>
+        <p>Keep track of authorized ports and services for your cyber assets, ensuring unauthorized access points are identified and removed.</p>
       </section>
-      <section id="prepare" class="content-card">
+
+      <section id="r2" class="content-card">
         <div class="section-meta">
-          <h2>Prepare</h2>
-          <button class="mark-complete" data-section="prepare">Mark complete</button>
+          <h2>R2 – Patch Management</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Do</p>
-        <p>Preparation tasks and prerequisites live in this section. Use it to ensure everything is ready before you begin.</p>
+        <p>Preparation tasks and prerequisites live in this section. Use it to ensure everything is ready before you begin applying security updates.</p>
       </section>
-      <section id="respond" class="content-card">
+
+      <section id="r3" class="content-card">
         <div class="section-meta">
-          <h2>Respond</h2>
-          <button class="mark-complete" data-section="respond">Mark complete</button>
+          <h2>R3 – Malware Prevention</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Do</p>
         <p>Response guidance and step-by-step actions appear here when you select the related navigation item.</p>
       </section>
-      <section id="recover" class="content-card">
+
+      <section id="r4" class="content-card">
         <div class="section-meta">
-          <h2>Recover</h2>
-          <button class="mark-complete" data-section="recover">Mark complete</button>
+          <h2>R4 – Security Event Monitoring</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Do</p>
-        <p>Recovery guidance helps you return systems to steady state while maintaining compliance requirements.</p>
+        <p>Use this guidance to keep logging and alerting tuned so operational and compliance teams can respond quickly.</p>
       </section>
-      <section id="operate" class="content-card">
+
+      <section id="r5" class="content-card">
         <div class="section-meta">
-          <h2>Ongoing operations</h2>
-          <button class="mark-complete" data-section="operate">Mark complete</button>
+          <h2>R5 – Account Management</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Operate</p>
-        <p>Use this space for operational checklists and recurring actions you need while running the program.</p>
+        <p>Recovery guidance helps you return systems to steady state while maintaining account governance requirements.</p>
       </section>
-      <section id="finish" class="content-card">
+
+      <section id="r6" class="content-card">
         <div class="section-meta">
-          <h2>Complete & certify</h2>
-          <button class="mark-complete" data-section="finish">Mark complete</button>
+          <h2>R6 – Interactive Remote Access</h2>
+          <span class="badge">Requirements</span>
         </div>
-        <p class="badge">Finish</p>
+        <p>Use this space for operational checklists and controls that keep remote access secure.</p>
+      </section>
+
+      <section id="scenarios" class="content-card">
+        <div class="section-meta">
+          <h2>Scenarios</h2>
+          <span class="badge">Practice</span>
+        </div>
+        <p>Work through scenarios to practice applying the requirements to realistic operating conditions.</p>
+      </section>
+
+      <section id="knowledge-check" class="content-card">
+        <div class="section-meta">
+          <h2>Knowledge Check</h2>
+          <span class="badge">Practice</span>
+        </div>
+        <p>Confirm what you have learned with a short quiz. Your score helps identify areas to review before completing the module.</p>
+      </section>
+
+      <section id="checklist" class="content-card">
+        <div class="section-meta">
+          <h2>Operational Checklist</h2>
+          <span class="badge">Practice</span>
+        </div>
         <p>Finalize your work, confirm completion criteria, and capture proof for certification.</p>
+      </section>
+
+      <section id="resources" class="content-card">
+        <div class="section-meta">
+          <h2>Resources</h2>
+          <span class="badge">Reference</span>
+        </div>
+        <p>Pull job aids, definitions, and links you need to keep the training handy as you operate.</p>
+      </section>
+
+      <section id="completion" class="content-card">
+        <div class="section-meta">
+          <h2>Completion</h2>
+          <span class="badge">Finish</span>
+        </div>
+        <p>Your progress is captured automatically. Use the Resume button to continue later or return to any section from the navigation.</p>
       </section>
     </main>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const moduleSections = [
-        { id: 'landing', title: 'Redirecting to the CIP-007 Guided Training' },
-        { id: 'orientation', title: 'Orientation' },
-        { id: 'requirements', title: 'Requirements overview' },
-        { id: 'roles', title: 'Roles & responsibilities' },
-        { id: 'prepare', title: 'Prepare' },
-        { id: 'respond', title: 'Respond' },
-        { id: 'recover', title: 'Recover' },
-        { id: 'operate', title: 'Ongoing operations' },
-        { id: 'finish', title: 'Complete & certify' }
+      const MODULE_SECTIONS = [
+        { id: 'landing', title: 'Landing' },
+        { id: 'intro', title: 'Introduction' },
+        { id: 'training-flow', title: 'Training Flow' },
+        { id: 'role-guidance', title: 'Role Guidance' },
+        { id: 'requirements-overview', title: 'Requirements Overview' },
+        { id: 'r1', title: 'R1 – Ports & Services' },
+        { id: 'r2', title: 'R2 – Patch Management' },
+        { id: 'r3', title: 'R3 – Malware Prevention' },
+        { id: 'r4', title: 'R4 – Security Event Monitoring' },
+        { id: 'r5', title: 'R5 – Account Management' },
+        { id: 'r6', title: 'R6 – Interactive Remote Access' },
+        { id: 'scenarios', title: 'Scenarios' },
+        { id: 'knowledge-check', title: 'Knowledge Check' },
+        { id: 'checklist', title: 'Operational Checklist' },
+        { id: 'resources', title: 'Resources' },
+        { id: 'completion', title: 'Completion' }
       ];
 
-      const progressKey = 'dm_module6_progress';
+      const PROGRESS_KEY = 'dm_module6_progress_v1';
       const appMain = document.querySelector('.app-main');
-      const accordions = document.querySelectorAll('.accordion');
+      const flowHeader = document.querySelector('.flow-header');
       const links = document.querySelectorAll('.nav-link');
-      const hereTitle = document.getElementById('current-section-title');
-      const progressCounter = document.getElementById('progress-counter');
-      const backButton = document.getElementById('back-button');
-      const nextButton = document.getElementById('next-button');
-      const markButtons = document.querySelectorAll('.mark-complete');
+      const flowCurrentTitle = document.getElementById('flowCurrentTitle');
+      const flowDoneCount = document.getElementById('flowDoneCount');
+      const flowTotalCount = document.getElementById('flowTotalCount');
+      const backBtn = document.getElementById('flowBackBtn');
+      const nextBtn = document.getElementById('flowNextBtn');
+      const resumeBtn = document.getElementById('flowResumeBtn');
+
+      flowTotalCount.textContent = MODULE_SECTIONS.length;
 
       const loadProgress = () => {
         try {
-          const saved = JSON.parse(localStorage.getItem(progressKey));
-          if (saved && Array.isArray(saved.completed) && saved.lastId) {
-            const filteredCompleted = saved.completed.filter(id => moduleSections.some(section => section.id === id));
-            return { ...saved, completed: Array.from(new Set(filteredCompleted)) };
+          const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+          if (saved && saved.lastId && Array.isArray(saved.completedIds)) {
+            const filtered = saved.completedIds.filter(id => MODULE_SECTIONS.some(section => section.id === id));
+            return { lastId: saved.lastId, completedIds: Array.from(new Set(filtered)), updatedAt: saved.updatedAt };
           }
-        } catch (e) {
-          console.warn('Unable to parse progress state', e);
+        } catch (err) {
+          console.warn('Progress could not be parsed', err);
         }
-        return { completed: [], lastId: moduleSections[0].id, updatedAt: new Date().toISOString() };
+        return { lastId: MODULE_SECTIONS[0].id, completedIds: [], updatedAt: new Date().toISOString() };
       };
 
       let progressState = loadProgress();
-      let activeSectionId = moduleSections.find(section => section.id === (window.location.hash || '').replace('#', ''))?.id
+      let activeSectionId = MODULE_SECTIONS.find(section => section.id === (window.location.hash || '').replace('#', ''))?.id
         || progressState.lastId
-        || moduleSections[0].id;
+        || MODULE_SECTIONS[0].id;
 
       const saveProgress = () => {
         progressState.updatedAt = new Date().toISOString();
-        localStorage.setItem(progressKey, JSON.stringify(progressState));
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progressState));
       };
 
       const setActiveNav = (sectionId) => {
@@ -366,95 +398,83 @@
           const matches = link.getAttribute('href') === `#${sectionId}`;
           link.classList.toggle('active', matches);
           if (matches) {
-            const parentAccordion = link.closest('.accordion');
-            if (parentAccordion) parentAccordion.classList.add('open');
+            const accordion = link.closest('.accordion');
+            accordion?.classList.add('open');
           }
         });
-      };
-
-      const updateProgressCounter = () => {
-        progressCounter.textContent = `${progressState.completed.length} / ${moduleSections.length}`;
       };
 
       const updateCompletionStyles = () => {
-        moduleSections.forEach(section => {
+        MODULE_SECTIONS.forEach(section => {
           const sectionEl = document.getElementById(section.id);
-          const button = document.querySelector(`.mark-complete[data-section="${section.id}"]`);
-          const isDone = progressState.completed.includes(section.id);
-          sectionEl?.classList.toggle('completed', isDone);
-          if (button) {
-            button.classList.toggle('completed', isDone);
-            button.textContent = isDone ? 'Completed' : 'Mark complete';
-          }
+          const navLink = document.querySelector(`.nav-link[href="#${section.id}"]`);
+          const completed = progressState.completedIds.includes(section.id);
+          sectionEl?.classList.toggle('completed', completed);
+          navLink?.classList.toggle('completed', completed);
         });
-        updateProgressCounter();
+        flowDoneCount.textContent = progressState.completedIds.length;
       };
 
       const updateHeader = (sectionId) => {
-        const activeSection = moduleSections.find(section => section.id === sectionId) || moduleSections[0];
-        hereTitle.textContent = activeSection.title;
-        const currentIndex = moduleSections.findIndex(section => section.id === sectionId);
-        backButton.disabled = currentIndex <= 0;
-        nextButton.disabled = currentIndex >= moduleSections.length - 1;
+        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === sectionId);
+        const activeSection = MODULE_SECTIONS[currentIndex] || MODULE_SECTIONS[0];
+        flowCurrentTitle.textContent = activeSection.title;
+        backBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= MODULE_SECTIONS.length - 1;
+      };
+
+      const scrollToSection = (sectionId) => {
+        const target = document.getElementById(sectionId);
+        if (!target) return;
+        const headerHeight = flowHeader?.offsetHeight || 0;
+        const offset = target.offsetTop - headerHeight - 12;
+        appMain.scrollTo({ top: offset, behavior: 'smooth' });
       };
 
       const goToSection = (sectionId, { updateHash = true } = {}) => {
-        const target = document.getElementById(sectionId);
-        if (!target) return;
+        if (!MODULE_SECTIONS.some(section => section.id === sectionId)) return;
         activeSectionId = sectionId;
-        setActiveNav(sectionId);
-        updateHeader(sectionId);
         progressState.lastId = sectionId;
         saveProgress();
+        setActiveNav(sectionId);
+        updateHeader(sectionId);
         if (updateHash) history.replaceState(null, '', `#${sectionId}`);
-        appMain.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
+        scrollToSection(sectionId);
       };
 
-      const toggleCompletion = (sectionId) => {
-        if (progressState.completed.includes(sectionId)) {
-          progressState.completed = progressState.completed.filter(id => id !== sectionId);
-        } else {
-          progressState.completed.push(sectionId);
+      const markComplete = (sectionId) => {
+        if (!progressState.completedIds.includes(sectionId)) {
+          progressState.completedIds.push(sectionId);
+          saveProgress();
+          updateCompletionStyles();
         }
-        saveProgress();
-        updateCompletionStyles();
       };
-
-      accordions.forEach((accordion, idx) => {
-        const header = accordion.querySelector('.accordion-header');
-        header.addEventListener('click', () => {
-          accordion.classList.toggle('open');
-        });
-        if (idx === 0) accordion.classList.add('open');
-      });
 
       links.forEach(link => {
         link.addEventListener('click', (event) => {
           event.preventDefault();
-          const targetId = link.getAttribute('href').replace('#', '');
-          goToSection(targetId);
+          const id = link.getAttribute('href').replace('#', '');
+          goToSection(id);
         });
       });
 
-      markButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const sectionId = button.getAttribute('data-section');
-          toggleCompletion(sectionId);
-        });
-      });
-
-      backButton.addEventListener('click', () => {
-        const currentIndex = moduleSections.findIndex(section => section.id === activeSectionId);
+      backBtn.addEventListener('click', () => {
+        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === activeSectionId);
         if (currentIndex > 0) {
-          goToSection(moduleSections[currentIndex - 1].id);
+          goToSection(MODULE_SECTIONS[currentIndex - 1].id);
         }
       });
 
-      nextButton.addEventListener('click', () => {
-        const currentIndex = moduleSections.findIndex(section => section.id === activeSectionId);
-        if (currentIndex < moduleSections.length - 1) {
-          goToSection(moduleSections[currentIndex + 1].id);
+      nextBtn.addEventListener('click', () => {
+        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === activeSectionId);
+        if (currentIndex < MODULE_SECTIONS.length - 1) {
+          markComplete(activeSectionId);
+          goToSection(MODULE_SECTIONS[currentIndex + 1].id);
         }
+      });
+
+      resumeBtn.addEventListener('click', () => {
+        goToSection(progressState.lastId || MODULE_SECTIONS[0].id);
       });
 
       const observer = new IntersectionObserver((entries) => {
@@ -463,25 +483,21 @@
             const id = entry.target.getAttribute('id');
             if (id && activeSectionId !== id) {
               activeSectionId = id;
+              progressState.lastId = id;
+              saveProgress();
               setActiveNav(id);
               updateHeader(id);
-              if (progressState.lastId !== id) {
-                progressState.lastId = id;
-                saveProgress();
-              }
               history.replaceState(null, '', `#${id}`);
             }
           }
         });
       }, { root: appMain, threshold: 0.55 });
 
-      moduleSections.forEach(section => {
+      MODULE_SECTIONS.forEach(section => {
         const el = document.getElementById(section.id);
         if (el) observer.observe(el);
       });
 
-      updateHeader(activeSectionId);
-      setActiveNav(activeSectionId);
       updateCompletionStyles();
       goToSection(activeSectionId, { updateHash: true });
     });
