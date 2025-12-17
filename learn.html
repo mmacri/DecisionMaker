@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="page" data-role-label="">
+<body class="page course-runner" data-role-label="">
   <header class="header">
     <div class="header-inner">
       <div class="brand"><img src="assets/logo.svg" alt="">SCL OT CSIR Training</div>
@@ -19,41 +19,45 @@
 
   <div class="drawer-toggle"><button id="drawerToggle" class="button secondary">View steps</button></div>
   <div id="drawerOverlay" class="drawer-overlay"></div>
-  <aside class="sidebar panel">
-    <div class="stepper">
-      <h4>Guided steps</h4>
-      <div id="stepList"></div>
-    </div>
-  </aside>
-  <aside id="drawerMobile" class="drawer-mobile"></aside>
-
-  <main class="container main-with-sidebar">
-    <div class="panel" style="padding:16px; margin-bottom:16px; position:sticky; top:16px; z-index:10;">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-        <div>
-          <div class="pill">Seattle City Light – OT CSIR Training</div>
-          <h2 id="courseTitle" class="section-title" style="margin:6px 0;">Loading...</h2>
-          <p class="section-sub" style="margin:0;">Steps are locked until you complete the current activity. Final exam unlocks the checklist and certificate.</p>
+  <div class="app-shell">
+    <div class="app-layout">
+      <aside class="sidebar panel">
+        <div class="stepper">
+          <h4>Guided steps</h4>
+          <div id="stepList"></div>
         </div>
-        <div class="progress">
-          <div class="small" id="progressText">0% complete</div>
-          <div class="progress-bar"><div class="progress-fill"></div></div>
+      </aside>
+      <aside id="drawerMobile" class="drawer-mobile"></aside>
+
+      <main class="main-content">
+        <div class="panel" style="padding:16px; margin-bottom:16px; position:sticky; top:12px; z-index:10;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div>
+              <div class="pill">Seattle City Light – OT CSIR Training</div>
+              <h2 id="courseTitle" class="section-title" style="margin:6px 0;">Loading...</h2>
+              <p class="section-sub" style="margin:0;">Steps are locked until you complete the current activity. Final exam unlocks the checklist and certificate.</p>
+            </div>
+            <div class="progress">
+              <div class="small" id="progressText">0% complete</div>
+              <div class="progress-bar"><div class="progress-fill"></div></div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <section id="content" class="content-area"></section>
+        <section id="content" class="content-area"></section>
 
-    <div class="footer-actions">
-      <div class="alert">Complete steps in order. Next stays locked until you finish the current step.</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button id="backBtn" class="button secondary">Previous</button>
-        <button id="nextBtn" class="button">Next</button>
-        <a href="certificate.html" id="certificateLink" class="button" style="display:none;">Certificate</a>
-        <button id="resetProgress" class="button secondary">Reset training</button>
-      </div>
+        <div class="footer-actions">
+          <div class="alert">Complete steps in order. Next stays locked until you finish the current step.</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="backBtn" class="button secondary">Previous</button>
+            <button id="nextBtn" class="button">Next</button>
+            <a href="certificate.html" id="certificateLink" class="button" style="display:none;">Certificate</a>
+            <button id="resetProgress" class="button secondary">Reset training</button>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
+  </div>
 
   <dialog id="lockedModal" class="modal panel">
     <h3>Finish this step to continue</h3>
