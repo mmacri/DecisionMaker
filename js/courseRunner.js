@@ -239,6 +239,7 @@ async function initCourseRunner() {
         refreshStepperState(steps, latestProgress, step.id);
         const countsLatest = computeProgressCounts(latestProgress, steps, pack.finalExam);
         updateProgressUi(progressFill, progressText, countsLatest.completed, countsLatest.total);
+        handleNavigationButtons(current, steps, latestProgress, navigate);
       });
     }
   };
