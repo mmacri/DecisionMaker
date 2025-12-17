@@ -1,6 +1,6 @@
 {
   "landing": {
-    "title": "Seattle City Light — CSIR Training (Landing)",
+    "title": "Seattle City Light — CSIR Training Overview",
     "body": "<p>Welcome to Seattle City Light’s OT Cyber Security Incident Response (CSIR) training. This experience is built directly from the SCL OT CSIR Plan (Dec 2025) and shows how we prevent, identify, investigate, respond, recover, and follow up on cyber events across energy delivery environments.</p><p>Use this guided path to learn what CSIR is, what each role does, and how to prove completion with a certificate and operational checklist.</p><ul><li>Aligned to SCL OT CSIR Plan (Dec 2025)</li><li>Role-tailored callouts and scenarios</li><li>Knowledge check required (80%+)</li><li>Downloadable checklist and certificate</li></ul>",
     "done": ["You know this training is CSIR-first and role-aware.", "You know you can resume from where you stopped.", "You know a certificate is issued after passing the knowledge check."],
     "roleCallout": "general"
@@ -18,7 +18,7 @@
     "roleCallout": "flow"
   },
   "role-select": {
-    "title": "Choose Your Role",
+    "title": "Start Here",
     "body": "<p>Select the role that best matches what you do during OT operations. Your choice personalizes callouts, scenarios, and the certificate metadata.</p><ul><li><strong>OT Operator:</strong> protects grid/plant continuity, executes runbooks, and reports abnormalities.</li><li><strong>System Administrator:</strong> manages configurations, patching, backups, and containment steps.</li><li><strong>Security Team (ECS/cyber responders):</strong> leads detection, forensics, containment guidance, and evidence handling.</li><li><strong>Compliance & Audit:</strong> confirms reporting, documentation, and retention are complete.</li><li><strong>Other SCL Staff:</strong> promptly escalate and follow direction without improvising changes.</li></ul>",
     "done": ["You selected a role and understand it can be changed later.", "You know the certificate will capture the role present at completion.", "You understand scenarios and checklists adapt to your role."],
     "roleCallout": "general"

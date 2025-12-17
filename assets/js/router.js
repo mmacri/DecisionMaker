@@ -49,9 +49,13 @@ const Router = (() => {
       target = 'knowledge-check';
       window.location.hash = '#/knowledge-check';
     }
+    const previousLastPage = progress.lastPage;
+
     await load(target);
     current = target;
-    Progress.setLastPage(target);
+
+    const shouldPreserveLast = target === 'landing' && previousLastPage && previousLastPage !== 'landing';
+    Progress.setLastPage(shouldPreserveLast ? previousLastPage : target);
     UI.updateNav(target);
     UI.renderPage(target);
   };
@@ -64,9 +68,13 @@ const Router = (() => {
       target = 'knowledge-check';
       window.location.hash = '#/knowledge-check';
     }
+    const previousLastPage = progress.lastPage;
+
     await load(target);
     current = target;
-    Progress.setLastPage(target);
+
+    const shouldPreserveLast = target === 'landing' && previousLastPage && previousLastPage !== 'landing';
+    Progress.setLastPage(shouldPreserveLast ? previousLastPage : target);
     UI.updateNav(target);
     UI.renderPage(target);
   });

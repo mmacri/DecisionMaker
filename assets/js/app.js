@@ -112,7 +112,7 @@ const UI = (() => {
       btn.onclick = () => toggleModal('start-modal', false);
     });
 
-    startBtn.onclick = () => toggleModal('start-modal', true);
+    startBtn.onclick = () => Router.go('role-select');
 
     const confirm = modal.querySelector('#start-confirm');
     confirm.onclick = () => {
@@ -129,7 +129,7 @@ const UI = (() => {
       }
       Role.setProfile({ name, email, role });
       toggleModal('start-modal', false);
-      Router.go('overview');
+      Router.go('role-select');
     };
 
     if (resumeBtn) {
