@@ -6,10 +6,13 @@
   <div class="page-body"></div>
   <label for="cert-name">Enter your full name to issue the certificate</label>
   <input id="cert-name" type="text" placeholder="Full name" style="padding:0.5rem; width:100%; margin:0.5rem 0 1rem 0;">
+  <label for="cert-email">Confirm your email for the certificate</label>
+  <input id="cert-email" type="email" placeholder="name@example.com" style="padding:0.5rem; width:100%; margin:0.5rem 0 1rem 0;">
   <button id="generate-cert">Generate certificate</button>
   <div id="certificate-card" class="certificate-preview">
     <h2>Seattle City Light — OT CSIR Training Certificate</h2>
     <p><strong>Learner:</strong> <span id="cert-name-display"></span></p>
+    <p><strong>Email:</strong> <span id="cert-email-display"></span></p>
     <p><strong>Role:</strong> <span id="cert-role-display"></span></p>
     <p><strong>Completion:</strong> <span id="cert-date-display"></span></p>
     <p><strong>Certificate ID:</strong> <span id="cert-id-display"></span></p>

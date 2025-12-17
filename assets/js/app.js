@@ -67,7 +67,10 @@ const UI = (() => {
     if (pageId === 'scenarios') renderScenarios();
     if (pageId === 'checklist-download') renderChecklist();
     if (pageId === 'completion-certificate') Certificate.render();
-    if (pageId === 'landing') renderCertificateList();
+    if (pageId === 'landing') {
+      renderCertificateList();
+      renderLanding();
+    }
   };
 
   const renderRoleCallout = (key) => {
@@ -77,6 +80,67 @@ const UI = (() => {
     const roleDef = roles.roles.find(r => r.id === profile.role);
     const text = roleDef?.callouts?.[key] || 'Stay aligned with the CSIR plan and follow direction from the Incident Commander.';
     callout.innerHTML = `<strong>For your role:</strong> ${text}`;
+  };
+
+  const toggleModal = (id, open = false) => {
+    const modal = document.querySelector(`#${id}`);
+    if (!modal) return;
+    if (open) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+    } else {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  const renderLanding = () => {
+    const startBtn = document.querySelector('#btn-start');
+    const resumeBtn = document.querySelector('#btn-resume');
+    const modal = document.querySelector('#start-modal');
+    if (!startBtn || !modal) return;
+
+    const roleSelect = modal.querySelector('#start-role');
+    roleSelect.innerHTML = roles.roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+    roleSelect.value = Role.state().role;
+
+    const profile = Role.state();
+    modal.querySelector('#start-name').value = profile.name;
+    modal.querySelector('#start-email').value = profile.email;
+
+    modal.querySelectorAll('[data-close="start-modal"]').forEach(btn => {
+      btn.onclick = () => toggleModal('start-modal', false);
+    });
+
+    startBtn.onclick = () => toggleModal('start-modal', true);
+
+    const confirm = modal.querySelector('#start-confirm');
+    confirm.onclick = () => {
+      const name = modal.querySelector('#start-name').value.trim();
+      const email = modal.querySelector('#start-email').value.trim();
+      const role = roleSelect.value;
+      if (!name || !email) {
+        alert('Please enter your name and email to continue.');
+        return;
+      }
+      if (!email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      Role.setProfile({ name, email, role });
+      toggleModal('start-modal', false);
+      Router.go('overview');
+    };
+
+    if (resumeBtn) {
+      const progress = Progress.state();
+      if (progress.lastPage && progress.lastPage !== 'landing') {
+        resumeBtn.disabled = false;
+        resumeBtn.onclick = () => Router.go(progress.lastPage);
+      } else {
+        resumeBtn.disabled = true;
+      }
+    }
   };
 
   const renderActions = (pageId) => {
