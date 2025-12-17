@@ -86,26 +86,56 @@
             ]
         }
     ],
+    "auditEtiquette": {
+        "rules": [
+            "Answer only for what you know and do; avoid speculating about systems you do not own.",
+            "Reference documented procedures, tickets, or screenshots when responding to auditors.",
+            "If you do not know an answer, state that you will retrieve the evidence instead of guessing.",
+            "Keep responses concise and aligned to the control requirement being asked."
+        ],
+        "examples": [
+            {
+                "prompt": "How do you make sure patches are evaluated on time?",
+                "bad": "We usually get to them when things slow down.",
+                "good": "We review vendor advisories monthly, log decisions in the patch tracker, and schedule installs during approved maintenance windows."
+            },
+            {
+                "prompt": "Who can enable a new service on an HMI?",
+                "bad": "Anyone on the team if they need to.",
+                "good": "Only system administrators with approved change tickets can enable services, and each change has a recorded business justification."
+            },
+            {
+                "prompt": "What happens when you see repeated login failures?",
+                "bad": "We just reset the account and move on.",
+                "good": "We follow the security event runbook: confirm source, check SIEM alerts, and document the investigation with the action taken."
+            }
+        ]
+    },
     "nav": [
         {
-            "id": "intro",
-            "label": "Introduction",
-            "href": "intro.html"
+            "id": "setup",
+            "label": "Setup & Getting Ready",
+            "href": "setup.html"
         },
         {
-            "id": "flow",
+            "id": "introduction",
+            "label": "Introduction & Purpose",
+            "href": "introduction.html"
+        },
+        {
+            "id": "training-flow",
             "label": "Training Flow",
-            "href": "flow.html"
+            "href": "training-flow.html"
         },
         {
-            "id": "roles",
+            "id": "role-guidance",
             "label": "Role Guidance",
-            "href": "roles.html"
+            "href": "role-guidance.html"
         },
         {
-            "id": "overview",
+            "id": "requirements-overview",
             "label": "Requirements Overview",
-            "href": "overview.html"
+            "href": "requirements-overview.html"
         },
         {
             "id": "r1",
@@ -138,20 +168,26 @@
             "href": "r6.html"
         },
         {
+            "id": "audit-etiquette",
+            "label": "Audit Etiquette",
+            "href": "audit-etiquette.html",
+            "optional": true
+        },
+        {
             "id": "scenarios",
             "label": "Scenarios",
             "href": "scenarios.html"
         },
         {
-            "id": "quiz",
+            "id": "knowledge-check",
             "label": "Knowledge Check",
-            "href": "quiz.html"
+            "href": "knowledge-check.html"
         },
         {
             "id": "checklist",
             "label": "Operational Checklist",
             "href": "checklist.html",
-            "lockAfter": "quiz"
+            "lockAfter": "knowledge-check"
         },
         {
             "id": "resources",
@@ -159,19 +195,19 @@
             "href": "resources.html"
         },
         {
-            "id": "complete",
+            "id": "completion",
             "label": "Completion",
-            "href": "complete.html"
+            "href": "completion.html"
         }
     ],
     "steps": [
         {
             "number": 1,
-            "label": "Purpose"
+            "label": "Setup"
         },
         {
             "number": 2,
-            "label": "Role"
+            "label": "Introduction"
         },
         {
             "number": 3,
@@ -187,29 +223,37 @@
         },
         {
             "number": 6,
-            "label": "Checklist"
+            "label": "Checklist & Resources"
         },
         {
             "number": 7,
-            "label": "Complete"
+            "label": "Completion"
         }
     ],
     "pageStepMap": {
-        "intro": 1,
-        "flow": 1,
-        "roles": 2,
-        "overview": 3,
+        "setup": 1,
+        "introduction": 2,
+        "training-flow": 2,
+        "role-guidance": 2,
+        "requirements-overview": 3,
         "r1": 3,
         "r2": 3,
         "r3": 3,
         "r4": 3,
         "r5": 3,
         "r6": 3,
+        "audit-etiquette": 4,
         "scenarios": 4,
-        "quiz": 5,
+        "knowledge-check": 5,
         "checklist": 6,
         "resources": 6,
-        "complete": 7
+        "completion": 7
+    },
+    "pageRequirements": {
+        "knowledge-check": "quizPassed",
+        "checklist": "quizPassed",
+        "resources": "quizPassed",
+        "completion": "quizPassed"
     },
     "roleOptions": [
         "OT Operator",
@@ -273,7 +317,19 @@
             "Security Team": "You monitor events, malware, and remote access pathways. CIP-007 gives you the signals to react early.",
             "Compliance/Audit": "You validate that evidence and processes align with documented procedures and timelines."
         },
+        "introduction": {
+            "OT Operator": "You keep the plant running. CIP-007 protects your consoles and HMIs from changes that could trip alarms or affect controls.",
+            "System Administrator": "You configure services, patches, and accounts. CIP-007 defines the guardrails for every OT change.",
+            "Security Team": "You monitor events, malware, and remote access pathways. CIP-007 gives you the signals to react early.",
+            "Compliance/Audit": "You validate that evidence and processes align with documented procedures and timelines."
+        },
         "roles": {
+            "OT Operator": "Flag anything that looks new or unexpected on HMIs. Your eyes catch unauthorized services before they spread.",
+            "System Administrator": "Maintain golden builds and patch calendars; keep evidence packages ready for spot-checks.",
+            "Security Team": "Tune detections for OT context and own response runbooks for events raised under CIP-007.",
+            "Compliance/Audit": "Verify approvals, change records, and that monitoring controls are continuously in place."
+        },
+        "role-guidance": {
             "OT Operator": "Flag anything that looks new or unexpected on HMIs. Your eyes catch unauthorized services before they spread.",
             "System Administrator": "Maintain golden builds and patch calendars; keep evidence packages ready for spot-checks.",
             "Security Team": "Tune detections for OT context and own response runbooks for events raised under CIP-007.",
@@ -326,6 +382,18 @@
             "System Administrator": "Expect configuration and scheduling questions tied to R1\u2013R6 controls.",
             "Security Team": "Look for detection and response cues you own after alerts fire.",
             "Compliance/Audit": "Watch for evidence and approval requirements embedded in the scenarios."
+        },
+        "knowledge-check": {
+            "OT Operator": "Focus on what you should do when things look wrong, not just the policy wording.",
+            "System Administrator": "Expect configuration and scheduling questions tied to R1\u2013R6 controls.",
+            "Security Team": "Look for detection and response cues you own after alerts fire.",
+            "Compliance/Audit": "Watch for evidence and approval requirements embedded in the scenarios."
+        },
+        "audit-etiquette": {
+            "OT Operator": "Stick to what you do and see; do not guess about configurations you do not own.",
+            "System Administrator": "Be ready with screenshots, timestamps, and change tickets that show work happened.",
+            "Security Team": "Explain how alerts are triaged without overstating coverage or guarantees.",
+            "Compliance/Audit": "Guide the interview to documented evidence and avoid hypothetical statements."
         },
         "checklist": {
             "OT Operator": "Use the checklist to quickly verify consoles, alerts, and remote access sessions look normal before shift.",
