@@ -145,6 +145,9 @@ const UI = (() => {
     const nextBtn = document.querySelector('#btn-next');
     backBtn.onclick = () => Router.prev();
     nextBtn.onclick = () => {
+      if (pageId === 'knowledge-check') {
+        Quiz.grade();
+      }
       const progress = Progress.state();
       if ((pageId === 'knowledge-check' || pageId === 'checklist-download' || pageId === 'completion-certificate') && progress.score < 80) {
         alert('You must score at least 80% on the knowledge check to unlock the checklist and certificate.');

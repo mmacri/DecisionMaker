@@ -35,5 +35,5 @@ const Quiz = (() => {
     }
   };
 
-  return { render };
+  return { render, grade };
 })();
