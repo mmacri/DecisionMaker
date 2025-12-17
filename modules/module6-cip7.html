@@ -90,7 +90,64 @@
       overflow-y: auto;
       padding: 24px;
       background: #f8fafc;
+      position: relative;
     }
+
+    .progress-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #f8fafc;
+      padding: 10px 14px 6px;
+      margin: -12px -4px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .progress-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-weight: 700;
+    }
+
+    .progress-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-button {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .progress-button:hover { background: #eef2ff; transform: translateY(-1px); }
+    .progress-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .content-card { scroll-margin-top: 100px; }
+    .content-card.completed { border-color: #22c55e; box-shadow: 0 8px 30px rgba(34,197,94,0.15); }
+    .content-card .section-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .badge { background: #e0f2fe; color: #075985; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
+    .mark-complete {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .mark-complete:hover { background: #ecfdf3; transform: translateY(-1px); }
+    .mark-complete.completed { background: #dcfce7; border-color: #22c55e; color: #166534; }
 
     .content-card {
       background: #fff;
@@ -172,49 +229,196 @@
       </div>
     </aside>
     <main class="app-main">
+      <div class="progress-header">
+        <div class="progress-text">
+          <div>You are here: <span id="current-section-title">Landing</span></div>
+          <div>Progress: <span id="progress-counter">0 / 7</span></div>
+        </div>
+        <div class="progress-actions">
+          <button class="progress-button" id="back-button">◀ Back</button>
+          <button class="progress-button" id="next-button">Next ▶</button>
+        </div>
+      </div>
       <section id="landing" class="content-card">
-        <h2>Redirecting to the CIP-007 Guided Training</h2>
+        <div class="section-meta">
+          <h2>Redirecting to the CIP-007 Guided Training</h2>
+          <button class="mark-complete" data-section="landing">Mark complete</button>
+        </div>
+        <p class="badge">Start</p>
         <p>The long-scroll version has been replaced with a multi-page guided experience. Use the navigation to jump to the area you want to review.</p>
         <p>If you are not redirected automatically, <a href="./cip007/setup.html">open the new guided module.</a></p>
       </section>
       <section id="orientation" class="content-card">
-        <h2>Orientation</h2>
+        <div class="section-meta">
+          <h2>Orientation</h2>
+          <button class="mark-complete" data-section="orientation">Mark complete</button>
+        </div>
+        <p class="badge">Start</p>
         <p>Get familiar with how the guided training is organized and how to navigate between sections without losing your place.</p>
       </section>
       <section id="requirements" class="content-card">
-        <h2>Requirements overview</h2>
+        <div class="section-meta">
+          <h2>Requirements overview</h2>
+          <button class="mark-complete" data-section="requirements">Mark complete</button>
+        </div>
+        <p class="badge">Learn</p>
         <p>Summaries and quick references for CIP-007 expectations sit here. Expand specific areas in the navigation to jump straight to details.</p>
       </section>
       <section id="roles" class="content-card">
-        <h2>Roles & responsibilities</h2>
+        <div class="section-meta">
+          <h2>Roles & responsibilities</h2>
+          <button class="mark-complete" data-section="roles">Mark complete</button>
+        </div>
+        <p class="badge">Learn</p>
         <p>Keep track of which responsibilities belong to which roles so you can coordinate efficiently throughout the module.</p>
       </section>
       <section id="prepare" class="content-card">
-        <h2>Prepare</h2>
+        <div class="section-meta">
+          <h2>Prepare</h2>
+          <button class="mark-complete" data-section="prepare">Mark complete</button>
+        </div>
+        <p class="badge">Do</p>
         <p>Preparation tasks and prerequisites live in this section. Use it to ensure everything is ready before you begin.</p>
       </section>
       <section id="respond" class="content-card">
-        <h2>Respond</h2>
+        <div class="section-meta">
+          <h2>Respond</h2>
+          <button class="mark-complete" data-section="respond">Mark complete</button>
+        </div>
+        <p class="badge">Do</p>
         <p>Response guidance and step-by-step actions appear here when you select the related navigation item.</p>
       </section>
       <section id="recover" class="content-card">
-        <h2>Recover</h2>
+        <div class="section-meta">
+          <h2>Recover</h2>
+          <button class="mark-complete" data-section="recover">Mark complete</button>
+        </div>
+        <p class="badge">Do</p>
         <p>Recovery guidance helps you return systems to steady state while maintaining compliance requirements.</p>
       </section>
       <section id="operate" class="content-card">
-        <h2>Ongoing operations</h2>
+        <div class="section-meta">
+          <h2>Ongoing operations</h2>
+          <button class="mark-complete" data-section="operate">Mark complete</button>
+        </div>
+        <p class="badge">Operate</p>
         <p>Use this space for operational checklists and recurring actions you need while running the program.</p>
       </section>
       <section id="finish" class="content-card">
-        <h2>Complete & certify</h2>
+        <div class="section-meta">
+          <h2>Complete & certify</h2>
+          <button class="mark-complete" data-section="finish">Mark complete</button>
+        </div>
+        <p class="badge">Finish</p>
         <p>Finalize your work, confirm completion criteria, and capture proof for certification.</p>
       </section>
     </main>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const moduleSections = [
+        { id: 'landing', title: 'Redirecting to the CIP-007 Guided Training' },
+        { id: 'orientation', title: 'Orientation' },
+        { id: 'requirements', title: 'Requirements overview' },
+        { id: 'roles', title: 'Roles & responsibilities' },
+        { id: 'prepare', title: 'Prepare' },
+        { id: 'respond', title: 'Respond' },
+        { id: 'recover', title: 'Recover' },
+        { id: 'operate', title: 'Ongoing operations' },
+        { id: 'finish', title: 'Complete & certify' }
+      ];
+
+      const progressKey = 'dm_module6_progress';
+      const appMain = document.querySelector('.app-main');
       const accordions = document.querySelectorAll('.accordion');
       const links = document.querySelectorAll('.nav-link');
+      const hereTitle = document.getElementById('current-section-title');
+      const progressCounter = document.getElementById('progress-counter');
+      const backButton = document.getElementById('back-button');
+      const nextButton = document.getElementById('next-button');
+      const markButtons = document.querySelectorAll('.mark-complete');
+
+      const loadProgress = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(progressKey));
+          if (saved && Array.isArray(saved.completed) && saved.lastId) {
+            const filteredCompleted = saved.completed.filter(id => moduleSections.some(section => section.id === id));
+            return { ...saved, completed: Array.from(new Set(filteredCompleted)) };
+          }
+        } catch (e) {
+          console.warn('Unable to parse progress state', e);
+        }
+        return { completed: [], lastId: moduleSections[0].id, updatedAt: new Date().toISOString() };
+      };
+
+      let progressState = loadProgress();
+      let activeSectionId = moduleSections.find(section => section.id === (window.location.hash || '').replace('#', ''))?.id
+        || progressState.lastId
+        || moduleSections[0].id;
+
+      const saveProgress = () => {
+        progressState.updatedAt = new Date().toISOString();
+        localStorage.setItem(progressKey, JSON.stringify(progressState));
+      };
+
+      const setActiveNav = (sectionId) => {
+        links.forEach(link => {
+          const matches = link.getAttribute('href') === `#${sectionId}`;
+          link.classList.toggle('active', matches);
+          if (matches) {
+            const parentAccordion = link.closest('.accordion');
+            if (parentAccordion) parentAccordion.classList.add('open');
+          }
+        });
+      };
+
+      const updateProgressCounter = () => {
+        progressCounter.textContent = `${progressState.completed.length} / ${moduleSections.length}`;
+      };
+
+      const updateCompletionStyles = () => {
+        moduleSections.forEach(section => {
+          const sectionEl = document.getElementById(section.id);
+          const button = document.querySelector(`.mark-complete[data-section="${section.id}"]`);
+          const isDone = progressState.completed.includes(section.id);
+          sectionEl?.classList.toggle('completed', isDone);
+          if (button) {
+            button.classList.toggle('completed', isDone);
+            button.textContent = isDone ? 'Completed' : 'Mark complete';
+          }
+        });
+        updateProgressCounter();
+      };
+
+      const updateHeader = (sectionId) => {
+        const activeSection = moduleSections.find(section => section.id === sectionId) || moduleSections[0];
+        hereTitle.textContent = activeSection.title;
+        const currentIndex = moduleSections.findIndex(section => section.id === sectionId);
+        backButton.disabled = currentIndex <= 0;
+        nextButton.disabled = currentIndex >= moduleSections.length - 1;
+      };
+
+      const goToSection = (sectionId, { updateHash = true } = {}) => {
+        const target = document.getElementById(sectionId);
+        if (!target) return;
+        activeSectionId = sectionId;
+        setActiveNav(sectionId);
+        updateHeader(sectionId);
+        progressState.lastId = sectionId;
+        saveProgress();
+        if (updateHash) history.replaceState(null, '', `#${sectionId}`);
+        appMain.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
+      };
+
+      const toggleCompletion = (sectionId) => {
+        if (progressState.completed.includes(sectionId)) {
+          progressState.completed = progressState.completed.filter(id => id !== sectionId);
+        } else {
+          progressState.completed.push(sectionId);
+        }
+        saveProgress();
+        updateCompletionStyles();
+      };
 
       accordions.forEach((accordion, idx) => {
         const header = accordion.querySelector('.accordion-header');
@@ -224,29 +428,62 @@
         if (idx === 0) accordion.classList.add('open');
       });
 
-      const setActiveFromHash = () => {
-        const currentHash = window.location.hash || '#landing';
-        links.forEach(link => {
-          const matches = link.getAttribute('href') === currentHash;
-          link.classList.toggle('active', matches);
-          if (matches) {
-            const parentAccordion = link.closest('.accordion');
-            if (parentAccordion) parentAccordion.classList.add('open');
-          }
-        });
-      };
-
       links.forEach(link => {
-        link.addEventListener('click', () => {
-          const parentAccordion = link.closest('.accordion');
-          if (parentAccordion && !parentAccordion.classList.contains('open')) {
-            parentAccordion.classList.add('open');
-          }
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const targetId = link.getAttribute('href').replace('#', '');
+          goToSection(targetId);
         });
       });
 
-      window.addEventListener('hashchange', setActiveFromHash);
-      setActiveFromHash();
+      markButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const sectionId = button.getAttribute('data-section');
+          toggleCompletion(sectionId);
+        });
+      });
+
+      backButton.addEventListener('click', () => {
+        const currentIndex = moduleSections.findIndex(section => section.id === activeSectionId);
+        if (currentIndex > 0) {
+          goToSection(moduleSections[currentIndex - 1].id);
+        }
+      });
+
+      nextButton.addEventListener('click', () => {
+        const currentIndex = moduleSections.findIndex(section => section.id === activeSectionId);
+        if (currentIndex < moduleSections.length - 1) {
+          goToSection(moduleSections[currentIndex + 1].id);
+        }
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            if (id && activeSectionId !== id) {
+              activeSectionId = id;
+              setActiveNav(id);
+              updateHeader(id);
+              if (progressState.lastId !== id) {
+                progressState.lastId = id;
+                saveProgress();
+              }
+              history.replaceState(null, '', `#${id}`);
+            }
+          }
+        });
+      }, { root: appMain, threshold: 0.55 });
+
+      moduleSections.forEach(section => {
+        const el = document.getElementById(section.id);
+        if (el) observer.observe(el);
+      });
+
+      updateHeader(activeSectionId);
+      setActiveNav(activeSectionId);
+      updateCompletionStyles();
+      goToSection(activeSectionId, { updateHash: true });
     });
   </script>
 </body>
