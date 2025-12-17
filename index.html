@@ -370,6 +370,8 @@
 <body>
   <div class="overlay" id="registration-overlay" role="dialog" aria-modal="true" aria-labelledby="registration-title" hidden>
     <div class="overlay-card">
+      <h2 id="registration-title">Enter your details to begin</h2>
+      <p>We personalize the CSIR-guided training path, capture your certificate details, and store a local-only roster for audit-friendly reporting. Access is user-first—admins can be provisioned only by an existing admin.</p>
       <h2 id="registration-title">Choose your role to begin</h2>
       <p>We personalize the CSIR-guided training path, capture your certificate details, and store a local-only roster for audit-friendly reporting.</p>
       <form id="registration-form">
@@ -398,6 +400,19 @@
             <option>Security Analyst</option>
             <option>Compliance / Audit</option>
           </select>
+        </div>
+        <div class="field highlight" style="margin:0;">
+          <strong>Admin access</strong>
+          <p class="lead">Use the built-in admin credentials below to manage the roster and promote additional admins.</p>
+          <div style="display:grid;gap:0.35rem;">
+            <label>Email
+              <input id="admin-email" type="email" value="admin@cisr.local" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" />
+            </label>
+            <label>Access key
+              <input id="admin-key" type="password" placeholder="Enter admin access key" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" />
+            </label>
+            <button type="button" id="admin-signin" class="link-btn" style="justify-content:center;">Use admin account</button>
+          </div>
         </div>
         <div class="meta-grid">
           <div class="highlight" style="margin:0;">
@@ -539,6 +554,12 @@
               <label>Role
                 <input id="roster-role" type="text" placeholder="Operator, Analyst, etc." />
               </label>
+              <label>Access
+                <select id="roster-account">
+                  <option value="user">Training user</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
               <label>Start date
                 <input id="roster-start" type="date" />
               </label>
@@ -618,6 +639,15 @@
 
     const STORAGE_KEY = 'cisr-learning-profile';
 
+    const ADMIN_ACCOUNT = {
+      name: 'CISR Training Admin',
+      email: 'admin@cisr.local',
+      role: 'Program Administrator',
+      accountType: 'admin'
+    };
+
+    const ADMIN_KEY = 'CISR-ADMIN-ACCESS';
+
     function isAdmin(state) {
       return (state?.learner?.accountType || 'user') === 'admin';
     }
@@ -625,12 +655,19 @@
     function loadState() {
       try {
         const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        const nextState = {
         return {
           learner: { accountType: 'user', ...(parsed.learner || {}) },
           modules: parsed.modules || {},
           certificates: parsed.certificates || [],
           registry: parsed.registry || []
         };
+        seedAdmin(nextState);
+        return nextState;
+      } catch (err) {
+        const fallback = { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
+        seedAdmin(fallback);
+        return fallback;
       } catch (err) {
         return { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
       }
@@ -644,6 +681,18 @@
       renderProfileBanner(next);
       renderRoster(next);
       renderRoleGuidance(next);
+    }
+
+    function seedAdmin(state) {
+      const exists = (state.registry || []).some((entry) => entry.email === ADMIN_ACCOUNT.email);
+      if (!exists) {
+        state.registry = state.registry || [];
+        state.registry.unshift({
+          ...ADMIN_ACCOUNT,
+          startDate: state.registry[0]?.startDate || new Date().toISOString(),
+          completionDate: state.registry[0]?.completionDate || ''
+        });
+      }
     }
 
     function upsertRegistry(state, completionDate) {
@@ -667,6 +716,7 @@
 
     function ensureRegistration() {
       const state = loadState();
+      if (state.learner.name && state.learner.email && state.learner.role) {
       if (state.learner.name && state.learner.email && state.learner.role && state.learner.accountType) {
         document.getElementById('launch').disabled = false;
         return true;
@@ -674,6 +724,8 @@
       document.getElementById('reg-name').value = state.learner.name || '';
       document.getElementById('reg-email').value = state.learner.email || '';
       document.getElementById('reg-role').value = state.learner.role || '';
+      document.getElementById('registration-overlay').hidden = false;
+      showToast('Please enter your name, email, and role to continue.', 'info');
       document.getElementById('reg-access').value = state.learner.accountType || '';
       document.getElementById('registration-overlay').hidden = false;
       showToast('Please enter your name, email, role, and access type to continue.', 'info');
@@ -884,6 +936,7 @@
       table.style.borderCollapse = 'collapse';
       const header = document.createElement('tr');
       const columns = adminMode
+        ? ['Name', 'Email', 'Role', 'Access', 'Start date', 'Completion date', 'Actions']
         ? ['Name', 'Email', 'Role', 'Start date', 'Completion date', 'Actions']
         : ['Name', 'Email', 'Role', 'Start date', 'Completion date'];
       columns.forEach((label) => {
@@ -896,6 +949,15 @@
       table.appendChild(header);
       visibleEntries.forEach((entry) => {
         const row = document.createElement('tr');
+        [
+          entry.name,
+          entry.email,
+          entry.role,
+          adminMode ? (entry.accountType === 'admin' ? 'Admin' : 'User') : null,
+          entry.startDate ? new Date(entry.startDate).toLocaleDateString() : '—',
+          entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'
+        ].forEach((value) => {
+          if (value === null) return;
         [entry.name, entry.email, entry.role, entry.startDate ? new Date(entry.startDate).toLocaleDateString() : '—', entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'].forEach((value) => {
           const cell = document.createElement('td');
           cell.textContent = value;
@@ -945,6 +1007,7 @@
       document.getElementById('roster-name').value = entry.name || '';
       document.getElementById('roster-email').value = entry.email || '';
       document.getElementById('roster-role').value = entry.role || '';
+      document.getElementById('roster-account').value = entry.accountType || 'user';
       document.getElementById('roster-start').value = entry.startDate ? entry.startDate.slice(0, 10) : '';
       document.getElementById('roster-complete').value = entry.completionDate ? entry.completionDate.slice(0, 10) : '';
       rosterEditEmail = entry.email || null;
@@ -971,6 +1034,8 @@
       event.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
+      const role = document.getElementById('reg-role').value;
+      if (!name || !email || !role) {
       const accountType = document.getElementById('reg-access').value;
       const role = document.getElementById('reg-role').value;
       if (!name || !email || !role || !accountType) {
@@ -983,6 +1048,7 @@
         ...state.learner,
         name,
         email,
+        accountType: state.learner.accountType || 'user',
         accountType,
         role,
         startDate: state.learner.startDate || now
@@ -992,6 +1058,31 @@
       document.getElementById('registration-overlay').hidden = true;
       document.getElementById('launch').disabled = false;
       showToast('Registration saved. Launch the module to begin.', 'success');
+    });
+
+    document.getElementById('admin-signin').addEventListener('click', () => {
+      const email = document.getElementById('admin-email').value.trim();
+      const key = document.getElementById('admin-key').value.trim();
+      if (email !== ADMIN_ACCOUNT.email) {
+        showToast('Use the built-in admin email to sign in.', 'info');
+        return;
+      }
+      if (key !== ADMIN_KEY) {
+        showToast('Invalid admin access key.', 'info');
+        return;
+      }
+      const state = loadState();
+      const now = new Date().toISOString();
+      state.learner = {
+        ...ADMIN_ACCOUNT,
+        startDate: state.learner.startDate || now,
+        completionDate: state.learner.completionDate || ''
+      };
+      upsertRegistry(state);
+      saveState(state);
+      document.getElementById('registration-overlay').hidden = true;
+      document.getElementById('launch').disabled = false;
+      showToast('Admin access granted. Roster controls unlocked.', 'success');
     });
 
     document.querySelectorAll('nav.top-nav button').forEach((btn) => {
@@ -1009,6 +1100,7 @@
       state.learner = {
         name: document.getElementById('learner-name').value.trim(),
         email: document.getElementById('learner-email').value.trim(),
+        accountType: state.learner.accountType || 'user',
         accountType: document.getElementById('learner-access').value || 'user',
         role: document.getElementById('learner-role').value,
         goal: document.getElementById('learner-goal').value,
@@ -1022,6 +1114,7 @@
     document.getElementById('reset-progress').addEventListener('click', () => {
       if (!confirm('This will clear your saved profile, progress, and certificates. Continue?')) return;
       const cleared = { learner: {}, modules: {}, certificates: [], registry: [] };
+      seedAdmin(cleared);
       saveState(cleared);
       frame.src = 'about:blank';
       showToast('Progress reset', 'success');
@@ -1040,6 +1133,7 @@
           name: document.getElementById('roster-name').value.trim(),
           email: document.getElementById('roster-email').value.trim(),
           role: document.getElementById('roster-role').value.trim(),
+          accountType: document.getElementById('roster-account').value || 'user',
           accountType: 'user',
           startDate: document.getElementById('roster-start').value
             ? new Date(document.getElementById('roster-start').value).toISOString()
