@@ -6,33 +6,19 @@
   <title>CISR Managed Training | CIP-007 Security Management</title>
   <style>
     :root {
-      color-scheme: light dark;
-      --bg: #0f172a;
-      --panel: #111827;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-2: #22c55e;
-      --border: #1f2937;
-      --card: #0b1221;
-      --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      color-scheme: light;
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --accent: #0f766e;
+      --accent-2: #2563eb;
+      --border: #e5e7eb;
+      --card: #ffffff;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       --radius: 14px;
       font-synthesis: none;
       text-rendering: optimizeLegibility;
-    }
-
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f7f7f8;
-        --panel: #ffffff;
-        --text: #0f172a;
-        --muted: #4b5563;
-        --accent: #0d6efd;
-        --accent-2: #16a34a;
-        --border: #d8dee9;
-        --card: #ffffff;
-        --shadow: 0 14px 50px rgba(15, 23, 42, 0.16);
-      }
     }
 
     * { box-sizing: border-box; }
@@ -40,9 +26,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.12), transparent 32%),
-        radial-gradient(circle at 90% 40%, rgba(34, 197, 94, 0.1), transparent 28%),
-        var(--bg);
+      background: var(--bg);
       font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
       color: var(--text);
     }
@@ -51,10 +35,10 @@
       position: sticky;
       top: 0;
       z-index: 5;
-      backdrop-filter: blur(12px);
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(255, 255, 255, 0.96);
       border-bottom: 1px solid var(--border);
       padding: 0.75rem 1.5rem 0.65rem;
+      backdrop-filter: blur(10px);
     }
 
     header h1 {
@@ -66,6 +50,23 @@
     header p {
       margin: 0.35rem 0 0.5rem;
       color: var(--muted);
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    #nav-toggle {
+      display: none;
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 0.45rem 0.75rem;
+      border-radius: 10px;
+      cursor: pointer;
     }
 
     nav.top-nav {
@@ -80,15 +81,15 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 0.5rem 0.85rem;
-      background: linear-gradient(160deg, var(--card), rgba(56, 189, 248, 0.12));
+      background: var(--card);
       color: var(--text);
       cursor: pointer;
-      transition: transform 160ms ease, border-color 160ms ease;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
     nav.top-nav button.active {
       border-color: var(--accent);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      background: #e0f2f1;
     }
 
     nav.top-nav button:hover { transform: translateY(-1px); }
@@ -118,7 +119,7 @@
       padding: 0.75rem;
       border-radius: 12px;
       border: 1px solid var(--border);
-      background: linear-gradient(145deg, rgba(56, 189, 248, 0.09), rgba(34, 197, 94, 0.08));
+      background: var(--card);
     }
 
     .module-card h3 { margin: 0; }
@@ -130,15 +131,15 @@
       font-size: 0.85rem;
       padding: 0.3rem 0.75rem;
       border-radius: 999px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: #e0f2f1;
+      border: 1px solid #b2dfdb;
       color: var(--text);
       width: fit-content;
     }
 
     .badge.secondary {
-      background: rgba(34, 197, 94, 0.12);
-      border-color: rgba(34, 197, 94, 0.35);
+      background: #e1e9ff;
+      border-color: #c7d2fe;
     }
 
     button, .link-btn {
@@ -146,10 +147,10 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 0.65rem 0.85rem;
-      background: linear-gradient(160deg, var(--card), rgba(56, 189, 248, 0.08));
+      background: var(--card);
       color: var(--text);
       cursor: pointer;
-      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -158,8 +159,9 @@
 
     button:hover, .link-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
       border-color: var(--accent);
+      background: #f8fafc;
     }
 
     button:focus-visible, .link-btn:focus-visible {
@@ -219,7 +221,7 @@
     .two-col { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 
     .highlight {
-      background: linear-gradient(145deg, rgba(56, 189, 248, 0.12), rgba(34, 197, 94, 0.12));
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1rem;
@@ -253,18 +255,70 @@
       z-index: 5;
     }
 
+    .toast-container {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success { border-left-color: #15803d; }
+
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
       aside { position: static; }
       .embed { height: 70vh; }
-      nav.top-nav { position: sticky; top: 0; background: rgba(15, 23, 42, 0.9); padding: 0.5rem 0; }
+    }
+
+    @media (max-width: 760px) {
+      #nav-toggle { display: inline-flex; }
+      nav.top-nav { display: none; width: 100%; }
+      body.nav-open nav.top-nav { display: flex; }
+      nav.top-nav button { width: 100%; justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>CISR Managed Training</h1>
-    <p>Live, self-contained delivery of CIP-007 Security Management content sourced from the official GitHub materials.</p>
+    <div class="top-row">
+      <div>
+        <h1>CISR Managed Training</h1>
+        <p>Live, self-contained delivery of CIP-007 Security Management content sourced from the official GitHub materials.</p>
+      </div>
+      <button id="nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
     <nav class="top-nav" aria-label="Primary navigation">
       <button data-section="training" class="active">My Training</button>
       <button data-section="learning">My Learning</button>
@@ -306,6 +360,7 @@
     </aside>
 
     <main class="viewer" aria-live="polite">
+      <div id="profile-banner" class="profile-pill" role="status" aria-live="polite" style="display:none;margin-bottom:0.75rem;"></div>
       <section id="training" class="section">
         <iframe id="module-frame" class="embed" title="CIP-007 Training Module" src="about:blank"></iframe>
       </section>
@@ -338,8 +393,8 @@
               </label>
             </div>
             <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
-              <button id="save-profile">Save profile</button>
-              <button id="reset-progress" class="link-btn" style="margin-left:auto;">Reset progress</button>
+              <button id="save-profile" title="Save your profile for personalized recommendations">Save profile</button>
+              <button id="reset-progress" class="link-btn" style="margin-left:auto;" title="Clear your profile and module progress">Reset progress</button>
             </div>
           </div>
           <div class="highlight">
@@ -362,7 +417,7 @@
           <div class="highlight">
             <h3>Scenario refresh</h3>
             <p>Revisit the incident and remote-access scenarios to rehearse the right response paths.</p>
-            <a class="link-btn" href="modules/module6-cip7.html#scenarios" target="_blank">Open scenarios</a>
+            <a class="link-btn" href="modules/cip007/scenarios.html" target="_blank">Open scenarios</a>
           </div>
           <div class="highlight">
             <h3>Mini-quiz</h3>
@@ -403,6 +458,7 @@
   </div>
 
   <button class="back-top" aria-label="Back to top" id="back-top">↑ Back to top</button>
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <script>
     const frame = document.getElementById('module-frame');
@@ -428,6 +484,7 @@
       renderCertificates(next);
       renderProgress(next);
       renderDashboard(next);
+      renderProfileBanner(next);
     }
 
     function loadModule() {
@@ -546,6 +603,32 @@
       }
     }
 
+    function renderProfileBanner(state) {
+      const banner = document.getElementById('profile-banner');
+      const { name, role, goal } = state.learner || {};
+      if (!name && !role && !goal) {
+        banner.style.display = 'none';
+        return;
+      }
+      const roleText = role ? `· ${role}` : '';
+      const goalText = goal ? `· ${goal}` : '';
+      banner.textContent = `${name || 'Learner'} ${roleText} ${goalText}`.trim();
+      banner.style.display = 'inline-flex';
+    }
+
+    function showToast(message, variant = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${variant}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('visible'));
+      setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 200);
+      }, 2800);
+    }
+
     document.getElementById('launch').addEventListener('click', loadModule);
 
     document.querySelectorAll('nav.top-nav button').forEach((btn) => {
@@ -566,22 +649,30 @@
         goal: document.getElementById('learner-goal').value
       };
       saveState(state);
+      showToast('Profile saved', 'success');
     });
 
     document.getElementById('reset-progress').addEventListener('click', () => {
+      if (!confirm('This will clear your saved profile, progress, and certificates. Continue?')) return;
       const cleared = { learner: {}, modules: {}, certificates: [] };
       saveState(cleared);
       frame.src = 'about:blank';
+      showToast('Progress reset', 'success');
     });
 
     document.getElementById('back-top').addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    document.getElementById('nav-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('nav-open');
+    });
+
     const initialState = loadState();
     renderProgress(initialState);
     renderCertificates(initialState);
     renderDashboard(initialState);
+    renderProfileBanner(initialState);
 
     // Auto-load on first paint for a managed experience
     loadModule();
