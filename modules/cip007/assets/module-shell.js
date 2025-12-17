@@ -447,6 +447,7 @@
     if (pageId === 'orientation') attachOrientationGate(content, state);
     if (pageId === 'scope') attachScopeCheck(content, state);
     if (pageId === 'quiz' || pageId === 'knowledge-check' || pageId === 'final-check') attachQuizHandlers(content, state);
+    if (pageId === 'execution') attachRoleChecklist(content, role);
     if (pageId === 'checklist' && state.quizPassed) attachChecklistHandlers(content);
     if (pageId === 'complete') attachCompletionHandler(content);
   }
@@ -897,8 +898,14 @@
   }
 
   function renderExecution(content, role) {
-    const block = content.execution[role] || content.execution['Control Center Operator'];
+    const defaultRole = content.roleOptions?.[0];
+    const block = content.execution[role] || content.execution[defaultRole] || content.execution['Control Center Operator'];
     const shared = content.execution.shared;
+    const checklist = block.checklist
+      ? `<div class="card checklist-card"><div class="checklist-head"><strong>${role} checklist</strong><button class="primary download-role-checklist" data-role="${role}">Download checklist</button></div><ol>${block.checklist
+          .map((item) => `<li>${item}</li>`)
+          .join('')}</ol></div>`
+      : '';
     return `
       <h2 class="section-title">Role-Based Execution</h2>
       <div class="grid two-col">
@@ -906,8 +913,28 @@
         <div class="card"><strong>What auditors expect you to know</strong><ul>${block.expectations.map((r) => `<li>${r}</li>`).join('')}</ul></div>
         <div class="card"><strong>What you should never guess</strong><ul>${block.never.map((r) => `<li>${r}</li>`).join('')}</ul></div>
         <div class="card"><strong>Shared signals</strong><ul>${shared.map((r) => `<li>${r}</li>`).join('')}</ul></div>
+        ${checklist}
       </div>
     `;
+  }
+
+  function attachRoleChecklist(content, role) {
+    const btn = document.querySelector('.download-role-checklist');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const activeRole = btn.dataset.role || role;
+      const items = content.execution?.[activeRole]?.checklist || [];
+      if (!items.length) return;
+      const lines = [`${activeRole} CSIR Checklist`, ''];
+      items.forEach((item, idx) => lines.push(`${idx + 1}. ${item}`));
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${content.moduleId || 'csir'}-${activeRole.replace(/\W+/g, '-').toLowerCase()}-checklist.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
 
   function renderEtiquette(content, role) {

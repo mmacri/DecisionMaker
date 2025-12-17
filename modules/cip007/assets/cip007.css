@@ -89,6 +89,14 @@
 .field input { padding: 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
 .mock-card .feedback.good { color: var(--accent-2); }
 .mock-card .feedback.bad { color: #f87171; }
+.checklist-card { grid-column: span 2; background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(16,185,129,0.08)); border: 1px solid var(--border); }
+.checklist-head { display:flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.checklist-card ol { margin: 0; padding-left: 1.25rem; color: var(--text); }
+.section-title + p.lead { max-width: 75ch; }
+.module-main { background: linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(245,246,248,0.9) 100%); }
+.module-main .content-card { border: 1px solid var(--border); box-shadow: var(--shadow); }
+.role-select label { font-weight: 600; color: var(--muted); }
+.progress-meter span { transition: width 180ms ease; }
 @media (max-width: 1024px) {
   .dashboard-head { grid-template-columns: 1fr; }
 }
