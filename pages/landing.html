@@ -1,0 +1,26 @@
+<div class="card page-card">
+  <div class="breadcrumb">You are here:</div>
+  <div class="page-title">
+    <h1></h1>
+    <div class="status-pill">CSIR-first training</div>
+  </div>
+  <div class="page-body"></div>
+  <div class="card" style="background:#f5f7fb; border:1px solid var(--border); margin-top:1rem;">
+    <h3>My Certificate(s)</h3>
+    <div id="certificate-list" class="list-tight"></div>
+  </div>
+  <div class="nav-actions">
+    <button id="btn-start">Start training</button>
+    <button id="btn-resume" class="secondary" disabled>Resume where I left off</button>
+  </div>
+  <div class="done-when"></div>
+  <div class="nav-actions">
+    <button id="btn-next">Next</button>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const start = document.querySelector('#btn-start');
+    if (start) start.onclick = () => Router.go('overview');
+  });
+</script>

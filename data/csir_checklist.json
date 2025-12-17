@@ -1,0 +1,44 @@
+{
+  "groups": [
+    {
+      "title": "Prevent (Prepare)",
+      "frequency": "Quarterly",
+      "items": [
+        "Verify contact lists for Incident Commander, Technical Lead, ECS, vendors, and PIO are current and reachable.",
+        "Review OT asset inventories, diagrams, and data flows for accuracy.",
+        "Confirm backups and golden images are validated with hashes and stored offline.",
+        "Run tabletop exercise outcomes into updated runbooks and training.",
+        "Check evidence kits (write-once media, chain-of-custody forms) are stocked." ]
+    },
+    {
+      "title": "Detect (Identify & Investigate)",
+      "frequency": "Monthly",
+      "items": [
+        "Validate monitoring alerts and suppression lists against current OT changes.",
+        "Ensure operators know how to capture screenshots and logs without altering systems.",
+        "Test escalation path to Incident Commander and ECS with timestamps recorded.",
+        "Review triage criteria and severity definitions with control room staff.",
+        "Confirm evidence storage locations are reachable and protected." ]
+    },
+    {
+      "title": "Respond (Respond & Comms)",
+      "frequency": "Per incident",
+      "items": [
+        "Log severity declaration with who/when and initial evidence.",
+        "Execute containment only with Incident Commander approval and operations coordination.",
+        "Record every action (time, actor, rationale) in the incident log.",
+        "Route media and external inquiries to PIO; avoid personal channels.",
+        "Capture notification log entries for ECS/PSA and internal leadership." ]
+    },
+    {
+      "title": "Recover & Follow Up",
+      "frequency": "Per incident",
+      "items": [
+        "Restore using validated clean backups/images with hash verification.",
+        "Monitor post-restore systems for recurrence and confirm stability before reconnecting.",
+        "Hold a hotwash and document lessons, gaps, and corrective actions.",
+        "Store evidence with chain-of-custody and retention metadata.",
+        "Update playbooks, checklists, and training content with approved changes." ]
+    }
+  ]
+}
