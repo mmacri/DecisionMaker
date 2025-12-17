@@ -1,0 +1,30 @@
+<div class="card page-card">
+  <div class="breadcrumb">You are here:</div>
+  <div class="page-title">
+    <h1></h1>
+  </div>
+  <div class="page-body"></div>
+  <label for="cert-name">Enter your full name to issue the certificate</label>
+  <input id="cert-name" type="text" placeholder="Full name" style="padding:0.5rem; width:100%; margin:0.5rem 0 1rem 0;">
+  <label for="cert-email">Confirm your email for the certificate</label>
+  <input id="cert-email" type="email" placeholder="name@example.com" style="padding:0.5rem; width:100%; margin:0.5rem 0 1rem 0;">
+  <button id="generate-cert">Generate certificate</button>
+  <div id="certificate-card" class="certificate-preview">
+    <h2>Seattle City Light — OT CSIR Training Certificate</h2>
+    <p><strong>Learner:</strong> <span id="cert-name-display"></span></p>
+    <p><strong>Email:</strong> <span id="cert-email-display"></span></p>
+    <p><strong>Role:</strong> <span id="cert-role-display"></span></p>
+    <p><strong>Completion:</strong> <span id="cert-date-display"></span></p>
+    <p><strong>Certificate ID:</strong> <span id="cert-id-display"></span></p>
+    <p><strong>Statement:</strong> This training aligns to the SCL OT Cyber Security Incident Response Plan (Dec 2025). Version <span id="cert-version-display"></span>.</p>
+  </div>
+  <div class="nav-actions">
+    <button id="download-png" class="secondary">Download PNG</button>
+    <button id="download-pdf">Download PDF</button>
+  </div>
+  <div class="done-when"></div>
+  <div class="nav-actions">
+    <button id="btn-back" class="secondary">Back</button>
+    <button id="btn-next" disabled>Next</button>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learner identity — SCL OT CSIR</title>
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand"><img src="assets/logo.svg" alt="SCL">Learner Identity</div>
+      <div class="footer-actions">
+        <a class="button ghost" href="../index.html">Training home</a>
+        <div class="status-pill">Step 2 of 3</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel card form-card">
+      <div class="pill">Required</div>
+      <h2 class="section-title">Who is completing this training?</h2>
+      <p class="section-sub">Your name appears on the certificate and verification hash. This stays in your browser.</p>
+      <label for="name">Full name</label>
+      <input id="name" type="text" placeholder="Jane Doe" autocomplete="name" required>
+      <div class="footer-actions">
+        <a href="role.html" class="button secondary">Back</a>
+        <button id="continue" class="button" disabled>Save & continue</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { setLearnerName, loadProgress } from './js/storage.js';
+
+    const progress = loadProgress();
+    if (!progress.roleId) { window.location.href = 'role.html'; }
+    const input = document.getElementById('name');
+    const btn = document.getElementById('continue');
+    if (progress.learnerName) {
+      input.value = progress.learnerName;
+      btn.disabled = false;
+    }
+    input.addEventListener('input', (e) => btn.disabled = e.target.value.trim().length < 2);
+    btn.addEventListener('click', () => {
+      if (input.value.trim().length < 2) return;
+      setLearnerName(input.value);
+      window.location.href = 'learn.html';
+    });
+  </script>
+</body>
+</html>

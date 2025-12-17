@@ -1,0 +1,390 @@
+{
+  "course": {
+    "id": "scl-csir",
+    "title": "Seattle City Light – OT Cyber Security Incident Response (CSIR) Training",
+    "mission": "Teach OT personnel how to recognize, report, and respond to cyber security incidents using the SCL OT CSIR Plan—clearly, safely, and consistently.",
+    "version": "2025.01",
+    "estMinutes": 30,
+    "description": "Role-based CSIR enablement with locked steps, role-aware guidance, and verifiable completion."
+  },
+  "roles": [
+    {
+      "id": "all-staff",
+      "label": "All SCL Staff (OT, field, ops, engineering)",
+      "whoItsFor": "Anyone who touches OT environments or may observe/report suspicious activity.",
+      "estMinutes": 15,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    },
+    {
+      "id": "csir-team",
+      "label": "CSIR Team Member",
+      "whoItsFor": "Virtual response team participants supporting investigation, containment, and reporting.",
+      "estMinutes": 20,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    },
+    {
+      "id": "technical-lead",
+      "label": "Incident Technical Lead",
+      "whoItsFor": "Leads technical investigation, containment, and recovery sequencing.",
+      "estMinutes": 25,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    },
+    {
+      "id": "incident-commander",
+      "label": "Incident Commander",
+      "whoItsFor": "Supervisors/managers/directors coordinating the CSIR response and decisions.",
+      "estMinutes": 25,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    },
+    {
+      "id": "nerc-compliance",
+      "label": "NERC-CIP Compliance Lead / Audit Support",
+      "whoItsFor": "Advisors on reportability, DOE-417 handling, evidence quality, and audit prep.",
+      "estMinutes": 30,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    },
+    {
+      "id": "ecs",
+      "label": "Enterprise Cyber Security (ECS)",
+      "whoItsFor": "Detection, reporting, and governance teams who steward the CSIR plan.",
+      "estMinutes": 30,
+      "requiredStepIds": ["mission-control", "csir-basics", "definitions", "severity", "workflow", "roles", "comms", "reporting", "evidence", "response", "scenarios", "audit-etiquette", "final-exam", "checklist", "completion"]
+    }
+  ],
+  "steps": [
+    {
+      "id": "mission-control",
+      "title": "Mission Control",
+      "type": "content",
+      "estMinutes": 2,
+      "contentBlocks": [
+        { "kind": "markdown", "text": "**What you\u2019ll learn**" },
+        { "kind": "bullets", "items": [
+          "Recognize cyber events vs incidents",
+          "Know what to do first and who to contact",
+          "Understand severity levels and escalation",
+          "Follow the CSIR phases (Preparation through Follow-up)",
+          "Handle audits professionally (what to say / not say)"
+        ]},
+        { "kind": "callout", "tone": "info", "title": "Estimated time", "text": "Time adjusts by role path. Steps unlock in order. Use \"Start training\" to continue."}
+        ,{ "kind": "callout", "tone": "accent", "title": "Optional CIP alignment", "text": "Need CIP-007 alignment? Open the Appendix at modules/cip007/index.html after you finish the core CSIR steps."}
+      ],
+      "completionCriteria": ["cta"],
+      "ctaLabel": "Start training"
+    },
+    {
+      "id": "csir-basics",
+      "title": "CSIR Basics in OT Terms",
+      "type": "content",
+      "estMinutes": 2,
+      "contentBlocks": [
+        { "kind": "markdown", "text": "In OT, cyber incidents aren\u2019t just IT problems\u2014they can affect monitoring, control, and safe operation." },
+        { "kind": "markdown", "text": "Your priority order: **Safe \u2192 Secure \u2192 Reliable operations**." },
+        { "kind": "callout", "tone": "warning", "title": "If safety conflicts with security", "text": "Escalate immediately to the Asset Owner or incident leadership for direction." }
+      ],
+      "knowledgeCheck": {
+        "title": "Micro-check",
+        "passingScore": 100,
+        "questions": [
+          {"prompt": "What is always the top priority?", "options": ["Secure systems", "Reliable communications", "Safe operations"], "answer": 2},
+          {"prompt": "What do you do if security steps conflict with operations?", "options": ["Ignore the conflict", "Pause and escalate to the Asset Owner/incident leadership", "Continue without telling anyone"], "answer": 1}
+        ]
+      },
+      "completionCriteria": ["quizPassed"]
+    },
+    {
+      "id": "definitions",
+      "title": "Definitions: Event vs Incident vs Attempt to Compromise",
+      "type": "interaction",
+      "estMinutes": 4,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "**Cyber Event:** unusual activity that could impact cyber assets (can be benign like misconfigurations)."},
+        {"kind": "markdown", "text": "**Cyber Security Incident:** malicious or suspicious act that compromises or attempts to compromise a cyber asset."},
+        {"kind": "markdown", "text": "**Attempt to Compromise (AtC):** suspicious activity involving protected systems where compromise did not occur (still reportable depending on scope)."},
+        {"kind": "callout", "tone": "info", "title": "Reportable Cyber Security Incident", "text": "Defined by mandatory reporting criteria; reporting obligations apply when determined reportable."}
+      ],
+      "interaction": {
+        "kind": "classification",
+        "passingScore": 75,
+        "prompt": "Classify each scenario as Event, Incident, or Attempt to Compromise (AtC).",
+        "options": ["Event", "Incident", "AtC"],
+        "items": [
+          {"text": "Unexpected reboot after patch window", "answer": "Event", "why": "Post-maintenance instability is abnormal but not clearly malicious."},
+          {"text": "Multiple failed logins from unknown source to OT jump host", "answer": "Incident", "why": "Brute-force behavior on a protected entry point."},
+          {"text": "Port scan detected against protected perimeter", "answer": "AtC", "why": "Recon against protected systems without confirmed compromise."},
+          {"text": "Technician reports badge door forced open near OT cabinet", "answer": "Incident", "why": "Physical tampering with potential malicious intent; escalate if uncertain."},
+          {"text": "Malware alert on engineering workstation", "answer": "Incident", "why": "Confirmed malicious indicator on an OT asset."},
+          {"text": "Misconfiguration breaks polling to historian", "answer": "Event", "why": "Operational impact without malicious intent yet."},
+          {"text": "Default account login attempt repeatedly fails", "answer": "AtC", "why": "Suspicious attempt to authenticate with weak credentials."},
+          {"text": "Unauthorized new account created on OT admin system", "answer": "Incident", "why": "Clear malicious or unauthorized action."}
+        ]
+      },
+      "completionCriteria": ["interactionPassed"]
+    },
+    {
+      "id": "severity",
+      "title": "Severity Levels",
+      "type": "interaction",
+      "estMinutes": 4,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Use the severity ladder to guide escalation and communications."},
+        {"kind": "bullets", "items": [
+          "Critical: cannot provide critical services; significant interruption to power system operations",
+          "High: moderate interruption or major business continuity risk; broad impact likely",
+          "Medium: suspected/actual activity could impact reliability or critical systems; precursor to focused attack",
+          "Low: minimal effect; suspicious activity / recon; efficiency loss"
+        ]}
+      ],
+      "interaction": {
+        "kind": "matching",
+        "passingScore": 84,
+        "prompt": "Match each scenario to a likely severity.",
+        "options": ["Critical", "High", "Medium", "Low"],
+        "items": [
+          {"text": "Control center cannot dispatch commands due to malware", "answer": "Critical"},
+          {"text": "Engineering workstation infected; polling degraded but still operating", "answer": "Medium"},
+          {"text": "Reconnaissance scan on OT firewall", "answer": "Low"},
+          {"text": "Ransom note on asset owner laptop with OT engineering tools", "answer": "High"},
+          {"text": "Unauthorized remote access attempt blocked by MFA", "answer": "Medium"},
+          {"text": "Loss of monitoring for multiple substations", "answer": "High"}
+        ]
+      },
+      "completionCriteria": ["interactionPassed"]
+    },
+    {
+      "id": "workflow",
+      "title": "The CSIR Workflow",
+      "type": "content",
+      "estMinutes": 3,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "The CSIR plan moves through six phases. Click each phase to see what it means for you."},
+        {"kind": "timeline", "items": [
+          {"title": "Preparation", "text": "Keep plan and materials current; ensure monitoring/logging; backups and images ready; know reporting mechanisms."},
+          {"title": "Identification", "text": "Recognize signals; classify quickly; assign ownership; determine affected systems and people."},
+          {"title": "Investigation", "text": "Confirm classification/severity; determine scope; expand notification as needed."},
+          {"title": "Response", "text": "Contain, eradicate, and recover; ensure required reporting occurs."},
+          {"title": "Recovery", "text": "Restore normal ops, validate systems, and prevent recurrence."},
+          {"title": "Follow Up", "text": "Capture lessons learned; update documentation; continue monitoring."}
+        ]},
+        {"kind": "callout", "tone": "info", "title": "Role callouts", "text": "Each phase shows \"What YOU do\" based on your role selection inside the runner."}
+      ],
+      "completionCriteria": ["viewed"]
+    },
+    {
+      "id": "roles",
+      "title": "Who Does What",
+      "type": "interaction",
+      "estMinutes": 4,
+      "interaction": {
+        "kind": "accordion",
+        "prompt": "Open your role plus at least one other role to see responsibilities and evidence.",
+        "items": [
+          {"title": "All SCL Staff", "responsible": ["Recognize and report suspicious activity immediately", "Preserve observations (time, system, what changed)", "Follow direction from incident leadership"], "notResponsible": ["Conducting deep forensic changes", "Communicating externally without approval"], "evidence": ["Screenshots of alerts", "Time of observation", "Who was notified"]},
+          {"title": "CSIR Team Member", "responsible": ["Support investigation tasks", "Capture incident log entries", "Coordinate with Technical Lead"], "notResponsible": ["Unapproved containment on critical assets", "External media statements"], "evidence": ["Packet/log captures", "Bridge notes", "System state snapshots"]},
+          {"title": "Incident Technical Lead", "responsible": ["Direct technical investigation", "Recommend containment and recovery steps", "Advise on operational risk"], "notResponsible": ["Solo decisions that risk safety", "Final approval of public messaging"], "evidence": ["System inventories", "Containment actions taken", "Recovery validation results"]},
+          {"title": "Incident Commander", "responsible": ["Coordinate response and approvals", "Align communications matrix", "Decide on escalation"], "notResponsible": ["Hands-on system changes", "Writing detailed forensic reports"], "evidence": ["Decision log", "Escalation records", "Stakeholder notifications"]},
+          {"title": "NERC-CIP Compliance Lead / Audit Support", "responsible": ["Assess reportability", "Draft DOE-417", "Guide evidence handling"], "notResponsible": ["Leading containment", "Authorizing risky operational changes"], "evidence": ["Reporting packets", "Chain-of-custody notes", "Audit responses"]},
+          {"title": "Enterprise Cyber Security (ECS)", "responsible": ["Coordinate detection and governance", "Own regulator outreach with compliance", "Maintain the CSIR plan"], "notResponsible": ["Acting without operations alignment", "Bypassing safety protocols"], "evidence": ["Alert summaries", "Ticket links", "Plan/test updates"]},
+          {"title": "City of Seattle IMT (awareness)", "responsible": ["Engage when city-level coordination needed", "Support public information messaging"], "notResponsible": ["Running OT containment", "Overriding site safety"], "evidence": ["Situation status", "Public messaging drafts"]}
+        ]
+      },
+      "completionCriteria": ["interactionPassed"]
+    },
+    {
+      "id": "comms",
+      "title": "Communications & Notifications",
+      "type": "content",
+      "estMinutes": 3,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Communications are coordinated by incident leadership (usually the Incident Commander). Avoid freelancing."},
+        {"kind": "matrix", "headers": ["", "Low", "Medium", "High-Critical"], "rows": [
+          {"label": "Incident Commander", "values": ["Informed", "Involved", "Involved"]},
+          {"label": "Incident Technical Lead", "values": ["Informed", "Involved", "Involved"]},
+          {"label": "ECS / SOC", "values": ["Involved", "Involved", "Involved"]},
+          {"label": "Compliance Lead", "values": ["N/A", "Informed", "Involved"]},
+          {"label": "Operations Leadership", "values": ["Informed", "Involved", "Involved"]},
+          {"label": "City / PIO", "values": ["N/A", "Informed", "Involved"]}
+        ]},
+        {"kind": "callout", "tone": "info", "title": "Media requests", "text": "Route all media questions to authorized channels; do not speculate."}
+      ],
+      "knowledgeCheck": {
+        "title": "Micro-check",
+        "passingScore": 100,
+        "questions": [
+          {"prompt": "Who coordinates comms?", "options": ["Any responder", "Incident leadership/Commander", "Vendor"], "answer": 1},
+          {"prompt": "What do you do if asked by media?", "options": ["Answer only if you know", "Route to authorized channel", "Decline to answer and ignore"], "answer": 1},
+          {"prompt": "Do you independently notify executives?", "options": ["Yes, immediately", "No, follow the comms plan", "Only via text"], "answer": 1}
+        ]
+      },
+      "completionCriteria": ["quizPassed"]
+    },
+    {
+      "id": "reporting",
+      "title": "Reporting & Timelines",
+      "type": "content",
+      "estMinutes": 4,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Two key deadlines: reportable incident within **1 hour** of determining reportable; Attempt to Compromise by **end of next business day** after determination."},
+        {"kind": "bullets", "items": [
+          "Where reports go: E-ISAC (email + phone), CISA Central (email + phone), SOC email distribution.",
+          "Minimum info: functional impact, attack vector, level of intrusion achieved/attempted.",
+          "Forms and storage: DOE-417 plus internal storage for backups/logs." ]},
+        {"kind": "callout", "tone": "info", "title": "Role gating", "text": "All staff need awareness; CSIR reporters/ECS/Compliance review the detailed checklist below."}
+      ],
+      "knowledgeCheck": {
+        "title": "Reporting quiz",
+        "passingScore": 75,
+        "questions": [
+          {"prompt": "When must a reportable cyber security incident be submitted?", "options": ["Within one hour of determination", "Within 24 hours", "After recovery"], "answer": 0},
+          {"prompt": "Attempt to Compromise timeline?", "options": ["Immediately", "By end of next business day after determination", "No reporting required"], "answer": 1},
+          {"prompt": "Minimum info to include?", "options": ["Functional impact, attack vector, intrusion level", "Only who is on shift", "Vendor name only"], "answer": 0},
+          {"prompt": "Where should DOE-417 drafts live?", "options": ["Personal email", "Secure internal repository aligned to ECS", "Public share"], "answer": 1}
+        ]
+      },
+      "completionCriteria": ["quizPassed"]
+    },
+    {
+      "id": "evidence",
+      "title": "Evidence & Documentation",
+      "type": "interaction",
+      "estMinutes": 3,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Document what you saw, when, what systems, who you told, and what actions were taken."},
+        {"kind": "markdown", "text": "Preserve evidence integrity: avoid modifying or overwriting logs; prefer isolation over power-off when safe."},
+        {"kind": "callout", "tone": "accent", "title": "Incident log essentials", "text": "Include incident number, discovery time, event time, systems affected, actions taken, and who approved them."}
+      ],
+      "interaction": {
+        "kind": "acknowledgement",
+        "prompt": "Check each evidence-handling statement.",
+        "passingScore": 100,
+        "items": [
+          "I will capture what I saw, when, and on which system.",
+          "I will avoid modifying or deleting potential evidence.",
+          "If safe, I will isolate rather than power off to preserve state.",
+          "I will record who I notified and when.",
+          "I will note any containment or recovery actions taken." ]
+      },
+      "completionCriteria": ["acknowledged"]
+    },
+    {
+      "id": "response",
+      "title": "Response Do/Don’t",
+      "type": "content",
+      "estMinutes": 3,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Containment is a first goal after evidence gathering. Remove avenues of compromise, isolate affected systems, and preserve evidence."},
+        {"kind": "callout", "tone": "warning", "title": "Coordinate", "text": "Coordinate with the Technical Lead and Incident Commander. Always prioritize safe operations."}
+      ],
+      "knowledgeCheck": {
+        "title": "Response micro-check",
+        "passingScore": 100,
+        "questions": [
+          {"prompt": "What follows evidence capture?", "options": ["Containment", "Announcing to media", "Reimaging without approval"], "answer": 0},
+          {"prompt": "Who do you coordinate with?", "options": ["No one", "Technical Lead / Commander", "Vendor only"], "answer": 1},
+          {"prompt": "What is never sacrificed?", "options": ["Safe operations", "Accurate logs", "Chain of custody"], "answer": 0}
+        ]
+      },
+      "completionCriteria": ["quizPassed"]
+    },
+    {
+      "id": "scenarios",
+      "title": "OT Scenarios",
+      "type": "content",
+      "estMinutes": 3,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Work through realistic OT scenarios."},
+        {"kind": "bullets", "items": [
+          "**Relay mis-operates after config change**: First action is to stabilize operations and notify Technical Lead; you are in Identification moving toward Investigation; likely Medium to High depending on impact; notify Asset Owner, ICS lead, and ECS because of potential reliability risk.",
+          "**Substation HMI shows ransomware note**: Prioritize safety; isolate affected HMI from network if safe; you are in Response; severity High or Critical depending on impact; notify Incident Commander, Technical Lead, ECS, and Operations leadership immediately.",
+          "**OT firewall shows repeated blocked outbound traffic from engineering host**: Begin Investigation; likely Medium; notify Technical Lead/ECS; capture logs before containment.",
+          "**Badge anomalies near critical cabinets with simultaneous failed logins**: Treat as coordinated Incident; severity High; escalate to Incident Commander and Compliance Lead for potential reportability." ]}
+      ],
+      "completionCriteria": ["viewed"]
+    },
+    {
+      "id": "audit-etiquette",
+      "title": "Audit Etiquette Training",
+      "type": "content",
+      "estMinutes": 4,
+      "contentBlocks": [
+        {"kind": "bullets", "items": [
+          "Answer only what is asked; don’t speculate.",
+          "If you don’t know: say so and offer to follow up.",
+          "Use evidence; avoid opinions.",
+          "Keep answers consistent with documented process.",
+          "Don’t invent timelines or facts.",
+          "Ask for clarification if a question is ambiguous.",
+          "Confirm what artifact is requested (log, ticket, screenshot, report)."
+        ]}
+      ],
+      "knowledgeCheck": {
+        "title": "Audit etiquette quiz",
+        "passingScore": 80,
+        "questions": [
+          {"prompt": "Best response when unsure?", "options": ["Guess with confidence", "Say you will verify and follow up", "Avoid answering"], "answer": 1},
+          {"prompt": "How to handle ambiguous questions?", "options": ["Answer broadly", "Ask for clarification", "Decline"], "answer": 1},
+          {"prompt": "What should answers align with?", "options": ["Personal opinion", "Documented process", "Rumor"], "answer": 1},
+          {"prompt": "Should you create timelines you don’t recall?", "options": ["Yes, to be helpful", "No, use evidence and logs", "Only if asked"], "answer": 1},
+          {"prompt": "Media-style statements are", "options": ["Encouraged", "Only through authorized channels", "Optional"], "answer": 1},
+          {"prompt": "Before sending artifacts, you should", "options": ["Confirm the exact artifact needed", "Send everything", "Ignore the request"], "answer": 0}
+        ]
+      },
+      "completionCriteria": ["quizPassed"]
+    },
+    {
+      "id": "final-exam",
+      "title": "Final Knowledge Check",
+      "type": "exam",
+      "estMinutes": 6,
+      "completionCriteria": ["examPassed"]
+    },
+    {
+      "id": "checklist",
+      "title": "Operational Checklist",
+      "type": "download",
+      "estMinutes": 2,
+      "lockedUntilExam": true,
+      "contentBlocks": [
+        {"kind": "callout", "tone": "info", "title": "Downloadable operational checklist", "text": "Prevent, Detect, and Respond groupings with review frequency guidance."},
+        {"kind": "bullets", "items": [
+          "Prevent: keep backups/images current, maintain monitoring/logging on critical systems, update contact lists monthly.",
+          "Detect: recognize anomalies, verify maintenance windows, escalate suspicious indicators promptly.",
+          "Respond: report quickly, preserve evidence, follow leadership direction, document actions." ]},
+        {"kind": "markdown", "text": "Download as PDF or PNG once the final exam is passed."}
+      ],
+      "completionCriteria": ["viewed"]
+    },
+    {
+      "id": "completion",
+      "title": "Completion + Certificate",
+      "type": "complete",
+      "estMinutes": 2,
+      "contentBlocks": [
+        {"kind": "markdown", "text": "Confirm your name and role, then generate the certificate. A unique certificate ID is created for offline verification."},
+        {"kind": "callout", "tone": "accent", "title": "Downloads", "text": "PDF, PNG, and a completion screenshot are available. Reset training if you need to restart."}
+      ],
+      "completionCriteria": ["viewed"]
+    }
+  ],
+  "finalExam": {
+    "title": "Final Knowledge Check",
+    "passingScore": 80,
+    "questions": [
+      {"prompt": "Top priority in OT incident response?", "options": ["Schedule", "Safe operations", "Media updates", "Speed"], "answer": 1},
+      {"prompt": "If security action conflicts with safety you should", "options": ["Proceed anyway", "Pause and escalate to Asset Owner/leadership", "Ignore operations", "Wait a week"], "answer": 1},
+      {"prompt": "Reportable incident timeline", "options": ["Within one hour of determination", "Next week", "Only after recovery"], "answer": 0},
+      {"prompt": "Attempt to Compromise initial report is due", "options": ["Immediately", "By end of next business day after determination", "Never"], "answer": 1},
+      {"prompt": "Who coordinates communications?", "options": ["Any responder", "Incident leadership", "External vendor"], "answer": 1},
+      {"prompt": "Evidence handling principle", "options": ["Modify logs to clean them", "Preserve integrity and note actions", "Power off immediately"], "answer": 1},
+      {"prompt": "Containment should", "options": ["Always override safety", "Be coordinated with Technical Lead/Commander", "Wait until after audit"], "answer": 1},
+      {"prompt": "Severity High generally means", "options": ["Minimal effect", "Moderate interruption or broad risk", "Routine maintenance"], "answer": 1},
+      {"prompt": "If unsure during an audit", "options": ["Guess", "Say you will verify and follow up", "Provide opinions"], "answer": 1},
+      {"prompt": "Checklist availability", "options": ["Always unlocked", "Unlocks after passing the final exam", "Only via email"], "answer": 1}
+    ]
+  },
+  "certificateTemplate": {
+    "heading": "Seattle City Light \u2013 OT CSIR Training",
+    "body": "This certifies that {{name}} completed the CSIR training for the {{role}} role path on {{date}}.",
+    "footer": "Certificate ID: {{id}}"
+  }
+}

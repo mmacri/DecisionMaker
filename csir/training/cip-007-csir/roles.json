@@ -1,0 +1,241 @@
+{
+  "roleOptions": [
+    "Incident Commander / Manager",
+    "Technical Responder",
+    "Compliance / Evidence",
+    "General Staff / Reporter",
+    "Observer (read-only)"
+  ],
+  "roleHighlights": {
+    "orientation": {
+      "Incident Commander / Manager": "Confirm you will own declaration timing, team communications, and DOE-417 sign-off gates.",
+      "Technical Responder": "You will practice isolating systems, preserving evidence, and advising on recovery readiness.",
+      "Compliance / Evidence": "Watch for evidence capture points, CIP-008 reporting clocks, and DOE-417 triggers.",
+      "General Staff / Reporter": "Focus on spotting indicators, reporting quickly, and staying inside approved guidance.",
+      "Observer (read-only)": "Follow the gated flow to see how roles branch and how evidence is logged."
+    },
+    "scope": {
+      "Incident Commander / Manager": "Track when a cyber event becomes reportable and when to notify the Incident Management Team.",
+      "Technical Responder": "Note containment levers you can use without jeopardizing forensics or BES reliability.",
+      "Compliance / Evidence": "Map each lifecycle phase to artifacts you will catalog for audits and CIP-008 R3 evidence.",
+      "General Staff / Reporter": "Remember the first call path: supervisor or SOC, then stay available for follow-up.",
+      "Observer (read-only)": "Observe how the lifecycle and definitions are surfaced for each audience."
+    },
+    "plan": {
+      "Incident Commander / Manager": "Decide when to transition from response to recovery and who authorizes return to service.",
+      "Technical Responder": "Align investigation steps to the plan: evidence first, containment second, recovery after validation.",
+      "Compliance / Evidence": "Identify which steps generate chain-of-custody entries and reporting deadlines.",
+      "General Staff / Reporter": "Capture the streamlined checklist—who to alert, what not to touch, and how to document.",
+      "Observer (read-only)": "Follow how the plan references Appendix B workflow and Appendix C decision criteria."
+    },
+    "execution": {
+      "Incident Commander / Manager": "Practice delegating tasks, approving communications, and recording decisions with timestamps.",
+      "Technical Responder": "Apply technical triage, isolation, and recovery validation without overwriting evidence.",
+      "Compliance / Evidence": "Coordinate DOE-417 reporting prep while tracking artifacts and chain-of-custody.",
+      "General Staff / Reporter": "Use the quick reference to report and then avoid speculative actions.",
+      "Observer (read-only)": "Confirm each role follows the documented script and checklists."
+    },
+    "etiquette": {
+      "Incident Commander / Manager": "Model concise answers and defer to SMEs for technical depth while keeping scope tight.",
+      "Technical Responder": "Reference tickets, hashes, and evidence IDs instead of theorizing root cause.",
+      "Compliance / Evidence": "Frame answers with retention rules, time sources, and reporting thresholds.",
+      "General Staff / Reporter": "Keep responses to observed facts and who you notified.",
+      "Observer (read-only)": "Notice deferral language and how it protects scope."
+    },
+    "mock": {
+      "Incident Commander / Manager": "Expect decision points about severity, team communication, and when to contact IMT/RC.",
+      "Technical Responder": "Expect choices about isolation methods, recovery validation, and evidence preservation.",
+      "Compliance / Evidence": "Expect CIP-008 R3 evidence prompts and DOE-417 timing questions.",
+      "General Staff / Reporter": "Expect prompts on reporting suspicious activity and avoiding system changes.",
+      "Observer (read-only)": "Explore alternate roles to see how branching feedback changes."
+    },
+    "quiz": {
+      "Incident Commander / Manager": "Anticipate communication, declaration, and recovery authorization questions.",
+      "Technical Responder": "Anticipate analysis, containment, and eradication decision checks.",
+      "Compliance / Evidence": "Anticipate reportability and evidence trail requirements.",
+      "General Staff / Reporter": "Anticipate recognition and reporting cues with minimal jargon.",
+      "Observer (read-only)": "Awareness only; see how each role is graded."
+    }
+  },
+  "execution": {
+    "shared": [
+      "Timestamp all actions with the same authoritative clock and record who approved them.",
+      "Capture ticket, log, or evidence IDs for every action and communication.",
+      "Never speculate root cause during the event—stay on documented facts and thresholds."
+    ],
+    "Incident Commander / Manager": {
+      "responsibilities": [
+        "Authorize declaration, external notifications, and containment moves.",
+        "Coordinate communications to SOC, IMT, RC/BA/TO, and leadership using the documented matrix.",
+        "Approve recovery plans and decide when to return systems to service after validation."
+      ],
+      "expectations": [
+        "Show decision logs from detection through follow-up and who was notified when.",
+        "Clarify when the event met Appendix C reportability and who signed DOE-417.",
+        "Demonstrate how team members were assigned and briefed on roles."
+      ],
+      "never": [
+        "Bypass evidence handling to accelerate recovery.",
+        "Skip notifying Compliance when reporting thresholds are met.",
+        "Declare all-clear without technical validation and checklist completion."
+      ],
+      "checklist": [
+        "Confirm incident classification (Cyber Event vs. Incident vs. Attempt) using Appendix C.",
+        "Notify SOC/IMT/leadership and document timestamps for each audience.",
+        "Authorize containment, approve communications, and open DOE-417 draft if reportable.",
+        "Review recovery validation and declare return-to-service when clean.",
+        "Schedule lessons learned and assign follow-up owners."
+      ]
+    },
+    "Technical Responder": {
+      "responsibilities": [
+        "Validate alerts, collect volatile evidence, and protect chain-of-custody.",
+        "Contain impact with approved isolation steps while keeping forensics intact.",
+        "Lead recovery validation, ensuring clean backups and hardened rebuild steps."
+      ],
+      "expectations": [
+        "Document hashes, evidence storage, and who handled each artifact.",
+        "Explain containment choices and when systems were returned to service.",
+        "Provide remediation notes for lessons learned and hardening."
+      ],
+      "never": [
+        "Patch or reimage before evidence is captured.",
+        "Disconnect critical assets without coordinating reliability impact.",
+        "Return systems to production without verification scans and approvals."
+      ],
+      "checklist": [
+        "Validate indicator and capture logs/screenshots with timestamps.",
+        "Isolate affected hosts using approved playbook steps; record ticket numbers.",
+        "Change credentials or revoke access per containment guide.",
+        "Restore from trusted backups or rebuild; verify with scans and peer review.",
+        "Document technical lessons and monitoring adjustments."
+      ]
+    },
+    "Compliance / Evidence": {
+      "responsibilities": [
+        "Catalog evidence, owners, and retention timelines across all phases.",
+        "Track reportability, DOE-417 deadlines, and E-ISAC/CISA distribution lists.",
+        "Maintain the incident record, including CIP-008 R3 updates and follow-up actions."
+      ],
+      "expectations": [
+        "Show synchronized timestamps and storage locations for each artifact.",
+        "Demonstrate the decision trail for reportable vs. attempt classifications.",
+        "Produce the completed DOE-417 draft and submission confirmation when required."
+      ],
+      "never": [
+        "Edit technical evidence without SME confirmation.",
+        "Let reporting clocks lapse without escalation.",
+        "Share incident data outside approved distribution lists."
+      ],
+      "checklist": [
+        "Update incident log with classification, owners, and time sources.",
+        "Capture hashes/locations for all evidence; maintain chain-of-custody entries.",
+        "Decide reportability with Incident Commander; prep DOE-417 and send to E-ISAC/CISA.",
+        "Record recovery approval, return-to-service time, and validation notes.",
+        "Publish lessons learned summary and file evidence for audit."
+      ]
+    },
+    "General Staff / Reporter": {
+      "responsibilities": [
+        "Recognize and report suspicious activity immediately to supervisor or SOC.",
+        "Preserve the scene: avoid unplugging devices or deleting evidence.",
+        "Follow communications guidance and stay reachable for updates."
+      ],
+      "expectations": [
+        "Know the first-call list and what details to include (who, what, when, where).",
+        "Avoid speculative statements and defer to the response team for next steps.",
+        "Complete the simplified checklist before considering the task done."
+      ],
+      "never": [
+        "Attempt to fix or reboot affected systems on your own.",
+        "Share incident details outside approved channels.",
+        "Ignore follow-up requests from the response team."
+      ],
+      "checklist": [
+        "Report immediately to SOC or supervisor with observable facts.",
+        "Do not alter the system; capture the time and what you saw.",
+        "Follow instructions on isolation or power if told by the response team.",
+        "Log who you notified and when; keep contact information handy.",
+        "Review the quick-reference card before returning to normal duties."
+      ]
+    },
+    "Observer (read-only)": {
+      "responsibilities": [
+        "Observe adherence to the script and log gaps for process improvement.",
+        "Note which artifacts prove each lifecycle phase.",
+        "Share feedback on clarity and usability after the exercise."
+      ],
+      "expectations": [
+        "Identify where evidence is stored and how timing is verified.",
+        "Spot communication bottlenecks or scope creep risks.",
+        "See how reportability decisions are documented."
+      ],
+      "never": [
+        "Direct the active response.",
+        "Request unsanctioned evidence access.",
+        "Change role selections mid-exercise."
+      ],
+      "checklist": [
+        "Review each module completion and confirm gating works as designed.",
+        "Capture observations on clarity, timing, and evidence traceability.",
+        "Provide improvement notes to the training owner."
+      ]
+    }
+  },
+  "roleRequirements": {
+    "Incident Commander / Manager": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Technical Responder": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Compliance / Evidence": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "General Staff / Reporter": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "final-check",
+      "certificate"
+    ],
+    "Observer (read-only)": [
+      "dashboard",
+      "orientation",
+      "scope",
+      "plan",
+      "execution",
+      "etiquette",
+      "mock",
+      "resources"
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DecisionMaker Module Template",
+  "type": "object",
+  "required": ["moduleId", "title", "nav", "steps", "pageStepMap", "roleOptions"],
+  "properties": {
+    "moduleId": {"type": "string"},
+    "title": {"type": "string"},
+    "mission": {"type": "string"},
+    "estimatedTime": {"type": "string"},
+    "audience": {"type": "array", "items": {"type": "string"}},
+    "cta": {"type": "string"},
+    "nav": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "href"],
+        "properties": {
+          "id": {"type": "string"},
+          "label": {"type": "string"},
+          "href": {"type": "string"},
+          "lockAfter": {"type": "string"}
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["number", "label"],
+        "properties": {
+          "number": {"type": "integer"},
+          "label": {"type": "string"}
+        }
+      }
+    },
+    "pageStepMap": {
+      "type": "object",
+      "additionalProperties": {"type": "integer"}
+    },
+    "roleOptions": {"type": "array", "items": {"type": "string"}},
+    "roleHighlights": {"type": "object"},
+    "landing": {"type": "object"},
+    "overview": {"type": "array"},
+    "requirements": {"type": "array"},
+    "scenarios": {"type": "array"},
+    "quiz": {"type": "object"},
+    "checklist": {"type": "object"},
+    "resources": {"type": "object"},
+    "completion": {"type": "object"}
+  }
+}

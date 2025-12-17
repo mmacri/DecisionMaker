@@ -1,0 +1,164 @@
+{
+  "orientation": {
+    "purpose": "Welcome learners, explain how the CSIR training flows from orientation to certificate, and set expectations for role-based branching.",
+    "gate": "I understand the modules, role tailoring, and that I must complete each step in order to unlock the certificate.",
+    "topics": [
+      {
+        "title": "Course objectives",
+        "detail": "Learn the CSIR incident lifecycle, your role responsibilities, and how to document/report incidents accurately."
+      },
+      {
+        "title": "Estimated time & flow",
+        "detail": "Eight modules (5–10 minutes each) with inline knowledge checks, a scenario lab, and a final assessment."
+      },
+      {
+        "title": "Progress & persistence",
+        "detail": "Navigation and completion state are saved locally; resume anytime with your selected role."
+      },
+      {
+        "title": "Certificate & evidence",
+        "detail": "Certificate unlocks after all required modules and the final quiz—use it as completion evidence."
+      }
+    ]
+  },
+  "scope": {
+    "points": [
+      {
+        "title": "Preparation (CSIR Plan 8.1)",
+        "detail": "Confirm tools, backups, contacts, and forensics readiness; rehearse team roles before incidents."
+      },
+      {
+        "title": "Identification & Analysis",
+        "detail": "Validate anomalies, classify Cyber Event vs. Incident vs. Attempt, and check Appendix C for reportability." 
+      },
+      {
+        "title": "Containment & Communications",
+        "detail": "Isolate affected systems, change credentials, and notify SOC/IMT/leadership per the communications matrix." 
+      },
+      {
+        "title": "Recovery (CSIR Plan 8.5)",
+        "detail": "Restore from clean backups or rebuild, verify systems are clean, and obtain leadership approval to return to service." 
+      },
+      {
+        "title": "Follow-Up & Reporting",
+        "detail": "Log lessons learned, update the CSIR Plan, and complete DOE-417 reporting to E-ISAC/CISA within required timelines." 
+      }
+    ],
+    "check": {
+      "question": "A malware alert is validated on a control center HMI. It is contained within 15 minutes with no outage. How should it be classified?",
+      "options": [
+        "Reportable Cyber Security Incident that must be reported within 1 hour",
+        "Attempt to Compromise that is documented and reported by end of next business day",
+        "Not an event; no action required",
+        "Only a local ticket is needed"
+      ],
+      "answer": 1,
+      "rationale": "The alert was contained before impact; Appendix C treats this as an Attempt to Compromise requiring notification by the end of the next business day.",
+      "success": "Correct—reportability clocks start now. Capture evidence and keep Compliance looped in."
+    }
+  },
+  "plan": {
+    "lead": "Module 3 walks through the CSIR workflow from preparation to follow-up with communications and reporting checkpoints.",
+    "steps": [
+      {
+        "title": "Preparation",
+        "detail": "Maintain contact lists, IMT on-call rotation, imaging kits, clean backups, and baselines; rehearse roles and timers.",
+        "audit": "Show readiness evidence: tool checks, role rosters, and forensics readiness notes."
+      },
+      {
+        "title": "Identification & Analysis",
+        "detail": "Validate indicators, classify using Appendix C, and decide if the event is reportable or an attempt.",
+        "audit": "Record who validated, time stamps, and decision on reportability."
+      },
+      {
+        "title": "Containment & Response",
+        "detail": "Isolate systems, change credentials, notify SOC/IMT, and coordinate with Incident Commander for decisions.",
+        "audit": "Evidence of containment steps, communication logs, and approvals."
+      },
+      {
+        "title": "Recovery & Return to Service",
+        "detail": "Restore from trusted backups or rebuild, run validation scans, and gain leadership approval before going live.",
+        "audit": "Recovery plan, clean scan results, and documented approval to return to service."
+      },
+      {
+        "title": "Follow-Up & Reporting",
+        "detail": "Hold lessons learned, update the CSIR Plan, and complete DOE-417 submission to E-ISAC/CISA within the deadline.",
+        "audit": "Completed DOE-417, evidence logs, and recorded corrective actions."
+      }
+    ],
+    "note": "Every phase includes a communication checkpoint and evidence expectation—capture who acted, when, and where artifacts are stored."
+  },
+  "resources": {
+    "links": [
+      {
+        "label": "CIP-007 standard",
+        "url": "https://www.nerc.com/pa/Stand/Pages/CIPStandards.aspx"
+      },
+      {
+        "label": "NIST incident handling guide (SP 800-61)",
+        "url": "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final"
+      },
+      {
+        "label": "SCL OT CSIR Plan (Appendix B & C excerpts)",
+        "url": "https://example.com/csir-plan"
+      }
+    ],
+    "notes": [
+      "Keep local copies of procedures, DOE-417 templates, and checklists for disconnected operations.",
+      "Validate time sources before drills and audits to align all logs.",
+      "Store certificates and incident artifacts in the evidence binder with timestamped filenames."
+    ]
+  },
+  "mock": {
+    "questions": [
+      {
+        "prompt": "You validated malware on an HMI with no outage. What should the Incident Commander decide?",
+        "options": [
+          "Declare a full Reportable Cyber Security Incident",
+          "Classify as an Attempt to Compromise and start the end-of-next-business-day reporting clock",
+          "Close the alert without documentation",
+          "Wait for leadership to return"
+        ],
+        "answer": 1,
+        "audit": "Classification drives DOE-417 timing and evidence handling.",
+        "lens": "Reportability"
+      },
+      {
+        "prompt": "Containment isolated the affected server. Who must be notified first based on the communications matrix?",
+        "options": [
+          "The vendor support desk",
+          "Your peer in another department",
+          "SOC/Incident Commander with timestamps",
+          "Only the person who found it"
+        ],
+        "answer": 2,
+        "audit": "Communications must follow the documented matrix with time-stamped proof.",
+        "lens": "Communication discipline"
+      },
+      {
+        "prompt": "Recovery is complete after restoring from backup. What must the Technical Responder and Incident Commander do before returning to service?",
+        "options": [
+          "Declare victory immediately",
+          "Verify clean state with scans and get leadership approval to go live",
+          "Ask the vendor to send a note",
+          "Skip documentation to save time"
+        ],
+        "answer": 1,
+        "audit": "Return-to-service requires validation evidence and approval.",
+        "lens": "Recovery controls"
+      },
+      {
+        "prompt": "A phishing simulation was reported by General Staff. What should Compliance capture?",
+        "options": [
+          "Nothing—it was a simulation",
+          "A short log entry noting it was an Attempt to Compromise with timestamps",
+          "Full DOE-417 report",
+          "Only verbal confirmation"
+        ],
+        "answer": 1,
+        "audit": "Even simulations reinforce reporting discipline and evidence habits.",
+        "lens": "Broader exposure"
+      }
+    ]
+  }
+}
