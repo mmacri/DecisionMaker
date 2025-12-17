@@ -1,88 +1,92 @@
 {
   "orientation": {
-    "purpose": "Explain what this training is, why CIP-007 CSIR exists, and how it maps directly to audit evidence.",
-    "gate": "I understand how this CSIR training flows and that I must follow the phases in order.",
+    "purpose": "Welcome learners, explain how the CSIR training flows from orientation to certificate, and set expectations for role-based branching.",
+    "gate": "I understand the modules, role tailoring, and that I must complete each step in order to unlock the certificate.",
     "topics": [
       {
-        "title": "What is CIP-007?",
-        "detail": "A standard that safeguards system security management for BES Cyber Systems."
+        "title": "Course objectives",
+        "detail": "Learn the CSIR incident lifecycle, your role responsibilities, and how to document/report incidents accurately."
       },
       {
-        "title": "What is CSIR?",
-        "detail": "Cyber Security Incident Response under CIP-007 sets expectations for detecting, declaring, escalating, and documenting incidents."
+        "title": "Estimated time & flow",
+        "detail": "Eight modules (5–10 minutes each) with inline knowledge checks, a scenario lab, and a final assessment."
       },
       {
-        "title": "Why auditors care",
-        "detail": "Auditors verify you can prove detection, declaration, and response steps happened within defined time frames."
+        "title": "Progress & persistence",
+        "detail": "Navigation and completion state are saved locally; resume anytime with your selected role."
       },
       {
-        "title": "How this training works",
-        "detail": "Six linear phases with a final knowledge check and downloadable certificate."
+        "title": "Certificate & evidence",
+        "detail": "Certificate unlocks after all required modules and the final quiz—use it as completion evidence."
       }
     ]
   },
   "scope": {
     "points": [
       {
-        "title": "BES Cyber Asset definition",
-        "detail": "Assets that would affect Bulk Electric System reliability if mis-operated or unavailable."
+        "title": "Preparation (CSIR Plan 8.1)",
+        "detail": "Confirm tools, backups, contacts, and forensics readiness; rehearse team roles before incidents."
       },
       {
-        "title": "Impact ratings",
-        "detail": "Low/Medium/High determine monitoring depth, log retention, and escalation timelines."
+        "title": "Identification & Analysis",
+        "detail": "Validate anomalies, classify Cyber Event vs. Incident vs. Attempt, and check Appendix C for reportability." 
       },
       {
-        "title": "Transient Cyber Assets",
-        "detail": "Vendor laptops, removable media, and field diagnostic tools must follow CSIR entry/exit rules."
+        "title": "Containment & Communications",
+        "detail": "Isolate affected systems, change credentials, and notify SOC/IMT/leadership per the communications matrix." 
       },
       {
-        "title": "No-incident myth",
-        "detail": "Even if you have never declared an incident, auditors expect rehearsed evidence paths and mock records."
+        "title": "Recovery (CSIR Plan 8.5)",
+        "detail": "Restore from clean backups or rebuild, verify systems are clean, and obtain leadership approval to return to service." 
+      },
+      {
+        "title": "Follow-Up & Reporting",
+        "detail": "Log lessons learned, update the CSIR Plan, and complete DOE-417 reporting to E-ISAC/CISA within required timelines." 
       }
     ],
     "check": {
-      "question": "Which systems require CSIR evidence under CIP-007?",
+      "question": "A malware alert is validated on a control center HMI. It is contained within 15 minutes with no outage. How should it be classified?",
       "options": [
-        "Only systems that have previously had a cyber incident",
-        "All BES Cyber Systems and supporting tools that could impact BES reliability",
-        "Only high-impact BES Cyber Systems",
-        "Only transient devices when connected to the control center"
+        "Reportable Cyber Security Incident that must be reported within 1 hour",
+        "Attempt to Compromise that is documented and reported by end of next business day",
+        "Not an event; no action required",
+        "Only a local ticket is needed"
       ],
       "answer": 1,
-      "rationale": "CSIR applies to BES Cyber Systems and supporting tooling capable of affecting BES reliability, regardless of past incidents.",
-      "success": "Correct\u2014CSIR expectations are tied to impact on the BES, not past incident history."
+      "rationale": "The alert was contained before impact; Appendix C treats this as an Attempt to Compromise requiring notification by the end of the next business day.",
+      "success": "Correct—reportability clocks start now. Capture evidence and keep Compliance looped in."
     }
   },
   "plan": {
-    "lead": "Phase 2 incorporates the CSIR material from the cip-audit-ready Module 6 content.",
+    "lead": "Module 3 walks through the CSIR workflow from preparation to follow-up with communications and reporting checkpoints.",
     "steps": [
       {
-        "title": "Detect & declare",
-        "detail": "Identify indicators, validate against baselines, and document who can declare.",
-        "audit": "Show detector source, validation notes, and declaration time."
+        "title": "Preparation",
+        "detail": "Maintain contact lists, IMT on-call rotation, imaging kits, clean backups, and baselines; rehearse roles and timers.",
+        "audit": "Show readiness evidence: tool checks, role rosters, and forensics readiness notes."
       },
       {
-        "title": "Escalate within timelines",
-        "detail": "Follow role-based timers from detection to declaration to leadership notification.",
-        "audit": "Clock starts at first credible indicator; keep synchronized clocks."
+        "title": "Identification & Analysis",
+        "detail": "Validate indicators, classify using Appendix C, and decide if the event is reportable or an attempt.",
+        "audit": "Record who validated, time stamps, and decision on reportability."
       },
       {
-        "title": "Preserve evidence",
-        "detail": "Capture logs, screenshots, volatile data, and system notes immediately.",
-        "audit": "Chain-of-custody, hash values, and who handled the data."
+        "title": "Containment & Response",
+        "detail": "Isolate systems, change credentials, notify SOC/IMT, and coordinate with Incident Commander for decisions.",
+        "audit": "Evidence of containment steps, communication logs, and approvals."
       },
       {
-        "title": "Coordinate with CIP-008",
-        "detail": "If declared, hand off to CIP-008 processes while keeping CIP-007 evidence intact.",
-        "audit": "Reference the CIP-008 playbook ID, not the full procedure."
+        "title": "Recovery & Return to Service",
+        "detail": "Restore from trusted backups or rebuild, run validation scans, and gain leadership approval before going live.",
+        "audit": "Recovery plan, clean scan results, and documented approval to return to service."
       },
       {
-        "title": "Return to service",
-        "detail": "Document recovery steps, validation, and monitoring for recurrence.",
-        "audit": "Evidence of approvals and validation checks."
+        "title": "Follow-Up & Reporting",
+        "detail": "Hold lessons learned, update the CSIR Plan, and complete DOE-417 submission to E-ISAC/CISA within the deadline.",
+        "audit": "Completed DOE-417, evidence logs, and recorded corrective actions."
       }
     ],
-    "note": "Every step must show who acted, when, and where the evidence is stored."
+    "note": "Every phase includes a communication checkpoint and evidence expectation—capture who acted, when, and where artifacts are stored."
   },
   "resources": {
     "links": [
@@ -95,53 +99,65 @@
         "url": "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final"
       },
       {
-        "label": "Time synchronization reference",
-        "url": "https://www.rfc-editor.org/rfc/rfc5905"
+        "label": "SCL OT CSIR Plan (Appendix B & C excerpts)",
+        "url": "https://example.com/csir-plan"
       }
     ],
     "notes": [
-      "Keep local copies of procedures and checklists for disconnected audits.",
-      "Validate time sources before drills and audits.",
-      "Store certificates in the audit binder with timestamped filenames."
+      "Keep local copies of procedures, DOE-417 templates, and checklists for disconnected operations.",
+      "Validate time sources before drills and audits to align all logs.",
+      "Store certificates and incident artifacts in the evidence binder with timestamped filenames."
     ]
   },
   "mock": {
     "questions": [
       {
-        "prompt": "An auditor asks: who can declare a cyber security incident for a control center outage?",
+        "prompt": "You validated malware on an HMI with no outage. What should the Incident Commander decide?",
         "options": [
-          "Any operator on shift",
-          "Only the Incident Commander",
-          "Anyone with SOC access",
-          "Only Compliance"
-        ],
-        "answer": 0,
-        "audit": "Operators must know the documented declaration authority.",
-        "lens": "Declaration authority"
-      },
-      {
-        "prompt": "During a review, the auditor asks for evidence of time synchronization between logs and operator actions.",
-        "options": [
-          "Provide screenshots of clocks and event logs",
-          "Explain that clocks are close enough",
-          "Offer to rebuild NTP",
-          "State it is out of scope"
-        ],
-        "answer": 0,
-        "audit": "Auditability depends on synchronized time sources.",
-        "lens": "Evidence integrity"
-      },
-      {
-        "prompt": "You are asked why CIP-008 was referenced but not invoked.",
-        "options": [
-          "Because we prefer CIP-007 only",
-          "Because impact criteria for CIP-008 were not met",
-          "Because leadership was unavailable",
-          "Because logs were incomplete"
+          "Declare a full Reportable Cyber Security Incident",
+          "Classify as an Attempt to Compromise and start the end-of-next-business-day reporting clock",
+          "Close the alert without documentation",
+          "Wait for leadership to return"
         ],
         "answer": 1,
-        "audit": "Auditors expect rationale tied to documented thresholds.",
-        "lens": "Threshold clarity"
+        "audit": "Classification drives DOE-417 timing and evidence handling.",
+        "lens": "Reportability"
+      },
+      {
+        "prompt": "Containment isolated the affected server. Who must be notified first based on the communications matrix?",
+        "options": [
+          "The vendor support desk",
+          "Your peer in another department",
+          "SOC/Incident Commander with timestamps",
+          "Only the person who found it"
+        ],
+        "answer": 2,
+        "audit": "Communications must follow the documented matrix with time-stamped proof.",
+        "lens": "Communication discipline"
+      },
+      {
+        "prompt": "Recovery is complete after restoring from backup. What must the Technical Responder and Incident Commander do before returning to service?",
+        "options": [
+          "Declare victory immediately",
+          "Verify clean state with scans and get leadership approval to go live",
+          "Ask the vendor to send a note",
+          "Skip documentation to save time"
+        ],
+        "answer": 1,
+        "audit": "Return-to-service requires validation evidence and approval.",
+        "lens": "Recovery controls"
+      },
+      {
+        "prompt": "A phishing simulation was reported by General Staff. What should Compliance capture?",
+        "options": [
+          "Nothing—it was a simulation",
+          "A short log entry noting it was an Attempt to Compromise with timestamps",
+          "Full DOE-417 report",
+          "Only verbal confirmation"
+        ],
+        "answer": 1,
+        "audit": "Even simulations reinforce reporting discipline and evidence habits.",
+        "lens": "Broader exposure"
       }
     ]
   }
