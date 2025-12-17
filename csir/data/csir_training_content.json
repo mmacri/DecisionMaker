@@ -1,0 +1,122 @@
+{
+  "landing": {
+    "title": "Seattle City Light — CSIR Training Overview",
+    "body": "<p>Welcome to Seattle City Light’s OT Cyber Security Incident Response (CSIR) training. This experience is built directly from the SCL OT CSIR Plan (Dec 2025) and shows how we prevent, identify, investigate, respond, recover, and follow up on cyber events across energy delivery environments.</p><p>Use this guided path to learn what CSIR is, what each role does, and how to prove completion with a certificate and operational checklist.</p><ul><li>Aligned to SCL OT CSIR Plan (Dec 2025)</li><li>Role-tailored callouts and scenarios</li><li>Knowledge check required (80%+)</li><li>Downloadable checklist and certificate</li></ul>",
+    "done": ["You know this training is CSIR-first and role-aware.", "You know you can resume from where you stopped.", "You know a certificate is issued after passing the knowledge check."],
+    "roleCallout": "general"
+  },
+  "overview": {
+    "title": "What This Training Is (and isn’t)",
+    "body": "<p>This training explains how Seattle City Light executes its OT Cyber Security Incident Response Plan. It is not a generic IT security course or a CIP-007-only checklist.</p><p>You will learn:</p><ul><li>Definitions that drive reporting and escalation.</li><li>Roles and authorities used in the SCL CSIR model.</li><li>The end-to-end CSIR steps from prepare through follow up.</li><li>Communications rules, documentation, and audit etiquette.</li><li>Role-based scenarios and a required knowledge check.</li></ul><p>Everything you read is operational language from the SCL CSIR Plan. Keep the steps visible and follow the prompts on every page.</p>",
+    "done": ["You can describe the scope: OT CSIR based on SCL’s plan.", "You can name the major components: roles, steps, comms, documentation, scenarios, assessment.", "You understand that completion requires an 80% knowledge check."],
+    "roleCallout": "general"
+  },
+  "flow": {
+    "title": "The CSIR Flow at a Glance",
+    "body": "<p>The SCL CSIR Flow uses six steps to keep OT operations stable while meeting reporting obligations:</p><ol><li><strong>Prepare:</strong> harden, practice, stage contacts, and define authorities.</li><li><strong>Identify:</strong> detect and validate cyber events with clear thresholds.</li><li><strong>Investigate:</strong> collect facts, contain uncertainty, and log evidence.</li><li><strong>Respond:</strong> contain, eradicate, and coordinate communications.</li><li><strong>Recover:</strong> restore systems deliberately with integrity checks.</li><li><strong>Follow Up:</strong> capture lessons, retain evidence, and update controls.</li></ol><p>Roles apply across all steps. Incident Commander directs, Technical Lead drives analysis, CSIR Team Members execute tasks, compliance roles ensure reporting, and all staff escalate promptly.</p>",
+    "done": ["You can name the six CSIR steps in order.", "You know Incident Commander owns direction and Technical Lead owns analysis.", "You understand follow up is required, not optional."],
+    "roleCallout": "flow"
+  },
+  "role-select": {
+    "title": "Start Here",
+    "body": "<p>Select the role that best matches what you do during OT operations. Your choice personalizes callouts, scenarios, and the certificate metadata.</p><ul><li><strong>OT Operator:</strong> protects grid/plant continuity, executes runbooks, and reports abnormalities.</li><li><strong>System Administrator:</strong> manages configurations, patching, backups, and containment steps.</li><li><strong>Security Team (ECS/cyber responders):</strong> leads detection, forensics, containment guidance, and evidence handling.</li><li><strong>Compliance & Audit:</strong> confirms reporting, documentation, and retention are complete.</li><li><strong>Other SCL Staff:</strong> promptly escalate and follow direction without improvising changes.</li></ul>",
+    "done": ["You selected a role and understand it can be changed later.", "You know the certificate will capture the role present at completion.", "You understand scenarios and checklists adapt to your role."],
+    "roleCallout": "general"
+  },
+  "event-vs-incident": {
+    "title": "Cyber Event vs Cyber Security Incident",
+    "body": "<p>The CSIR Plan defines precise terms that drive escalation.</p><ul><li><strong>Cyber Event:</strong> any observable occurrence in an information system or network.</li><li><strong>Attempt to Compromise:</strong> activity that tries to defeat safeguards (e.g., blocked spear-phish, failed login brute force).</li><li><strong>Cyber Security Incident:</strong> actions taken through unauthorized access that jeopardize or disrupt system operations, or violate security policies, standards, practices, or procedures.</li><li><strong>Reportable Incident:</strong> an incident that triggers mandatory internal or external reporting (ECS/PSA/Regulator) per CSIR Plan thresholds.</li></ul><p>Use these terms consistently when logging tickets, notifying leaders, and preparing evidence.</p>",
+    "done": ["You can state the difference between an event and an incident.", "You know that attempts to compromise are tracked even if blocked.", "You know when to flag a situation as reportable."],
+    "roleCallout": "definitions"
+  },
+  "severity-triage": {
+    "title": "Severity & Triage",
+    "body": "<p>SCL triages based on potential impact to safety, reliability, data integrity, and regulatory exposure.</p><ul><li><strong>Low:</strong> contained event, no operational impact, monitoring only.</li><li><strong>Moderate:</strong> suspicious activity with limited scope, may require containment runbook and closer watch.</li><li><strong>High:</strong> confirmed compromise of an OT asset or operations-facing service; immediate Incident Commander engagement.</li><li><strong>Critical:</strong> operational impact to grid/plant safety or reliability, or confirmed reportable trigger; full CSIR activation.</li></ul><p>Document who declared the severity, when, and what evidence was used.</p>",
+    "done": ["You know the four severity levels.", "You know who declares severity and that time stamps are required.", "You know high/critical activates Incident Commander oversight."],
+    "roleCallout": "triage"
+  },
+  "step-prepare": {
+    "title": "Step 1: Prepare",
+    "body": "<p>Preparation reduces chaos. The CSIR Plan expects:</p><ul><li>Documented contacts for Incident Commander, Technical Lead, ECS, operations duty leads, vendors, and communications/PIO.</li><li>Baseline diagrams, asset lists, data flows, and backups stored in approved repositories.</li><li>Hardened OT environments (least privilege, MFA where supported, allowlisting) and tested recovery images.</li><li>Tabletop and functional exercises capturing lessons and updating playbooks.</li><li>Clear evidence handling: write-once media, hash verification, and chain-of-custody templates.</li></ul>",
+    "done": ["You know where to find contacts and diagrams.", "You know how evidence will be handled in OT environments.", "You know exercises feed updates into the CSIR Plan and runbooks."],
+    "roleCallout": "step-prepare"
+  },
+  "step-identify": {
+    "title": "Step 2: Identify",
+    "body": "<p>Identify means confirming whether activity is benign, an event, or an incident.</p><ul><li>Use monitoring, logs, alarms, and operator observations to spot abnormal conditions.</li><li>Cross-check against maintenance windows and authorized changes.</li><li>Record artifacts: log excerpts, screenshots, time stamps, originating system, and reporter.</li><li>Declare severity with Incident Commander and Technical Lead; document who made the call.</li><li>Escalate to ECS and operations leadership when thresholds are met.</li></ul>",
+    "done": ["You can collect evidence without altering production systems.", "You know when to notify Incident Commander and ECS.", "You understand severity declaration is logged."],
+    "roleCallout": "step-identify"
+  },
+  "step-investigate": {
+    "title": "Step 3: Investigate",
+    "body": "<p>Investigation limits scope and preserves integrity.</p><ul><li>Scope impacted assets: networks, HMIs, controllers, servers, historian, EMS/DMS components.</li><li>Capture volatile data carefully: connection tables, running processes, unusual accounts.</li><li>Isolate if needed using approved methods (network segmentation, access control adjustments) coordinated with operations.</li><li>Maintain evidence handling discipline: hashes, chain-of-custody, separate storage from production.</li><li>Update situation reports with facts, not speculation.</li></ul>",
+    "done": ["You know how to scope affected assets without disrupting operations.", "You keep evidence immutable and traceable.", "You provide concise situation reports to the Incident Commander."],
+    "roleCallout": "step-investigate"
+  },
+  "step-respond": {
+    "title": "Step 4: Respond",
+    "body": "<p>Response focuses on containment and eradication while communicating clearly.</p><ul><li>Execute containment runbooks approved for OT (access blocks, account disables, segmentation changes).</li><li>Coordinate with operations to avoid unintended outages; safety and reliability remain priority.</li><li>Eradicate artifacts (malware, rogue accounts, malicious configs) with validated tools.</li><li>Engage PIO/communications for any external messaging; staff do not speak to media.</li><li>Document every action with time, actor, and rationale.</li></ul>",
+    "done": ["You know who authorizes containment actions.", "You avoid media engagement unless via PIO.", "You record actions and rationale in the incident log."],
+    "roleCallout": "step-respond"
+  },
+  "step-recover": {
+    "title": "Step 5: Recover",
+    "body": "<p>Recovery returns systems to trusted operation.</p><ul><li>Use validated, malware-free backups and images; verify hashes before deployment.</li><li>Restore in stages with operator validation checkpoints.</li><li>Monitor closely post-restore for recurrence or latent compromise.</li><li>Coordinate with business owners before reconnecting to production networks.</li><li>Update severity status and communicate restored services.</li></ul>",
+    "done": ["You restore only from validated sources.", "You announce recovery status changes to Incident Commander and operations leads.", "You keep enhanced monitoring during stabilization."],
+    "roleCallout": "step-recover"
+  },
+  "step-followup": {
+    "title": "Step 6: Follow Up",
+    "body": "<p>Follow-up makes the CSIR cycle complete.</p><ul><li>Hold a structured hotwash with Incident Commander, Technical Lead, ECS, operations, compliance, and vendors as needed.</li><li>Document lessons learned, control gaps, and timeline of key events.</li><li>Submit evidence to approved retention locations with chain-of-custody records.</li><li>Update playbooks, monitoring rules, and training materials with findings.</li><li>Record any required regulatory or contractual notifications completion.</li></ul>",
+    "done": ["You know follow-up outputs must be stored with retention rules.", "You capture actions for future exercises and audits.", "You confirm reporting obligations were satisfied."],
+    "roleCallout": "step-followup"
+  },
+  "comms": {
+    "title": "Communications & Notifications",
+    "body": "<p>Communication discipline protects investigations and public trust.</p><ul><li>Incident Commander controls operational messaging; PIO handles media.</li><li>Use pre-approved channels for incident comms; avoid personal email or messaging apps.</li><li>Log who was notified, when, and what was said.</li><li>Escalate to ECS and PSA per CSIR Plan triggers; do not delay reporting once criteria are met.</li><li>Internal updates stay factual: what is affected, what is being done, what to avoid.</li></ul>",
+    "done": ["You know not to communicate externally unless directed.", "You can produce a basic notification log entry.", "You know the PSA/ECS escalation path."],
+    "roleCallout": "comms"
+  },
+  "reporting-awareness": {
+    "title": "Regulatory Reporting (Awareness)",
+    "body": "<p>Most roles operate at awareness level; compliance roles own submissions.</p><ul><li>Identify potential reportable incidents early and alert compliance/Incident Commander.</li><li>Reporting channels include ECS, PSA, and other regulators per CSIR Plan timelines.</li><li>Collect facts: what happened, when detected, affected systems, containment status.</li><li>Do not speculate; provide evidence-backed statements only.</li><li>Track when reports were sent and retain copies per retention rules.</li></ul>",
+    "done": ["You know who prepares and submits regulatory reports.", "You can flag reportable conditions quickly.", "You keep copies and timestamps for audit."],
+    "roleCallout": "reporting"
+  },
+  "evidence": {
+    "title": "Evidence & Documentation",
+    "body": "<p>Evidence discipline is mandatory.</p><ul><li>Use write-once or tamper-evident storage; capture hashes for collected data.</li><li>Maintain chain-of-custody records (who handled, when, purpose).</li><li>Document system times, time zones, and any clock offsets.</li><li>Store logs, images, configs, and screenshots in approved evidence repositories.</li><li>Retain per CSIR Plan requirements and legal guidance.</li></ul>",
+    "done": ["You can describe how chain-of-custody is captured.", "You know where evidence is stored and for how long.", "You avoid altering source systems while collecting evidence."],
+    "roleCallout": "evidence"
+  },
+  "audit-etiquette": {
+    "title": "Audit Etiquette",
+    "body": "<p>Audits and reviews verify CSIR execution.</p><ul><li>Answer only what is asked; stay factual and avoid speculation.</li><li>Reference documented procedures and evidence, not memory.</li><li>If you do not know an answer, state that you will verify and follow up.</li><li>Keep demeanor professional; the record is part of compliance evidence.</li><li>Ensure documents presented are current and approved versions.</li></ul>",
+    "done": ["You know to stay factual and avoid speculation during audits.", "You can point auditors to documented evidence.", "You understand professionalism is part of the record."],
+    "roleCallout": "audit"
+  },
+  "scenarios": {
+    "title": "Scenarios",
+    "body": "<p>Apply the CSIR steps to realistic OT conditions. Each scenario highlights the right response for your role while following the Incident Commander’s direction.</p>",
+    "done": ["You reviewed all scenarios for your role.", "You can map each scenario to the correct CSIR step.", "You know who to notify and what evidence to capture."],
+    "roleCallout": "scenarios"
+  },
+  "knowledge-check": {
+    "title": "Knowledge Check (Required)",
+    "body": "<p>Answer all questions. You need 80% to unlock the operational checklist and completion certificate. Use the immediate feedback to correct gaps before retaking.</p>",
+    "done": ["You scored at least 80% and saw the pass message.", "You captured feedback for any missed questions.", "You know the checklist and certificate are now available."],
+    "roleCallout": "quiz"
+  },
+  "checklist-download": {
+    "title": "Operational Checklist (Download)",
+    "body": "<p>This checklist groups required actions by CSIR phase. Download it for offline reference and regular review.</p>",
+    "done": ["You reviewed each checklist group.", "You downloaded the checklist.", "You know the review cadence for each group."],
+    "roleCallout": "checklist"
+  },
+  "completion-certificate": {
+    "title": "Completion & Certificate",
+    "body": "<p>Issue your certificate once the knowledge check is passed. The certificate records your name, selected role, completion timestamp, time zone, and a unique ID. Downloads are available as PNG and PDF for filing and screenshots.</p>",
+    "done": ["You entered your full name and generated the certificate.", "You downloaded the PNG and PDF copies.", "You confirmed the certificate reflects your role and completion date/time."],
+    "roleCallout": "certificate"
+  }
+}

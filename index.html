@@ -3,392 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCL OT CSIR Training</title>
-  <link rel="stylesheet" href="css/theme.css">
+  <title>DecisionMaker Training Chooser</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin:0; font-family:'Inter', Arial, sans-serif; background:linear-gradient(135deg,#0b1224,#111827); color:#e5e7eb; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
+    .shell { max-width:1100px; width:100%; }
+    header { text-align:center; margin-bottom:24px; }
+    h1 { margin:0; font-size:2.2rem; color:#fbbf24; }
+    p.lead { margin:8px 0 0; color:#cbd5e1; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .card { background:#0f172a; border:1px solid #1f2937; border-radius:16px; padding:22px; box-shadow:0 20px 50px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:space-between; }
+    .card h2 { margin:0 0 8px; color:#e5e7eb; }
+    .card p { color:#cbd5e1; line-height:1.5; }
+    .tag { display:inline-block; background:#1e293b; color:#93c5fd; padding:6px 10px; border-radius:999px; font-size:0.85rem; margin-bottom:10px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .button { background:#fbbf24; color:#0b1224; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; }
+    .button.secondary { background:transparent; color:#e5e7eb; border:1px solid #334155; }
+    footer { text-align:center; margin-top:28px; color:#94a3b8; font-size:0.95rem; }
+    @media (max-width:640px) { body { padding:18px; } h1 { font-size:1.8rem; } }
+  </style>
 </head>
-<body class="page curriculum">
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand"><img src="assets/logo.svg" alt="SCL">SCL OT CSIR Training</div>
-      <nav class="top-nav">
-        <a href="#home">Home / Start</a>
-        <a href="#module-1">Module 1</a>
-        <a href="#module-2">Module 2</a>
-        <a href="#module-3">Module 3</a>
-        <a href="#module-4">Module 4</a>
-        <a href="#module-5">Module 5</a>
-        <a href="#module-6">Module 6</a>
-        <a href="#module-7">Module 7</a>
-      </nav>
-      <div class="footer-actions">
-        <button id="switchRole" class="button secondary">Switch role</button>
-        <a class="button" href="learn.html">Enter training</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="container layout-shell">
-    <aside class="curriculum-nav panel">
-      <h3>CSIR Curriculum</h3>
-      <ol class="curriculum-list">
-        <li><a href="#home">Home / Start</a></li>
-        <li><a href="#module-1">Module 1 – CSIR Overview</a></li>
-        <li><a href="#module-2">Module 2 – Roles &amp; Communications</a></li>
-        <li><a href="#module-3">Module 3 – Terminology &amp; Severity</a></li>
-        <li><a href="#module-4">Module 4 – Workflow by Phase</a></li>
-        <li><a href="#module-5">Module 5 – Reporting &amp; Documentation</a></li>
-        <li><a href="#module-6">Module 6 – OT Scenarios &amp; Drills</a></li>
-        <li><a href="#module-7">Module 7 – Certification Exam</a></li>
-      </ol>
-      <div class="progress-stack">
-        <div class="small">Module progress</div>
-        <div class="module-progress" id="moduleProgress"></div>
-      </div>
-      <div class="role-pill" id="roleBadge">Loading role…</div>
-    </aside>
-
-    <section class="main-with-sidebar" id="home">
-      <div class="hero panel card" style="overflow:hidden;">
+<body>
+  <div class="shell">
+    <header>
+      <h1>Choose Your Training Path</h1>
+      <p class="lead">Select the training experience you need. CSIR is the primary path; CIP-007 stays available as reference.</p>
+    </header>
+    <div class="grid">
+      <div class="card">
         <div>
-          <div class="pill">Seattle City Light • OT Cyber Security Incident Response Plan</div>
-          <h1>Guided CSIR training built from the SCL plan</h1>
-          <p>The CSIR curriculum teaches the SCL OT Cyber Security Incident Response Plan (CSIRP) for OT cyber assets such as BES cyber assets, ECAMS, and PACS managed by SCL. It does not cover systems solely run by Seattle IT.</p>
-          <ul class="list">
-            <li>Understand the plan’s purpose, scope, and how it improves resilience.</li>
-            <li>Know role responsibilities, communications, and reporting expectations.</li>
-            <li>Use CSIR terminology, incident categories, and severity correctly.</li>
-            <li>Work the six-phase workflow, document evidence, and meet deadlines.</li>
-          </ul>
-          <div class="banner" style="margin-top:14px;">Certification: complete Modules 1–6, pass the Module 7 exam (≥80% overall and classification/reporting ≥70%), and complete at least one full Module 6 scenario.</div>
-          <div class="footer-actions">
-            <a class="button" href="learn.html">Enter training</a>
-            <a class="button secondary" href="#module-1">Explore modules</a>
-          </div>
+          <div class="tag">Primary</div>
+          <h2>CSIR Training Portal</h2>
+          <p>Full Seattle City Light OT CSIR curriculum with role selection, guided modules, knowledge checks, and certificates.</p>
         </div>
-        <div class="workflow-summary">
-          <div class="pill">CSIR workflow spine</div>
-          <h3 class="section-title" style="margin:4px 0;">Preparation → Identification → Investigation → Response → Recovery → Follow-up</h3>
-          <p class="section-sub" style="margin-bottom:6px;">Every module maps to one of the six phases. Start at the left and move right with a single, continuous runbook.</p>
-          <div class="workflow-track">
-            <div class="workflow-phase">
-              <strong>Preparation</strong>
-              <p>Keep plans current, confirm monitoring/logging, and stage backups/images.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Identification</strong>
-              <p>Spot signals fast, classify, and notify the right leads.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Investigation</strong>
-              <p>Confirm severity, assess scope, and align roles before acting.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Response</strong>
-              <p>Contain, eradicate, and document actions with approvals.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Recovery</strong>
-              <p>Restore safely, validate systems, and prevent recurrence.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Follow-up</strong>
-              <p>Capture lessons learned, finalize reporting, and update the plan.</p>
-            </div>
-          </div>
-          <div class="workflow-meta">You are guided step-by-step. Locked steps keep the workflow aligned and traceable.</div>
+        <div class="actions">
+          <a class="button" href="csir/index.html">Open CSIR Portal</a>
+          <a class="button secondary" href="csir/my-learning.html">Resume / Dashboard</a>
         </div>
       </div>
-
-      <div class="panel card" id="module-1">
-        <div class="pill">Module 1</div>
-        <h2 class="section-title">CSIR Overview</h2>
-        <p class="section-sub">Purpose, goals, scope, and assumptions that keep the CSIR plan operational.</p>
-        <div class="grid two">
-          <div>
-            <h3>Purpose &amp; goals</h3>
-            <p>Increase security and resilience across OT networks and critical infrastructure, decreasing illicit cyber activity and improving incident response. Aligned to SCL’s cyber security master policy and NERC CIP standards (CIP‑007‑6, CIP‑008‑6, CIP‑009‑6).</p>
-            <div class="infographic">
-              <div>
-                <h4>Threats &amp; failures</h4>
-                <ul class="list">
-                  <li>Malware or unauthorized access</li>
-                  <li>OT outage and loss of monitoring</li>
-                  <li>Credential misuse or tampering</li>
-                </ul>
-              </div>
-              <div>
-                <h4>CSIR outcomes</h4>
-                <ul class="list">
-                  <li>Resilient operations and safety</li>
-                  <li>Coordinated incident response</li>
-                  <li>Regulatory compliance</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h3>Scope &amp; applicability</h3>
-            <div class="venn">
-              <div class="venn-a">SCL OT CSIR</div>
-              <div class="venn-b">OT Systems</div>
-              <div class="venn-c">Seattle IT managed</div>
-            </div>
-            <ul class="list">
-              <li>In scope: BES cyber assets, ECAMS, PACS, and other SCL OT systems.</li>
-              <li>Out of scope: systems managed solely by Seattle IT for SCL.</li>
-              <li>Assumptions: trained stakeholders, current contacts, accurate asset inventories, recovery plans, backups, and spares maintained by system owners.</li>
-            </ul>
-            <div class="assumptions">
-              <div class="assumption-card" data-details="Training lapses slow identification and escalation.">Training</div>
-              <div class="assumption-card" data-details="Stale contacts delay notifications to leadership and regulators.">Contacts</div>
-              <div class="assumption-card" data-details="Missing inventories hide affected systems and dependencies.">Asset inventory</div>
-              <div class="assumption-card" data-details="No spares or backups can extend outages and recovery timelines.">Spares &amp; backups</div>
-            </div>
-            <div id="assumptionDetail" class="alert" style="display:none;"></div>
-          </div>
+      <div class="card">
+        <div>
+          <div class="tag">Reference</div>
+          <h2>CIP-007 Guided Training</h2>
+          <p>Legacy guided walkthrough of CIP-007 requirements. Use when you need to review the older flow and artifacts.</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="cip007/index.html">Open CIP-007 Site</a>
+          <a class="button secondary" href="cip007/modules/module6-cip7.html">Launch Module</a>
         </div>
       </div>
-
-      <div class="panel card" id="module-2">
-        <div class="pill">Module 2</div>
-        <h2 class="section-title">Roles, Responsibilities, Communications</h2>
-        <p class="section-sub">See the CSIR roles, pick your path, and follow the communications layers.</p>
-        <div class="role-reminder">
-          <div>
-            <h3>Your selected role</h3>
-            <p class="small">Role selection filters required callouts and scenarios.</p>
-            <div id="roleSummary" class="alert">Loading role summary…</div>
-            <button class="button secondary" id="remindSwitch">Switch role</button>
-          </div>
-          <div class="matrix">
-            <div class="matrix-row header"><span>Role</span><span>Key responsibilities</span></div>
-            <div class="matrix-row"><span>Incident Commander</span><span>Lead CSIR Team, set objectives, ensure reporting on time, oversee ICS use.</span></div>
-            <div class="matrix-row"><span>Technical Lead</span><span>Lead technical investigation, refine classification/severity, recommend containment/recovery.</span></div>
-            <div class="matrix-row"><span>ECS</span><span>Maintain CSIR plan, support classification/reportability, support E‑ISAC/CISA reporting, retain evidence.</span></div>
-            <div class="matrix-row"><span>NERC‑CIP Compliance</span><span>Support CIP‑008 and CIP‑003 obligations, maintain compliance evidence, run annual review/tests.</span></div>
-            <div class="matrix-row"><span>CSIR Team Members</span><span>Provide SME input, perform hands‑on tasks, follow incident documentation practices.</span></div>
-            <div class="matrix-row"><span>Dispatchers/Control</span><span>Recognize abnormalities, initiate reporting via Service Desk/incident channels, maintain logs.</span></div>
-            <div class="matrix-row"><span>System Owners</span><span>Maintain recovery plans, backups, spare equipment; participate in recovery and follow‑up.</span></div>
-            <div class="matrix-row"><span>All SCL Staff</span><span>Recognize suspicious activity, promptly report suspected incidents, complete annual cyber training.</span></div>
-          </div>
-        </div>
-        <div class="grid two">
-          <div>
-            <h3>Communications flow</h3>
-            <p>Internal notifications move from local OT teams to Incident Commander and Technical Lead, with ECS and Compliance coordinating regulatory messaging. Severe or Tier 1/AtC cases escalate to City IMT and external agencies (E‑ISAC, CISA/NCCIC, regulators).</p>
-            <div class="rings">
-              <div class="ring inner">Dispatchers • Field Ops • Engineering • System Owners</div>
-              <div class="ring middle">Incident Commander • Technical Lead • ECS • CSIR Team • NERC‑CIP</div>
-              <div class="ring outer">City IMT • Regulatory Affairs • External agencies</div>
-            </div>
-          </div>
-          <div>
-            <h3>Role-specific prompt</h3>
-            <div class="prompt-card">
-              <p class="small">Example (Dispatcher): “You see repeated failed logins on a control system. What is your next step?”</p>
-              <ul class="list">
-                <li>Recognize the signal as potential Incident/AtC.</li>
-                <li>Report immediately via CSIR channels (Service Desk/incident bridge).</li>
-                <li>Preserve observations (time, system) and await direction.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel card" id="module-3">
-        <div class="pill">Module 3</div>
-        <h2 class="section-title">Terminology, Classification, Severity</h2>
-        <div class="grid two">
-          <div>
-            <h3>Core definitions</h3>
-            <div class="definition-stack">
-              <div class="definition">Cyber Event – unusual activity (e.g., benign scan).</div>
-              <div class="definition">Cyber Security Incident – malicious/suspicious act impacting a cyber asset.</div>
-              <div class="definition">Attempt to Compromise – suspicious activity with little/no immediate impact; still critical.</div>
-              <div class="definition">Reportable Cyber Security Incident – meets mandatory criteria and deadlines.</div>
-            </div>
-            <div class="ladder">
-              <div>Event → Incident → AtC → Reportable Incident</div>
-              <p class="small">Shows how terms overlap as impact and reportability rise.</p>
-            </div>
-            <h3>Incident categories</h3>
-            <ul class="list">
-              <li>Malicious Code</li>
-              <li>Intrusion Incident</li>
-              <li>Denial of Service</li>
-              <li>Reconnaissance</li>
-              <li>Unauthorized Access</li>
-              <li>Phishing</li>
-              <li>Other</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Severity levels</h3>
-            <div class="severity-grid">
-              <div class="severity critical">Critical: cannot provide critical services; significant interruption to electrical power operations; inability to operate/monitor systems; utility‑wide data loss.</div>
-              <div class="severity high">High: moderate interruption of critical services; business continuity at risk; data corruption; active malicious activity on critical systems.</div>
-              <div class="severity medium">Medium: loss of critical service to subset; potential impact to adequacy/reliability; detected precursor.</div>
-              <div class="severity low">Low: minimal effect; services available with reduced efficiency; recon/suspicious activity; malware on non‑critical systems.</div>
-            </div>
-            <div class="prompt-card">
-              <p class="small">Exercise preview: classify OT narratives by category, severity, AtC vs Incident, and reportability.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel card" id="module-4">
-        <div class="pill">Module 4</div>
-        <h2 class="section-title">Workflow by Phase</h2>
-        <p class="section-sub">Six-phase timeline mapped to the CSIR plan with role callouts.</p>
-        <div class="timeline">
-          <div class="phase">Preparation</div>
-          <div class="phase">Identification</div>
-          <div class="phase">Investigation</div>
-          <div class="phase">Response</div>
-          <div class="phase">Recovery</div>
-          <div class="phase">Follow-Up</div>
-        </div>
-        <div class="grid two">
-          <div>
-            <h3>Phase goals</h3>
-            <ul class="list">
-              <li>Preparation: maintain plan distribution, monitoring, logging, backups.</li>
-              <li>Identification: classify quickly, assign severity, start documentation.</li>
-              <li>Investigation: confirm scope, expand notifications, refine decisions.</li>
-              <li>Response: contain, eradicate, coordinate ICS and reporting.</li>
-              <li>Recovery: restore validated systems safely with spares/backups.</li>
-              <li>Follow-Up: lessons learned, documentation updates, monitoring.</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Swimlane snapshot</h3>
-            <div class="swimlane">
-              <div><strong>Incident Commander:</strong> approvals, escalation, messaging.</div>
-              <div><strong>Technical Lead:</strong> classification, scope, containment options.</div>
-              <div><strong>ECS:</strong> reporter and evidence steward.</div>
-              <div><strong>OT Ops:</strong> execute containment/recovery with safety first.</div>
-              <div><strong>Compliance:</strong> align to reporting and audit artifacts.</div>
-            </div>
-            <div class="prompt-card">
-              <p class="small">Micro-scenario: advance through phases, deciding when to escalate or continue investigating. Feedback references the workflow tables.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel card" id="module-5">
-        <div class="pill">Module 5</div>
-        <h2 class="section-title">Reporting &amp; Documentation</h2>
-        <div class="grid two">
-          <div>
-            <h3>Reporting decision tree</h3>
-            <p>For AtC and Tier 1 incidents, submit an initial Cyber Security Incident Response Report to E‑ISAC and NCCIC/CISA within defined deadlines. ECS supports the Incident Commander as Cyber Security Incident Reporter.</p>
-            <div class="flowchart">
-              <div class="flow-step">Event detected &amp; classified</div>
-              <div class="flow-step">Is it AtC or Reportable Incident?</div>
-              <div class="flow-step">What Tier?</div>
-              <div class="flow-step">Notify internal stakeholders</div>
-              <div class="flow-step">External reports + deadlines</div>
-            </div>
-          </div>
-          <div>
-            <h3>Documentation &amp; evidence</h3>
-            <ul class="list">
-              <li>Record all incidents in the Cyber Security Incident Log (Tier 2 included).</li>
-              <li>Retention: final reports and data ≥7 years; logs/evidence ≥3 years or longest requirement.</li>
-              <li>ECS retains evidence and provides copies for NERC CIP audits.</li>
-            </ul>
-            <div class="checklist">
-              <h4>Documentation checklist</h4>
-              <ul class="list">
-                <li>Time of detection and classification</li>
-                <li>Affected systems and severity</li>
-                <li>Actions taken and by whom</li>
-                <li>Reporting timestamps</li>
-                <li>Lessons learned / follow-up items</li>
-              </ul>
-              <div class="timeline-bar">
-                <span>Initial report (≤1 hr)</span>
-                <span>Update (≤7 days)</span>
-                <span>Follow-up (≤90 days)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel card" id="module-6">
-        <div class="pill">Module 6</div>
-        <h2 class="section-title">OT Scenarios &amp; Drills</h2>
-        <p class="section-sub">Hands-on drills replace generic decision tables.</p>
-        <div class="grid two">
-          <div>
-            <h3>Scenario layout</h3>
-            <ol class="list">
-              <li>Context: OT system diagram + story (e.g., suspicious logins on substation gateway).</li>
-              <li>Identification: event vs incident, initial severity, notify who.</li>
-              <li>Investigation: logs to review, systems to isolate, AtC/reportable decision.</li>
-              <li>Response: containment options and ICS coordination.</li>
-              <li>Recovery: move from incident to recovery, restore from backups.</li>
-              <li>Follow-Up: documentation artifacts and lessons learned.</li>
-            </ol>
-          </div>
-          <div>
-            <h3>Scoring focus</h3>
-            <ul class="list">
-              <li>Classification &amp; severity accuracy mapped to CSIR tables.</li>
-              <li>Correct reporting and timing (1-hour initial, 7-day updates, 90-day follow-up).</li>
-              <li>Role-appropriate actions (All Staff report; Technical Lead refines and leads technical work).</li>
-              <li>Evidence completeness and documentation quality.</li>
-            </ul>
-            <div class="prompt-card">
-              <p class="small">Simplified network diagrams highlight affected components, with a reporting “clock” that starts when reportability is determined.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel card" id="module-7">
-        <div class="pill">Module 7</div>
-        <h2 class="section-title">Certification Exam</h2>
-        <p class="section-sub">Objective exam aligned to CSIR objectives plus mini-scenarios.</p>
-        <div class="grid two">
-          <div>
-            <h3>Exam composition</h3>
-            <ul class="list">
-              <li>10–15 objective questions covering definitions, roles, scope, assumptions, classification, severity, reporting basics.</li>
-              <li>2–3 scenario sections scored like mini Module 6 drills.</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Passing and completion</h3>
-            <ul class="list">
-              <li>Overall ≥80% with ≥70% on classification/reporting items.</li>
-              <li>Complete at least one full Module 6 scenario path with passing score.</li>
-              <li>On pass: display “CSIR Training Completed,” log date/score, unlock downloadable certificate.</li>
-            </ul>
-            <div class="footer-actions">
-              <a class="button" href="learn.html">Take the exam</a>
-              <a class="button secondary" href="certificate.html">View certificate</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <dialog id="roleModal" class="modal panel">
-    <h3>Select your role</h3>
-    <p class="small">Choose the role that best fits your responsibilities. We use this to filter required callouts and scenarios.</p>
-    <div id="roleOptions" class="role-grid"></div>
-    <div class="footer-actions">
-      <button id="roleClose" class="button secondary">Cancel</button>
-      <button id="roleSave" class="button" disabled>Save role</button>
     </div>
-  </dialog>
-
-  <script type="module" src="js/home.js"></script>
+    <footer>Seattle City Light • DecisionMaker training</footer>
+  </div>
 </body>
 </html>

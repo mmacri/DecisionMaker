@@ -1,0 +1,43 @@
+<div class="card page-card">
+  <div class="breadcrumb">You are here:</div>
+  <div class="page-title">
+    <h1></h1>
+    <div class="status-pill">CSIR-first training</div>
+  </div>
+  <div class="page-body"></div>
+  <div class="card" style="background:#f5f7fb; border:1px solid var(--border); margin-top:1rem;">
+    <h3>My Certificate(s)</h3>
+    <div id="certificate-list" class="list-tight"></div>
+  </div>
+  <div class="nav-actions">
+    <button id="btn-start">Start training</button>
+    <button id="btn-resume" class="secondary" disabled>Resume where I left off</button>
+  </div>
+  <div class="modal" id="start-modal" aria-hidden="true" role="dialog" aria-labelledby="start-modal-title">
+    <div class="modal-backdrop" data-close="start-modal"></div>
+    <div class="modal-dialog" role="document">
+      <div class="modal-header">
+        <h3 id="start-modal-title">Before you start</h3>
+        <button class="icon-button" data-close="start-modal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Please confirm who you are so we can tailor your path and prepare your certificate.</p>
+        <label for="start-role">Your role</label>
+        <select id="start-role" class="role-dropdown" aria-label="Choose your training role"></select>
+        <label for="start-name">Your name</label>
+        <input id="start-name" type="text" placeholder="Full name" autocomplete="name">
+        <label for="start-email">Your email</label>
+        <input id="start-email" type="email" placeholder="name@example.com" autocomplete="email">
+        <p class="muted">We’ll use this info to personalize your training and certificate.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary" data-close="start-modal">Cancel</button>
+        <button id="start-confirm">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+  <div class="done-when"></div>
+  <div class="nav-actions">
+    <button id="btn-next">Next</button>
+  </div>
+</div>

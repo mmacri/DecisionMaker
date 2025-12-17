@@ -1,0 +1,137 @@
+{
+  "quiz": {
+    "passScore": 80,
+    "questions": [
+      {
+        "prompt": "A validated alert shows malware on an HMI with no outage. What is the correct initial action for the Incident Commander?",
+        "options": [
+          "Shut down the HMI immediately",
+          "Classify the event, timestamp it, and notify SOC/IMT per the communication matrix",
+          "Wait for more alerts before acting",
+          "Call the vendor for guidance"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Unplanned shutdown can increase impact and lose evidence.",
+          "Correct—classification, timestamps, and communications drive the rest of the workflow.",
+          "Waiting risks missing escalation and reporting windows.",
+          "Vendor outreach happens after internal validation and declarations."
+        ],
+        "roles": [
+          "Incident Commander / Manager",
+          "Technical Responder",
+          "General Staff / Reporter"
+        ],
+        "lens": "Detection to declaration"
+      },
+      {
+        "prompt": "Which statement best describes when DOE-417 reporting must be started?",
+        "options": [
+          "Only if the utility loses power",
+          "Within 1 hour for reportable incidents; by end of next business day for attempts to compromise",
+          "Only after the incident is fully closed",
+          "Only if an auditor asks for it"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Loss of power is not the only trigger.",
+          "Correct—follow CIP-008 reporting timelines for incidents and attempts.",
+          "Waiting until closure misses required deadlines.",
+          "Reporting is required based on criteria, not auditor request."
+        ],
+        "roles": [
+          "Compliance / Evidence",
+          "Incident Commander / Manager",
+          "Technical Responder"
+        ],
+        "lens": "Regulatory reporting"
+      },
+      {
+        "prompt": "During containment the Technical Responder isolated a server. What should happen before returning it to production?",
+        "options": [
+          "Immediate return to service once the alarm stops",
+          "Validation scans, credential resets if needed, and leadership approval to go live",
+          "Wait for a vendor recommendation only",
+          "No additional steps are required"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Alarms clearing does not equal clean systems.",
+          "Correct—validate, document, and obtain approval prior to returning to service.",
+          "Vendors support but do not replace validation and approvals.",
+          "Recovery evidence is required before going live."
+        ],
+        "roles": [
+          "Technical Responder",
+          "Incident Commander / Manager"
+        ],
+        "lens": "Recovery"
+      },
+      {
+        "prompt": "Which action keeps evidence defensible for compliance?",
+        "options": [
+          "Saving screenshots in personal folders",
+          "Documenting chain-of-custody with hashes and storage locations",
+          "Waiting to collect evidence until after recovery",
+          "Relying on verbal updates"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Personal folders lack traceability.",
+          "Correct—documented hashes and locations prove integrity.",
+          "Waiting risks evidence loss and audit gaps.",
+          "Verbal updates are not auditable."
+        ],
+        "roles": [
+          "Compliance / Evidence",
+          "Technical Responder",
+          "Incident Commander / Manager"
+        ],
+        "lens": "Evidence handling"
+      },
+      {
+        "prompt": "General Staff reports a phishing email they did not click. What is the right response?",
+        "options": [
+          "Delete it and move on",
+          "Report to SOC/supervisor with details and leave the email intact",
+          "Forward it to friends as a warning",
+          "Ignore it because no link was clicked"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Deleting removes evidence.",
+          "Correct—report quickly, preserve the evidence, and follow instructions.",
+          "Forwarding expands exposure and loses control.",
+          "Unreported attempts erode situational awareness and compliance."
+        ],
+        "roles": [
+          "General Staff / Reporter",
+          "Observer (read-only)"
+        ],
+        "lens": "Awareness"
+      },
+      {
+        "prompt": "After containment and recovery, what should the team do to close the lifecycle?",
+        "options": [
+          "Resume operations without notes",
+          "Conduct lessons learned, update the CSIR Plan if needed, and log corrective actions",
+          "Rely on memory for future improvements",
+          "Wait for the next audit to review"
+        ],
+        "answer": 1,
+        "feedback": [
+          "Closing without reflection loses improvement opportunities.",
+          "Correct—document lessons, plan updates, and validation of fixes (CIP-008 R3).",
+          "Memory is insufficient for compliance evidence.",
+          "Waiting for audits delays remediation and documentation."
+        ],
+        "roles": [
+          "Incident Commander / Manager",
+          "Compliance / Evidence",
+          "Technical Responder"
+        ],
+        "lens": "Follow-up"
+      }
+    ]
+  }
+}

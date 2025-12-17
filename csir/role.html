@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select your role — SCL OT CSIR</title>
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand"><img src="assets/logo.svg" alt="SCL">Role Selection</div>
+      <div class="footer-actions">
+        <a class="button ghost" href="../index.html">Training home</a>
+        <div class="status-pill">Step 1 of 3</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel card">
+      <div class="pill">Required</div>
+      <h2 class="section-title">Choose your CSIR path</h2>
+      <p class="section-sub">Role selection locks the required steps, interactions, and exam for your responsibilities.</p>
+      <div id="roleGrid" class="role-grid"></div>
+      <div class="footer-actions">
+        <a href="index.html" class="button secondary">Back</a>
+        <button id="continue" class="button" disabled>Continue to learner name</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { setRole, loadProgress, clearIfDifferentCourse } from './js/storage.js';
+
+    const grid = document.getElementById('roleGrid');
+    const continueBtn = document.getElementById('continue');
+
+    async function loadRoles() {
+      try {
+        const response = await fetch('./contentpacks/scl-csir/pack.json');
+        if (!response.ok) throw new Error('Unable to load role data');
+        const pack = await response.json();
+
+        clearIfDifferentCourse(pack.course.version);
+        const saved = loadProgress().roleId;
+
+        pack.roles.forEach((role) => {
+          const card = document.createElement('div');
+          card.className = 'role-card';
+          if (saved === role.id) card.classList.add('selected');
+          card.innerHTML = `<h3>${role.label}</h3><p class="small">${role.whoItsFor}</p><div class="role-meta">Est. ${role.estMinutes} minutes</div>`;
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.role-card').forEach((c) => c.classList.remove('selected'));
+            card.classList.add('selected');
+            setRole(role.id);
+            continueBtn.disabled = false;
+          });
+          grid.appendChild(card);
+        });
+
+        if (saved) continueBtn.disabled = false;
+      } catch (err) {
+        grid.innerHTML = '<p class="alert">We could not load the CSIR role options. Please refresh and try again.</p>';
+        console.error(err);
+      }
+    }
+
+    loadRoles();
+    continueBtn.addEventListener('click', () => window.location.href = 'profile.html');
+  </script>
+</body>
+</html>

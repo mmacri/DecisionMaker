@@ -1,0 +1,873 @@
+{
+    "moduleId": "cip007",
+    "title": "CIP-007: System Security Management",
+    "mission": "Keep critical OT systems secure, monitored, and access-controlled so cyber issues are prevented, detected early, and contained.",
+    "estimatedTime": "25\u201335 minutes",
+    "audience": [
+        "OT Operators",
+        "System Administrators",
+        "Security Team",
+        "Compliance/Audit"
+    ],
+    "cta": "Start Training",
+    "intro": {
+        "why": [
+            "CIP-007 keeps OT cyber assets hardened so reliability and safety are not disrupted by preventable attacks.",
+            "It sets rules for services, patches, malware prevention, monitoring, accounts, and remote access.",
+            "Every role touches these controls: operators see changes first, admins configure them, security monitors them, and compliance validates evidence."
+        ],
+        "highlights": [
+            "Applies to BES Cyber Systems, PACS workstations, HMIs, servers, and jump hosts.",
+            "Requires documented procedures, not just tools.",
+            "Evidence must show the activity actually happened within the stated timeframe."
+        ]
+    },
+    "flowContent": [
+        {
+            "title": "Start with purpose",
+            "detail": "Understand the mission of CIP-007 and how it protects reliable operations."
+        },
+        {
+            "title": "Select your role",
+            "detail": "Pick the lens that tailors guidance and callouts to your responsibilities."
+        },
+        {
+            "title": "Work through R1\u2013R6",
+            "detail": "Each requirement is short with progressive disclosure for evidence and pitfalls."
+        },
+        {
+            "title": "Practice with scenarios",
+            "detail": "See how the controls show up in real operations and maintenance."
+        },
+        {
+            "title": "Pass the knowledge check",
+            "detail": "Score 80% or better to unlock the operational checklist."
+        },
+        {
+            "title": "Use the checklist",
+            "detail": "Print or download the Prevent/Detect/Respond checklist for daily use."
+        },
+        {
+            "title": "Finish and plan next steps",
+            "detail": "Document completion and plan follow-up actions."
+        }
+    ],
+    "roleGuidance": [
+        {
+            "role": "OT Operator",
+            "focus": [
+                "Spot unexpected behavior on HMIs or control panels and report quickly.",
+                "Confirm maintenance and remote sessions are scheduled and visible.",
+                "Avoid introducing media or changes without approvals."
+            ]
+        },
+        {
+            "role": "System Administrator",
+            "focus": [
+                "Maintain baselines, patch plans, and account hygiene for OT assets.",
+                "Coordinate with operations before service or patch changes.",
+                "Capture evidence as you work to simplify audits."
+            ]
+        },
+        {
+            "role": "Security Team",
+            "focus": [
+                "Tune detections for OT context and monitor remote access paths.",
+                "Investigate anomalies with operations before containment actions.",
+                "Ensure anti-malware and SIEM tooling respects OT performance limits."
+            ]
+        },
+        {
+            "role": "Compliance/Audit",
+            "focus": [
+                "Verify control evidence is collected at the required frequency.",
+                "Ensure procedures reflect what teams actually do.",
+                "Validate approvals for exceptions, deferrals, and emergency access."
+            ]
+        }
+    ],
+    "auditEtiquette": {
+        "rules": [
+            "Answer only for what you know and do; avoid speculating about systems you do not own.",
+            "Reference documented procedures, tickets, or screenshots when responding to auditors.",
+            "If you do not know an answer, state that you will retrieve the evidence instead of guessing.",
+            "Keep responses concise and aligned to the control requirement being asked."
+        ],
+        "examples": [
+            {
+                "prompt": "How do you make sure patches are evaluated on time?",
+                "bad": "We usually get to them when things slow down.",
+                "good": "We review vendor advisories monthly, log decisions in the patch tracker, and schedule installs during approved maintenance windows."
+            },
+            {
+                "prompt": "Who can enable a new service on an HMI?",
+                "bad": "Anyone on the team if they need to.",
+                "good": "Only system administrators with approved change tickets can enable services, and each change has a recorded business justification."
+            },
+            {
+                "prompt": "What happens when you see repeated login failures?",
+                "bad": "We just reset the account and move on.",
+                "good": "We follow the security event runbook: confirm source, check SIEM alerts, and document the investigation with the action taken."
+            }
+        ]
+    },
+    "nav": [
+        {
+            "id": "setup",
+            "label": "Setup & Getting Ready",
+            "href": "setup.html"
+        },
+        {
+            "id": "introduction",
+            "label": "Introduction & Purpose",
+            "href": "introduction.html"
+        },
+        {
+            "id": "training-flow",
+            "label": "Training Flow",
+            "href": "training-flow.html"
+        },
+        {
+            "id": "role-guidance",
+            "label": "Role Guidance",
+            "href": "role-guidance.html"
+        },
+        {
+            "id": "requirements-overview",
+            "label": "Requirements Overview",
+            "href": "requirements-overview.html"
+        },
+        {
+            "id": "r1",
+            "label": "Requirement R1 \u2013 Ports & Services",
+            "href": "r1.html"
+        },
+        {
+            "id": "r2",
+            "label": "Requirement R2 \u2013 Patch Management",
+            "href": "r2.html"
+        },
+        {
+            "id": "r3",
+            "label": "Requirement R3 \u2013 Malware Prevention",
+            "href": "r3.html"
+        },
+        {
+            "id": "r4",
+            "label": "Requirement R4 \u2013 Security Event Monitoring",
+            "href": "r4.html"
+        },
+        {
+            "id": "r5",
+            "label": "Requirement R5 \u2013 Account Management",
+            "href": "r5.html"
+        },
+        {
+            "id": "r6",
+            "label": "Requirement R6 \u2013 Interactive Remote Access",
+            "href": "r6.html"
+        },
+        {
+            "id": "audit-etiquette",
+            "label": "Audit Etiquette",
+            "href": "audit-etiquette.html",
+            "optional": true
+        },
+        {
+            "id": "scenarios",
+            "label": "Scenarios",
+            "href": "scenarios.html"
+        },
+        {
+            "id": "knowledge-check",
+            "label": "Knowledge Check",
+            "href": "knowledge-check.html"
+        },
+        {
+            "id": "checklist",
+            "label": "Operational Checklist",
+            "href": "checklist.html",
+            "lockAfter": "knowledge-check"
+        },
+        {
+            "id": "resources",
+            "label": "Resources",
+            "href": "resources.html"
+        },
+        {
+            "id": "completion",
+            "label": "Completion",
+            "href": "completion.html"
+        }
+    ],
+    "steps": [
+        {
+            "number": 1,
+            "label": "Setup"
+        },
+        {
+            "number": 2,
+            "label": "Introduction"
+        },
+        {
+            "number": 3,
+            "label": "Requirements"
+        },
+        {
+            "number": 4,
+            "label": "Scenarios"
+        },
+        {
+            "number": 5,
+            "label": "Knowledge Check"
+        },
+        {
+            "number": 6,
+            "label": "Checklist & Resources"
+        },
+        {
+            "number": 7,
+            "label": "Completion"
+        }
+    ],
+    "pageStepMap": {
+        "setup": 1,
+        "introduction": 2,
+        "training-flow": 2,
+        "role-guidance": 2,
+        "requirements-overview": 3,
+        "r1": 3,
+        "r2": 3,
+        "r3": 3,
+        "r4": 3,
+        "r5": 3,
+        "r6": 3,
+        "audit-etiquette": 4,
+        "scenarios": 4,
+        "knowledge-check": 5,
+        "checklist": 6,
+        "resources": 6,
+        "completion": 7
+    },
+    "pageRequirements": {
+        "knowledge-check": "quizPassed",
+        "checklist": "quizPassed",
+        "resources": "quizPassed",
+        "completion": "quizPassed"
+    },
+    "roleOptions": [
+        "OT Operator",
+        "System Administrator",
+        "Security Team",
+        "Compliance/Audit"
+    ],
+    "landing": {
+        "title": "CIP-007: System Security Management",
+        "mission": "Keep critical OT systems secure, monitored, and access-controlled so cyber issues are prevented, detected early, and contained.",
+        "learn": [
+            "What CIP-007 is protecting in OT",
+            "Your role in system security management",
+            "How each requirement R1\u2013R6 works operationally",
+            "How to recognize real-world scenarios",
+            "How to verify readiness with a checklist"
+        ]
+    },
+    "overview": [
+        {
+            "req": "R1",
+            "goal": "Only required ports, services, and software are enabled; everything else is disabled or removed.",
+            "owner": "System Administrator",
+            "why": "Reduces attack surface and keeps OT hosts predictable for operators."
+        },
+        {
+            "req": "R2",
+            "goal": "OT patches and security updates are evaluated and applied on a defined cycle without disrupting operations.",
+            "owner": "System Administrator",
+            "why": "Limits exploit windows and aligns vendors, change control, and maintenance windows."
+        },
+        {
+            "req": "R3",
+            "goal": "Malware prevention is deployed, tuned, and monitored on all applicable Cyber Assets.",
+            "owner": "Security Team",
+            "why": "Stops common malware, USB-borne threats, and lateral movement into critical control systems."
+        },
+        {
+            "req": "R4",
+            "goal": "Security events are logged, correlated, and triaged with documented responses.",
+            "owner": "Security Team",
+            "why": "Allows early detection of misuse or compromise before it impacts reliability."
+        },
+        {
+            "req": "R5",
+            "goal": "Accounts, passwords, and sessions follow least privilege, rotation, and timeout rules.",
+            "owner": "System Administrator",
+            "why": "Prevents stale or shared credentials from enabling unauthorized changes."
+        },
+        {
+            "req": "R6",
+            "goal": "Interactive remote access into ESPs is controlled, monitored, and brokered through secure paths.",
+            "owner": "Security Team",
+            "why": "Limits exposure from external connections and enforces jump host protections."
+        }
+    ],
+    "roleHighlights": {
+        "intro": {
+            "OT Operator": "You keep the plant running. CIP-007 protects your consoles and HMIs from changes that could trip alarms or affect controls.",
+            "System Administrator": "You configure services, patches, and accounts. CIP-007 defines the guardrails for every OT change.",
+            "Security Team": "You monitor events, malware, and remote access pathways. CIP-007 gives you the signals to react early.",
+            "Compliance/Audit": "You validate that evidence and processes align with documented procedures and timelines."
+        },
+        "introduction": {
+            "OT Operator": "You keep the plant running. CIP-007 protects your consoles and HMIs from changes that could trip alarms or affect controls.",
+            "System Administrator": "You configure services, patches, and accounts. CIP-007 defines the guardrails for every OT change.",
+            "Security Team": "You monitor events, malware, and remote access pathways. CIP-007 gives you the signals to react early.",
+            "Compliance/Audit": "You validate that evidence and processes align with documented procedures and timelines."
+        },
+        "roles": {
+            "OT Operator": "Flag anything that looks new or unexpected on HMIs. Your eyes catch unauthorized services before they spread.",
+            "System Administrator": "Maintain golden builds and patch calendars; keep evidence packages ready for spot-checks.",
+            "Security Team": "Tune detections for OT context and own response runbooks for events raised under CIP-007.",
+            "Compliance/Audit": "Verify approvals, change records, and that monitoring controls are continuously in place."
+        },
+        "role-guidance": {
+            "OT Operator": "Flag anything that looks new or unexpected on HMIs. Your eyes catch unauthorized services before they spread.",
+            "System Administrator": "Maintain golden builds and patch calendars; keep evidence packages ready for spot-checks.",
+            "Security Team": "Tune detections for OT context and own response runbooks for events raised under CIP-007.",
+            "Compliance/Audit": "Verify approvals, change records, and that monitoring controls are continuously in place."
+        },
+        "r1": {
+            "OT Operator": "Validate that new services don't change control screens or latency. Report slowdowns immediately.",
+            "System Administrator": "Baseline ports, remove unused software, and document deviations with approvals.",
+            "Security Team": "Review scans for rogue services and investigate unauthorized listeners quickly.",
+            "Compliance/Audit": "Check inventories match configurations and decommission plans are tracked."
+        },
+        "r2": {
+            "OT Operator": "Know when patch windows happen so you can monitor system behavior afterward.",
+            "System Administrator": "Track vendor advisories, test patches offline, and schedule installs with change control.",
+            "Security Team": "Prioritize fixes tied to exploitable CVEs and document compensating measures when delays occur.",
+            "Compliance/Audit": "Ensure evaluations and install decisions are recorded with dates and risk justifications."
+        },
+        "r3": {
+            "OT Operator": "Do not insert unknown media. Notify security if malware prompts appear or scans impact controls.",
+            "System Administrator": "Keep signatures updated and exclusions tuned so protection doesn't break OT applications.",
+            "Security Team": "Centralize malware alerts and verify quarantines or blocks are logged and escalated.",
+            "Compliance/Audit": "Confirm anti-malware coverage and that exception reviews have approvals and expiry dates."
+        },
+        "r4": {
+            "OT Operator": "Report unusual alarms or repeated login prompts\u2014they may correlate to security events.",
+            "System Administrator": "Forward critical logs to the SIEM and validate time sync so correlation works.",
+            "Security Team": "Own detection rules, triage playbooks, and evidence of follow-up actions.",
+            "Compliance/Audit": "Check that log retention, access, and review frequencies match documented procedures."
+        },
+        "r5": {
+            "OT Operator": "Use named accounts; avoid sharing passwords on shift. Lock screens when stepping away.",
+            "System Administrator": "Enforce password complexity, disable dormant accounts, and document shared credential approvals.",
+            "Security Team": "Monitor account anomalies and privileged access use. Investigate repeated lockouts.",
+            "Compliance/Audit": "Validate user attestation records and that access removal is timed with role changes."
+        },
+        "r6": {
+            "OT Operator": "Confirm remote sessions are scheduled and visible; challenge unscheduled activity.",
+            "System Administrator": "Maintain jump hosts, MFA, and session recording for remote connections.",
+            "Security Team": "Monitor remote access logs, alerts, and ensure approvals exist for sessions.",
+            "Compliance/Audit": "Review that remote access follows procedure and recordings are retained."
+        },
+        "scenarios": {
+            "OT Operator": "Use the scenarios to see how to communicate disruptions quickly and capture screen evidence.",
+            "System Administrator": "Map each scenario to change tickets and verify rollback plans are ready.",
+            "Security Team": "Use scenarios to practice containment steps and communication with operations.",
+            "Compliance/Audit": "Check that scenario actions match documented procedures and evidence trails."
+        },
+        "quiz": {
+            "OT Operator": "Focus on what you should do when things look wrong, not just the policy wording.",
+            "System Administrator": "Expect configuration and scheduling questions tied to R1\u2013R6 controls.",
+            "Security Team": "Look for detection and response cues you own after alerts fire.",
+            "Compliance/Audit": "Watch for evidence and approval requirements embedded in the scenarios."
+        },
+        "knowledge-check": {
+            "OT Operator": "Focus on what you should do when things look wrong, not just the policy wording.",
+            "System Administrator": "Expect configuration and scheduling questions tied to R1\u2013R6 controls.",
+            "Security Team": "Look for detection and response cues you own after alerts fire.",
+            "Compliance/Audit": "Watch for evidence and approval requirements embedded in the scenarios."
+        },
+        "audit-etiquette": {
+            "OT Operator": "Stick to what you do and see; do not guess about configurations you do not own.",
+            "System Administrator": "Be ready with screenshots, timestamps, and change tickets that show work happened.",
+            "Security Team": "Explain how alerts are triaged without overstating coverage or guarantees.",
+            "Compliance/Audit": "Guide the interview to documented evidence and avoid hypothetical statements."
+        },
+        "checklist": {
+            "OT Operator": "Use the checklist to quickly verify consoles, alerts, and remote access sessions look normal before shift.",
+            "System Administrator": "Treat it as a maintenance ready-reference for patches, accounts, and services.",
+            "Security Team": "Validate log flows, detections, and remote access controls weekly.",
+            "Compliance/Audit": "Confirm evidence artifacts line up with the checklist cadence."
+        }
+    },
+    "requirements": [
+        {
+            "id": "r1",
+            "title": "R1 \u2013 Ports & Services",
+            "purpose": "Only necessary ports, services, and default accounts are enabled on OT Cyber Assets.",
+            "risks": [
+                "Rogue services create backdoors or increase latency on HMIs and controllers.",
+                "Default credentials or unneeded software allow easy exploitation.",
+                "Unexpected network listeners disrupt deterministic network behavior."
+            ],
+            "good": [
+                "Baseline of approved services per asset type with documented business need.",
+                "Regular service reviews against configuration baselines and vulnerability scans.",
+                "Disabled defaults and removal of unused software after commissioning."
+            ],
+            "owner": "System Administrator",
+            "evidence": [
+                "Service inventory with date of last review and approver.",
+                "Screenshots or exports of disabled ports/services settings.",
+                "Change tickets for any new service enabling or software installs."
+            ],
+            "mistakes": [
+                "Leaving vendor diagnostic services running after maintenance windows.",
+                "Allowing temporary firewall exceptions to become permanent.",
+                "Not updating baselines when assets are rebuilt or replaced."
+            ],
+            "quickChecks": [
+                "Spot-check listeners on HMIs for only documented ports.",
+                "Confirm removed software is also off the startup list.",
+                "Verify service accounts are disabled when not in use."
+            ],
+            "done": [
+                "All active services have an owner, purpose, and approval.",
+                "Scan results match the approved baseline with no unexplained listeners.",
+                "Default or vendor accounts are disabled or renamed with strong credentials."
+            ]
+        },
+        {
+            "id": "r2",
+            "title": "R2 \u2013 Patch Management",
+            "purpose": "Evaluate, test, and apply security patches for applicable OT components on a defined schedule.",
+            "risks": [
+                "Unpatched systems expose known exploits used in ransomware campaigns.",
+                "Unplanned patching can interrupt control applications or HMIs.",
+                "Skipped evaluations leave gaps without documented compensating measures."
+            ],
+            "good": [
+                "Patch calendar aligned to maintenance windows and vendor guidance.",
+                "Lab testing or staging before production deployment with rollback steps.",
+                "Documented risk decision when patches are deferred, plus interim safeguards."
+            ],
+            "owner": "System Administrator",
+            "evidence": [
+                "Patch evaluation logs showing vendor notices, applicability, and decisions.",
+                "Install records with dates, approvers, and verification notes.",
+                "List of compensating measures when patches are delayed."
+            ],
+            "mistakes": [
+                "Applying IT images to OT assets without vendor validation.",
+                "Missing firmware updates on embedded devices tracked outside normal patch tools.",
+                "No record of what failed in testing, leading to repeated outages."
+            ],
+            "quickChecks": [
+                "Confirm last evaluation date is within the required window.",
+                "Review rollback plans before each deployment.",
+                "Verify offline assets are patched when returned to service."
+            ],
+            "done": [
+                "All applicable patches evaluated within the defined timeframe.",
+                "Successful installs documented with post-checks and no lingering compensating measures.",
+                "Deferred patches have risk acceptance, expiry date, and tracking to closure."
+            ]
+        },
+        {
+            "id": "r3",
+            "title": "R3 \u2013 Malware Prevention",
+            "purpose": "Deploy and manage malware prevention that fits OT constraints.",
+            "risks": [
+                "USB-borne malware or phishing payloads spread into control networks.",
+                "Overly aggressive scans cause latency or crash vendor applications.",
+                "Disabled signatures leave assets blind to new threats."
+            ],
+            "good": [
+                "OT-tuned anti-malware with exclusions validated by vendors.",
+                "Signature updates controlled through allowlisted repositories or manual updates.",
+                "Alerting integrated into SOC/SIEM with clear response playbooks."
+            ],
+            "owner": "Security Team",
+            "evidence": [
+                "List of protected assets with agent version and last signature update.",
+                "Approval records for scan exclusions and schedules.",
+                "Alert tickets showing investigation and resolution."
+            ],
+            "mistakes": [
+                "Leaving isolated devices without compensating controls when agents cannot install.",
+                "Using IT scan schedules that overlap with batch runs or tuning events.",
+                "Not documenting USB scanning results for field media."
+            ],
+            "quickChecks": [
+                "Verify signatures are current on HMIs and jump hosts.",
+                "Confirm removable media is scanned before connection.",
+                "Check that quarantined files have follow-up tickets."
+            ],
+            "done": [
+                "All applicable assets have protection or documented exceptions.",
+                "Updates and scans run on the approved cadence without affecting operations.",
+                "Alerts are routed, acknowledged, and resolved per playbook timelines."
+            ]
+        },
+        {
+            "id": "r4",
+            "title": "R4 \u2013 Security Event Monitoring",
+            "purpose": "Log and review security events that could indicate misuse or compromise.",
+            "risks": [
+                "Undetected failed logins become credential stuffing or brute force.",
+                "Clock drift breaks correlation and hides lateral movement.",
+                "Critical alarms are buried in noise without triage rules."
+            ],
+            "good": [
+                "Time-synchronized logs forwarded to a central collector with SIEM rules.",
+                "Documented review frequency and on-call escalation paths.",
+                "Runbooks for common alerts such as repeated lockouts or new services detected."
+            ],
+            "owner": "Security Team",
+            "evidence": [
+                "Log forwarding configs and screenshots proving events arrive at the SIEM.",
+                "Alert review records with timestamp, analyst, and action taken.",
+                "Time sync (NTP) status for critical assets."
+            ],
+            "mistakes": [
+                "Letting storage fill up and silently dropping logs.",
+                "Not monitoring remote access events from jump hosts.",
+                "Reviewing alerts without documenting disposition."
+            ],
+            "quickChecks": [
+                "Verify SIEM shows fresh events from HMIs and jump hosts.",
+                "Spot-check time sync status on critical servers.",
+                "Confirm weekly reviews occurred and tickets are closed."
+            ],
+            "done": [
+                "Critical event sources are connected and time-synced.",
+                "Alerts have clear owners and documented response steps.",
+                "Evidence exists for scheduled reviews and escalations."
+            ]
+        },
+        {
+            "id": "r5",
+            "title": "R5 \u2013 Account Management",
+            "purpose": "Manage authentication, passwords, and access revocation for shared and individual accounts.",
+            "risks": [
+                "Shared accounts make accountability impossible.",
+                "Stale accounts remain active after contractors leave.",
+                "Weak passwords or no lockouts allow brute-force entry."
+            ],
+            "good": [
+                "Named accounts for operators and administrators with least privilege.",
+                "Password complexity, rotation, and session timeout configured for OT systems.",
+                "Documented process for emergency or shared accounts with approvals and logs."
+            ],
+            "owner": "System Administrator",
+            "evidence": [
+                "User lists mapped to roles with last login dates.",
+                "Password policy settings and lockout thresholds screenshots.",
+                "Deprovisioning tickets tied to role changes or contractor departures."
+            ],
+            "mistakes": [
+                "Leaving vendor or contractor accounts active after work completes.",
+                "No session timeout on shared consoles in control rooms.",
+                "Weak service account passwords reused across devices."
+            ],
+            "quickChecks": [
+                "Spot-check for shared logins still in use on HMIs.",
+                "Verify last login dates for dormant accounts.",
+                "Confirm session lock is enabled on jump hosts."
+            ],
+            "done": [
+                "Only approved accounts exist with mapped owners and access levels.",
+                "Password and lockout policies enforced per standard.",
+                "Access removals are documented within required timelines."
+            ]
+        },
+        {
+            "id": "r6",
+            "title": "R6 \u2013 Interactive Remote Access",
+            "purpose": "Control and monitor remote interactive access into Electronic Security Perimeters.",
+            "risks": [
+                "Direct connections bypass jump hosts and evade monitoring.",
+                "Unrecorded sessions hide what changes were made.",
+                "Weak MFA or shared credentials allow external compromise."
+            ],
+            "good": [
+                "All remote access terminates on managed jump hosts with MFA and session recording.",
+                "Approvals and scheduling are required before sessions begin.",
+                "Session logs reviewed and alerts generated for unexpected access."
+            ],
+            "owner": "Security Team",
+            "evidence": [
+                "Jump host configuration showing MFA, recording, and timeouts.",
+                "Access request tickets with approvals and session IDs.",
+                "Reports of remote access sessions reviewed with findings."
+            ],
+            "mistakes": [
+                "Allowing vendor direct VPN into control networks.",
+                "Recording disabled to improve performance with no compensating control.",
+                "Not revoking jump host access after project closeout."
+            ],
+            "quickChecks": [
+                "Check current session list on jump hosts for expected activity.",
+                "Verify MFA prompts fire for each connection.",
+                "Review last week's remote access report for anomalies."
+            ],
+            "done": [
+                "Remote access only through approved brokers with MFA and recording.",
+                "Sessions are authorized, logged, and reviewed.",
+                "Emergency access is time-bound and documented."
+            ]
+        }
+    ],
+    "scenarios": [
+        {
+            "situation": "A vendor requests quick access to update HMI graphics outside the change window.",
+            "action": "Route the request through the jump host with MFA, create a change ticket, and schedule during the approved window or apply compensating controls.",
+            "requirement": "R6 \u2013 Interactive Remote Access",
+            "why": "Unauthorized or unscheduled remote changes can bypass monitoring and introduce errors."
+        },
+        {
+            "situation": "Operators notice a new service listening on port 8080 after a maintenance weekend.",
+            "action": "Compare against the approved service baseline, disable if not required, and document in change control with security review.",
+            "requirement": "R1 \u2013 Ports & Services",
+            "why": "Unknown listeners expand the attack surface and may indicate unauthorized installs."
+        },
+        {
+            "situation": "Patch testing shows a control app crash on a new OS update.",
+            "action": "Record the failure, defer deployment, implement compensating controls, and retest with vendor guidance.",
+            "requirement": "R2 \u2013 Patch Management",
+            "why": "Deploying untested patches risks outages; deferral must be justified and tracked."
+        },
+        {
+            "situation": "SIEM alerts on repeated failed logins to a jump host during off-hours.",
+            "action": "Escalate per playbook, verify MFA attempts, check for correlated activity, and lock accounts if needed.",
+            "requirement": "R4/R6 \u2013 Monitoring & Remote Access",
+            "why": "Early response prevents credential guessing from becoming an intrusion."
+        }
+    ],
+    "quiz": {
+        "passScore": 80,
+        "questions": [
+            {
+                "prompt": "What is the primary goal of R1 \u2013 Ports & Services?",
+                "options": [
+                    "Ensure every service is updated weekly",
+                    "Limit enabled ports/services to only what the asset requires",
+                    "Block all inbound traffic",
+                    "Allow vendors to run diagnostics anytime"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "Updates matter, but R1 focuses on limiting enabled services.",
+                    "Correct. R1 reduces the attack surface by only allowing required services.",
+                    "Blocking all inbound traffic is not practical for OT operations.",
+                    "Diagnostics must be scheduled and approved, not open-ended."
+                ]
+            },
+            {
+                "prompt": "When a patch is deferred after failing testing, what should happen?",
+                "options": [
+                    "Ignore the patch until the next cycle",
+                    "Deploy it anyway in production",
+                    "Document compensating measures and track a retest date",
+                    "Remove the asset from service permanently"
+                ],
+                "answer": 2,
+                "feedback": [
+                    "Deferrals require documentation, not silence.",
+                    "Deploying a failing patch risks outages.",
+                    "Correct. Record the reason, compensating measures, and plan to retest.",
+                    "Removal is rarely feasible and not required when deferring."
+                ]
+            },
+            {
+                "prompt": "Which control best supports R3 \u2013 Malware Prevention in OT?",
+                "options": [
+                    "Unrestricted full disk scans during production runs",
+                    "Signature updates and exclusions validated with vendors",
+                    "Relying only on perimeter firewalls",
+                    "Disabling anti-malware to improve performance"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "Scans must be tuned, not unrestricted.",
+                    "Correct. Updates plus vendor-approved exclusions keep protection effective and safe for OT.",
+                    "Perimeter firewalls alone don't stop USB-borne or lateral malware.",
+                    "Disabling protections violates R3 and increases risk."
+                ]
+            },
+            {
+                "prompt": "What makes event monitoring effective under R4?",
+                "options": [
+                    "Saving logs locally without review",
+                    "Forwarding logs to a SIEM with time sync and review playbooks",
+                    "Deleting old logs to free space monthly",
+                    "Only monitoring office network events"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "Unreviewed local logs miss threats.",
+                    "Correct. Central collection with correlation, time sync, and triage is required.",
+                    "Log retention is required; deletion without retention policy breaks evidence.",
+                    "OT assets must be monitored, not just IT."
+                ]
+            },
+            {
+                "prompt": "Which action aligns with R5 \u2013 Account Management?",
+                "options": [
+                    "Sharing one admin account for all contractors",
+                    "Keeping default vendor accounts enabled for convenience",
+                    "Enforcing session timeouts and removing accounts when projects end",
+                    "Allowing unlimited password retries"
+                ],
+                "answer": 2,
+                "feedback": [
+                    "Shared accounts reduce accountability.",
+                    "Default accounts must be disabled or secured.",
+                    "Correct. Timeouts and timely removals are core to R5.",
+                    "Lockouts are required to deter brute force."
+                ]
+            },
+            {
+                "prompt": "For R6, which remote access pattern is acceptable?",
+                "options": [
+                    "Direct VPN into the control network using shared credentials",
+                    "Jump host with MFA, recorded sessions, and pre-approved access",
+                    "Remote desktop without monitoring during off-hours",
+                    "Personal laptops connecting directly to controllers"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "Direct VPN without controls violates R6.",
+                    "Correct. Remote access must be brokered, authenticated with MFA, and monitored.",
+                    "Sessions must be monitored and approved, not silent.",
+                    "Unmanaged endpoints should not connect to controllers."
+                ]
+            },
+            {
+                "prompt": "Why does CIP-007 require role-based reviews of services and accounts?",
+                "options": [
+                    "To satisfy HR policy",
+                    "To align technical changes with operational needs and accountability",
+                    "To slow down change approvals",
+                    "Because audits happen monthly"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "CIP-007 is not about HR policy.",
+                    "Correct. Aligning roles ensures changes are necessary, safe, and traceable.",
+                    "Efficiency is good; slowing approvals is not the goal.",
+                    "Frequency of audits is not the primary reason."
+                ]
+            },
+            {
+                "prompt": "What should operators do if anti-malware quarantines a file during shift?",
+                "options": [
+                    "Ignore it and continue",
+                    "Disable anti-malware to restore the file",
+                    "Notify security, capture the alert details, and confirm OT processes remain stable",
+                    "Delete the application to be safe"
+                ],
+                "answer": 2,
+                "feedback": [
+                    "Quarantines must be reviewed.",
+                    "Disabling protection increases risk.",
+                    "Correct. Report, document, and ensure operations stay stable.",
+                    "Deletion without analysis can harm operations."
+                ]
+            },
+            {
+                "prompt": "When is the Operational Checklist unlocked?",
+                "options": [
+                    "After visiting any requirement page",
+                    "After passing the Knowledge Check",
+                    "After downloading resources",
+                    "Immediately on first visit"
+                ],
+                "answer": 1,
+                "feedback": [
+                    "Completion alone does not unlock it.",
+                    "Correct. Passing the quiz shows understanding before using the checklist.",
+                    "Resources are optional and not a gate.",
+                    "It is intentionally gated."
+                ]
+            }
+        ]
+    },
+    "checklist": {
+        "Prevent": [
+            {
+                "item": "Verify only approved ports/services are running on HMIs and servers",
+                "frequency": "Weekly"
+            },
+            {
+                "item": "Confirm signature updates succeeded on all applicable assets",
+                "frequency": "Daily"
+            },
+            {
+                "item": "Ensure remote access jump hosts enforce MFA and session recording",
+                "frequency": "Weekly"
+            },
+            {
+                "item": "Validate patch evaluations are completed within the defined window",
+                "frequency": "Monthly"
+            }
+        ],
+        "Detect": [
+            {
+                "item": "Review SIEM alerts for failed logins and new services",
+                "frequency": "Daily"
+            },
+            {
+                "item": "Check NTP/time sync status on logging sources",
+                "frequency": "Weekly"
+            },
+            {
+                "item": "Confirm anti-malware alerts have tickets with disposition",
+                "frequency": "Weekly"
+            }
+        ],
+        "Respond": [
+            {
+                "item": "Verify rollback plans exist for upcoming patches",
+                "frequency": "Per change"
+            },
+            {
+                "item": "Ensure accounts disabled within required timeframe after role changes",
+                "frequency": "Per event"
+            },
+            {
+                "item": "Document investigations for remote access anomalies",
+                "frequency": "Per event"
+            }
+        ]
+    },
+    "resources": {
+        "policies": [
+            "OT System Security Management Standard",
+            "Remote Access Procedure for ESP Assets",
+            "Patch Evaluation and Exception Process",
+            "Logging and Monitoring Playbook"
+        ],
+        "tools": [
+            "SIEM / log collector",
+            "Patch management or vendor advisory portal",
+            "Endpoint protection console",
+            "Jump host / bastion management"
+        ],
+        "contacts": [
+            "Security Operations mailbox",
+            "OT System Administration team",
+            "Compliance lead for evidence questions"
+        ]
+    },
+    "completion": {
+        "nextSteps": [
+            "Share the checklist with your shift or project team.",
+            "Schedule a spot-check of your assets against R1\u2013R6.",
+            "Log into the SIEM to confirm your sources are still reporting."
+        ],
+        "certificateNote": "Generate a certificate locally to acknowledge completion."
+    }
+}

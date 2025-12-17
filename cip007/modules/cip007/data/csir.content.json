@@ -1,0 +1,366 @@
+{
+  "moduleId": "csir",
+  "mode": "csir",
+  "contentPack": "training/cip-007-csir",
+  "trainingName": "CIP-007 Cyber Security Incident Response",
+  "title": "CIP-007 CSIR Training",
+  "estimatedTime": "45–60 minutes",
+  "requireRoleSelection": true,
+  "roleOptions": [
+    "Control Center Operator",
+    "OT / SCADA Engineer",
+    "IT / SOC",
+    "Compliance / GRC",
+    "Incident Commander / Leadership",
+    "Auditor / Observer (read-only)"
+  ],
+  "statusBadges": {
+    "notStarted": "Not Started",
+    "inProgress": "In Progress",
+    "ready": "Ready for Audit",
+    "completed": "Completed"
+  },
+  "roleRequirements": {
+    "Control Center Operator": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "final-check", "certificate"],
+    "OT / SCADA Engineer": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "final-check", "certificate"],
+    "IT / SOC": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "final-check", "certificate"],
+    "Compliance / GRC": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "final-check", "certificate"],
+    "Incident Commander / Leadership": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "final-check", "certificate"],
+    "Auditor / Observer (read-only)": ["dashboard", "orientation", "scope", "plan", "execution", "etiquette", "mock", "resources"]
+  },
+  "phases": [
+    { "title": "Phase 0 — Orientation", "description": "Purpose and audit mapping", "badge": "Orientation", "pages": ["dashboard", "orientation"] },
+    { "title": "Phase 1 — Scope & Applicability", "description": "Who and what is covered", "badge": "Scope", "pages": ["scope"] },
+    { "title": "Phase 2 — CSIR Plan", "description": "Step-by-step plan expectations", "badge": "Plan", "pages": ["plan"] },
+    { "title": "Phase 3 — Role Execution", "description": "Responsibilities by audience", "badge": "Roles", "pages": ["execution"] },
+    { "title": "Phase 4 — Audit Etiquette", "description": "Interview skills and responses", "badge": "Audit", "pages": ["etiquette"] },
+    { "title": "Phase 5 — Mock Audit", "description": "Practice questions", "badge": "Practice", "pages": ["mock"] },
+    { "title": "Phase 6 — Final Check", "description": "Scenario knowledge check & certificate", "badge": "Final", "pages": ["final-check", "certificate", "resources"] }
+  ],
+  "nav": [
+    { "id": "dashboard", "label": "My Training", "href": "csir.html" },
+    { "id": "orientation", "label": "Phase 0 — Orientation", "href": "csir-orientation.html" },
+    { "id": "scope", "label": "Phase 1 — Scope & Applicability", "href": "csir-scope.html" },
+    { "id": "plan", "label": "Phase 2 — CSIR Plan", "href": "csir-plan.html" },
+    { "id": "execution", "label": "Phase 3 — Role Execution", "href": "csir-roles.html" },
+    { "id": "etiquette", "label": "Phase 4 — Audit Etiquette", "href": "csir-etiquette.html" },
+    { "id": "mock", "label": "Phase 5 — Mock Audit", "href": "csir-mock.html" },
+    { "id": "final-check", "label": "Phase 6 — Final Knowledge Check", "href": "csir-final.html" },
+    { "id": "certificate", "label": "Certificate", "href": "csir-certificate.html" },
+    { "id": "resources", "label": "Resources", "href": "csir-resources.html", "optional": true }
+  ],
+  "steps": [
+    { "number": 1, "label": "Orientation" },
+    { "number": 2, "label": "Scope" },
+    { "number": 3, "label": "Plan" },
+    { "number": 4, "label": "Role Practice" },
+    { "number": 5, "label": "Audit Etiquette" },
+    { "number": 6, "label": "Mock Audit" },
+    { "number": 7, "label": "Finalize" }
+  ],
+  "pageStepMap": {
+    "dashboard": 1,
+    "orientation": 1,
+    "scope": 2,
+    "plan": 3,
+    "execution": 4,
+    "etiquette": 5,
+    "mock": 6,
+    "final-check": 7,
+    "certificate": 7,
+    "resources": 7
+  },
+  "pageRequirements": {
+    "orientation": "orientationAck",
+    "scope": "scopeCheck",
+    "final-check": "quizPassed",
+    "certificate": "certificateIssued"
+  },
+  "roleHighlights": {
+    "orientation": {
+      "Control Center Operator": "Be ready to explain how operations would recognize and declare an incident during a shift handoff.",
+      "OT / SCADA Engineer": "Map each SCADA alarm path to who can declare an incident.",
+      "IT / SOC": "Tie CSIR triggers to your SOC runbook IDs for quick evidence retrieval.",
+      "Compliance / GRC": "Note which phases generate auditable artifacts automatically.",
+      "Incident Commander / Leadership": "Focus on when to formally declare vs. monitor and what must be logged.",
+      "Auditor / Observer (read-only)": "Observe how the training enforces gated progress and evidence of acknowledgement."
+    },
+    "scope": {
+      "Control Center Operator": "Operators must know which consoles are BES Cyber Assets and which transient devices are prohibited.",
+      "OT / SCADA Engineer": "Tie transient device handling to maintenance playbooks.",
+      "IT / SOC": "Clarify how monitoring tools classify BES vs enterprise assets.",
+      "Compliance / GRC": "Capture how scope ties to impact ratings in your evidence matrix.",
+      "Incident Commander / Leadership": "Be able to state who can expand scope during an incident.",
+      "Auditor / Observer (read-only)": "Document how scope answers align to audit requests."
+    },
+    "plan": {
+      "Control Center Operator": "Keep the detection-to-declaration timer visible during drills.",
+      "OT / SCADA Engineer": "Match each plan step to an engineering owner for evidence follow-up.",
+      "IT / SOC": "Highlight correlation rules that map to CIP-007 triggers.",
+      "Compliance / GRC": "Note which plan outputs belong in the compliance evidence binder.",
+      "Incident Commander / Leadership": "Decide when to notify RC/BA/TO leadership per documented timelines.",
+      "Auditor / Observer (read-only)": "Verify the plan references CIP-008 for declaration handoff only."
+    },
+    "execution": {
+      "Control Center Operator": "Know what you say vs. what you escalate—never speculate cause.",
+      "OT / SCADA Engineer": "Stay within documented changes; note evidence capture steps.",
+      "IT / SOC": "Tie every action to a ticket number and timestamp.",
+      "Compliance / GRC": "Ensure logs/time sources are synchronized for defensible evidence.",
+      "Incident Commander / Leadership": "Protect chain-of-custody decisions and approvals.",
+      "Auditor / Observer (read-only)": "Capture how roles stay inside script; no improvisation."
+    },
+    "etiquette": {
+      "Control Center Operator": "If you do not know, offer to retrieve the log excerpt—never guess.",
+      "OT / SCADA Engineer": "Avoid deep dives into architecture unless asked; cite approved diagrams.",
+      "IT / SOC": "Map answers to ticket numbers to avoid open-ended questions.",
+      "Compliance / GRC": "Frame every answer with time stamps and evidence locations.",
+      "Incident Commander / Leadership": "Model concise answers and defer to SMEs for specifics.",
+      "Auditor / Observer (read-only)": "Observe the deferral language and how it keeps scope narrow."
+    },
+    "mock": {
+      "Control Center Operator": "Practice short answers that reference the CSIR plan page.",
+      "OT / SCADA Engineer": "Stick to documented patching/forensics limits when questioned.",
+      "IT / SOC": "Use SOC alert IDs in answers to show traceability.",
+      "Compliance / GRC": "Connect each answer to evidence repositories.",
+      "Incident Commander / Leadership": "Demonstrate calm escalation language.",
+      "Auditor / Observer (read-only)": "Gauge whether answers avoid speculation."
+    },
+    "quiz": {
+      "Control Center Operator": "Expect scenario questions about declaring incidents mid-shift.",
+      "OT / SCADA Engineer": "Expect device rebuild/forensics boundaries questions.",
+      "IT / SOC": "Expect correlation/escalation timers.",
+      "Compliance / GRC": "Expect evidence trail alignment.",
+      "Incident Commander / Leadership": "Expect decision timing and communication.",
+      "Auditor / Observer (read-only)": "Awareness check only."
+    }
+  },
+  "orientation": {
+    "purpose": "Explain what this training is, why CIP-007 CSIR exists, and how it maps directly to audit evidence.",
+    "gate": "I understand how this CSIR training flows and that I must follow the phases in order.",
+    "topics": [
+      { "title": "What is CIP-007?", "detail": "A standard that safeguards system security management for BES Cyber Systems." },
+      { "title": "What is CSIR?", "detail": "Cyber Security Incident Response under CIP-007 sets expectations for detecting, declaring, escalating, and documenting incidents." },
+      { "title": "Why auditors care", "detail": "Auditors verify you can prove detection, declaration, and response steps happened within defined time frames." },
+      { "title": "How this training works", "detail": "Six linear phases with a final knowledge check and downloadable certificate." }
+    ]
+  },
+  "scope": {
+    "points": [
+      { "title": "BES Cyber Asset definition", "detail": "Assets that would affect Bulk Electric System reliability if mis-operated or unavailable." },
+      { "title": "Impact ratings", "detail": "Low/Medium/High determine monitoring depth, log retention, and escalation timelines." },
+      { "title": "Transient Cyber Assets", "detail": "Vendor laptops, removable media, and field diagnostic tools must follow CSIR entry/exit rules." },
+      { "title": "No-incident myth", "detail": "Even if you have never declared an incident, auditors expect rehearsed evidence paths and mock records." }
+    ],
+    "check": {
+      "question": "Which systems require CSIR evidence under CIP-007?",
+      "options": [
+        "Only systems that have previously had a cyber incident",
+        "All BES Cyber Systems and supporting tools that could impact BES reliability",
+        "Only high-impact BES Cyber Systems",
+        "Only transient devices when connected to the control center"
+      ],
+      "answer": 1,
+      "rationale": "CSIR applies to BES Cyber Systems and supporting tooling capable of affecting BES reliability, regardless of past incidents.",
+      "success": "Correct—CSIR expectations are tied to impact on the BES, not past incident history."
+    }
+  },
+  "plan": {
+    "lead": "Phase 2 incorporates the CSIR material from the cip-audit-ready Module 6 content.",
+    "steps": [
+      { "title": "Detect & declare", "detail": "Identify indicators, validate against baselines, and document who can declare.", "audit": "Show detector source, validation notes, and declaration time." },
+      { "title": "Escalate within timelines", "detail": "Follow role-based timers from detection to declaration to leadership notification.", "audit": "Clock starts at first credible indicator; keep synchronized clocks." },
+      { "title": "Preserve evidence", "detail": "Capture logs, screenshots, volatile data, and system notes immediately.", "audit": "Chain-of-custody, hash values, and who handled the data." },
+      { "title": "Coordinate with CIP-008", "detail": "If declared, hand off to CIP-008 processes while keeping CIP-007 evidence intact.", "audit": "Reference the CIP-008 playbook ID, not the full procedure." },
+      { "title": "Return to service", "detail": "Document recovery steps, validation, and monitoring for recurrence.", "audit": "Evidence of approvals and validation checks." }
+    ],
+    "note": "Every step must show who acted, when, and where the evidence is stored."
+  },
+  "execution": {
+    "shared": [
+      "All roles timestamp actions with the same authoritative clock.",
+      "Record ticket or log IDs for every action and communication.",
+      "Never speculate root cause during an audit interview—stick to documented facts."
+    ],
+    "Control Center Operator": {
+      "responsibilities": [
+        "Recognize operational impacts and trigger declaration per shift guide.",
+        "Stabilize the system and avoid unauthorized changes.",
+        "Capture console messages and alarms for evidence."
+      ],
+      "expectations": [
+        "Know who can declare and who must be notified.",
+        "Show evidence of alarms acknowledged and tickets opened.",
+        "Demonstrate awareness of transient device rules."],
+      "never": [
+        "Speculate on malware or cause.",
+        "Bypass documented communication paths.",
+        "Share screenshots without removing non-evidence information."
+      ]
+    },
+    "OT / SCADA Engineer": {
+      "responsibilities": [
+        "Validate signals and device health without jeopardizing forensics.",
+        "Support containment using approved methods.",
+        "Document configuration states before changes."
+      ],
+      "expectations": [
+        "Map actions to change approvals or maintenance windows.",
+        "Protect evidence locations and hashes.",
+        "Align with CIP-008 declaration if triggered."],
+      "never": [
+        "Image devices without authorization.",
+        "Erase or overwrite volatile data before capture.",
+        "Perform vendor updates outside approved steps."
+      ]
+    },
+    "IT / SOC": {
+      "responsibilities": [
+        "Correlate alerts, validate severity, and coordinate with OT leads.",
+        "Document escalation timers and ticket references.",
+        "Collect and preserve logs from monitored systems."
+      ],
+      "expectations": [
+        "Show correlation rules and alert IDs.",
+        "Demonstrate who was notified and when.",
+        "Prove monitoring coverage of BES Cyber Systems."],
+      "never": [
+        "Push enterprise tools into OT without change approval.",
+        "Close alerts without OT concurrence.",
+        "Guess at operational impact." ]
+    },
+    "Compliance / GRC": {
+      "responsibilities": [
+        "Ensure evidence is cataloged and retained per policy.",
+        "Track decisions against documented plan language.",
+        "Prepare audit exhibits and interview briefs."
+      ],
+      "expectations": [
+        "Know where time-synced records live.",
+        "Show traceability from indicator to declaration to recovery.",
+        "Explain differences between CIP-007 CSIR and CIP-008."],
+      "never": [
+        "Edit technical records without SME review.",
+        "Promise artifacts you cannot produce.",
+        "Deviate from scripted interview deferrals." ]
+    },
+    "Incident Commander / Leadership": {
+      "responsibilities": [
+        "Authorize declaration, external notifications, and containment steps.",
+        "Protect safety and reliability while directing resources.",
+        "Approve communications and ensure chain-of-custody."],
+      "expectations": [
+        "Cite the timer between detection and leadership notification.",
+        "Show decision logs and who was engaged.",
+        "Demonstrate when CIP-008 was triggered (if applicable)."],
+      "never": [
+        "Override evidence handling without documentation.",
+        "Commit to root cause during live operations.",
+        "Skip formal declaration when criteria are met." ]
+    },
+    "Auditor / Observer (read-only)": {
+      "responsibilities": [
+        "Observe that roles follow the script and note variances.",
+        "Capture which artifacts prove each phase.",
+        "Report clarity and consistency gaps."],
+      "expectations": [
+        "Recognize the audit trail for each step.",
+        "Understand deferral language and when it is used.",
+        "Identify any scope or timing conflicts."],
+      "never": [
+        "Direct the response team.",
+        "Request unsanctioned evidence.",
+        "Change role selections mid-exercise." ]
+    }
+  },
+  "etiquette": {
+    "rules": [
+      "Answer only what is asked—no extra systems, no theories.",
+      "Use “I will confirm” when unsure; never guess.",
+      "State the evidence location and ticket ID instead of storytelling.",
+      "Pause, breathe, and defer to the documented CSIR steps."],
+    "examples": [
+      { "prompt": "What if an auditor asks for a system you do not own?", "bad": "I think OT SecOps handles it.", "good": "That system is handled by OT SecOps; I will have their on-call provide the evidence." },
+      { "prompt": "Asked about cause before investigation?", "bad": "It was likely malware.", "good": "We have not completed forensics; evidence collection is underway per CSIR step 3." },
+      { "prompt": "Asked why you did not declare earlier?", "bad": "We were busy and missed it.", "good": "The indicator was validated at 09:05 and declared at 09:12 within the documented 15-minute window." }
+    ]
+  },
+  "mock": {
+    "questions": [
+      {
+        "prompt": "An auditor asks: who can declare a cyber security incident for a control center outage?",
+        "options": ["Any operator on shift", "Only the Incident Commander", "Anyone with SOC access", "Only Compliance"] ,
+        "answer": 0,
+        "audit": "Operators must know the documented declaration authority.",
+        "lens": "Declaration authority"
+      },
+      {
+        "prompt": "During a review, the auditor asks for evidence of time synchronization between logs and operator actions.",
+        "options": ["Provide screenshots of clocks and event logs", "Explain that clocks are close enough", "Offer to rebuild NTP", "State it is out of scope"],
+        "answer": 0,
+        "audit": "Auditability depends on synchronized time sources.",
+        "lens": "Evidence integrity"
+      },
+      {
+        "prompt": "You are asked why CIP-008 was referenced but not invoked.",
+        "options": ["Because we prefer CIP-007 only", "Because impact criteria for CIP-008 were not met", "Because leadership was unavailable", "Because logs were incomplete"],
+        "answer": 1,
+        "audit": "Auditors expect rationale tied to documented thresholds.",
+        "lens": "Threshold clarity"
+      }
+    ]
+  },
+  "quiz": {
+    "passScore": 80,
+    "questions": [
+      {
+        "prompt": "Mid-shift, an alarm indicates potential malware on an HMI serving a Medium impact BES Cyber System. What is your first documented action?",
+        "options": ["Take the HMI offline immediately", "Validate the indicator, document time, and notify the declaring authority", "Call the vendor for help", "Wait for more alerts"],
+        "answer": 1,
+        "feedback": ["Immediate shutdown without validation may create more risk.", "Correct—validate, timestamp, and notify the person authorized to declare.", "Vendors are engaged after validation and declaration.", "Waiting risks missing escalation windows."],
+        "roles": ["Control Center Operator", "OT / SCADA Engineer", "IT / SOC"],
+        "lens": "Detection to declaration"
+      },
+      {
+        "prompt": "Leadership asks if CIP-008 must be triggered after an event contained within the control center. What is the proper response?",
+        "options": ["Trigger CIP-008 immediately", "Reference the documented thresholds and note they were not met", "Say it is optional", "Decline to answer"],
+        "answer": 1,
+        "feedback": ["Triggering without criteria can create audit noise.", "Correct—cite the documented thresholds and decision log.", "CIP-008 is not optional when criteria are met.", "You should provide the documented rationale."],
+        "roles": ["Incident Commander / Leadership", "Compliance / GRC"] ,
+        "lens": "CIP-007 to CIP-008 handoff"
+      },
+      {
+        "prompt": "An auditor asks where chain-of-custody for collected logs is stored.",
+        "options": ["In the ticketing system with hash values", "In personal notes", "It is not tracked", "In a shared drive without access control"],
+        "answer": 0,
+        "feedback": ["Correct—tickets with hashes and handlers prove custody.", "Personal notes are not defensible.", "Lack of tracking fails CIP expectations.", "Uncontrolled storage is not acceptable."],
+        "roles": ["IT / SOC", "Compliance / GRC", "Incident Commander / Leadership"],
+        "lens": "Evidence handling"
+      },
+      {
+        "prompt": "During a mock audit, you are asked to explain why a transient cyber asset was allowed on a BES Cyber System network.",
+        "options": ["Because it was convenient", "Because it followed documented entry/exit checks and logging", "Because the vendor insisted", "Because the operator approved verbally"],
+        "answer": 1,
+        "feedback": ["Convenience does not meet CIP requirements.", "Correct—entry/exit controls and logging are required.", "Vendor pressure is not justification.", "Verbal approval without evidence is insufficient."],
+        "roles": ["OT / SCADA Engineer", "Compliance / GRC", "Auditor / Observer (read-only)"],
+        "lens": "Transient device control"
+      }
+    ]
+  },
+  "resources": {
+    "links": [
+      { "label": "CIP-007 standard", "url": "https://www.nerc.com/pa/Stand/Pages/CIPStandards.aspx" },
+      { "label": "NIST incident handling guide (SP 800-61)", "url": "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final" },
+      { "label": "Time synchronization reference", "url": "https://www.rfc-editor.org/rfc/rfc5905" }
+    ],
+    "notes": [
+      "Keep local copies of procedures and checklists for disconnected audits.",
+      "Validate time sources before drills and audits.",
+      "Store certificates in the audit binder with timestamped filenames."
+    ]
+  },
+  "certificateTemplate": {
+    "statement": "Completed role-based CSIR training aligned to NERC CIP-007 audit expectations.",
+    "trainingName": "CIP-007 Cyber Security Incident Response",
+    "issuer": "DecisionMaker Training Engine"
+  }
+}

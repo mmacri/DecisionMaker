@@ -1,0 +1,124 @@
+{
+  "roles": [
+    {
+      "id": "ot-operator",
+      "name": "OT Operator",
+      "callouts": {
+        "step-prepare": "Keep operating procedures and bypass approvals current. Know how to reach the Incident Commander after hours.",
+        "step-identify": "Report alarms and abnormal behavior immediately. Capture screenshots without changing configurations.",
+        "step-investigate": "Coordinate isolations with Technical Lead; avoid ad-hoc changes that could disrupt control systems.",
+        "step-respond": "Execute approved containment runbooks only when the Incident Commander authorizes them.",
+        "step-recover": "Validate processes during staged recovery and confirm controls respond normally before reconnecting.",
+        "step-followup": "Provide operator view of impacts and timing for lessons learned.",
+        "general": "Stay focused on safety and reliability. Escalate quickly and document what you observe.",
+        "definitions": "Use the official terms when talking to engineering or ECS so they can triage quickly.",
+        "triage": "Confirm operational effects when severity is being declared; your input sets priority.",
+        "flow": "Keep the six-step flow visible in the control room binder.",
+        "comms": "Route media inquiries to PIO. Avoid personal messaging apps for incident chatter.",
+        "reporting": "Share facts with compliance; do not send statements externally.",
+        "evidence": "Preserve logs by exporting copies; do not alter controllers while collecting evidence.",
+        "audit": "If asked, describe what you did and reference the logbook entries.",
+        "scenarios": "Map each scenario to potential plant or feeder effects.",
+        "quiz": "Answer based on operations reality—safety first.",
+        "checklist": "Use the checklist during shift handoff to confirm readiness.",
+        "certificate": "Your role on the certificate shows you completed operator-focused training."
+      }
+    },
+    {
+      "id": "system-admin",
+      "name": "System Administrator",
+      "callouts": {
+        "step-prepare": "Maintain hardened baselines, backups, and tested restore images for OT servers and workstations.",
+        "step-identify": "Validate alarms against approved change windows before escalating.",
+        "step-investigate": "Collect forensic data using approved tools and capture hashes; avoid using untrusted utilities.",
+        "step-respond": "Implement containment (accounts, ACLs, segmentation) with Incident Commander approval and ops coordination.",
+        "step-recover": "Restore from clean sources and document configuration changes applied during recovery.",
+        "step-followup": "Update baseline images and patch status after lessons learned are approved.",
+        "general": "Keep configuration records and change tickets ready for investigators.",
+        "definitions": "Flag attempts to compromise even if blocked; they inform tuning and patching.",
+        "triage": "Provide evidence of scope and affected systems when severity is declared.",
+        "flow": "Tie each admin action to the corresponding CSIR step for clarity.",
+        "comms": "Route vendor coordination through Incident Commander to avoid conflicting changes.",
+        "reporting": "Hand off accurate system inventories for any regulatory notification.",
+        "evidence": "Store disk images and logs in evidence repositories with hashes recorded.",
+        "audit": "Show configuration baselines and change history when asked.",
+        "scenarios": "Consider dependencies (domain controllers, jump hosts, AV servers) in each scenario.",
+        "quiz": "Think about containment feasibility in OT zones.",
+        "checklist": "Use checklists before maintenance to confirm backups and rollback plans.",
+        "certificate": "Shows you completed system-administration focused CSIR training."
+      }
+    },
+    {
+      "id": "security-team",
+      "name": "Security Team (ECS/Cyber Responders)",
+      "callouts": {
+        "step-prepare": "Keep detection content, IR kits, and evidence procedures current; align with OT constraints.",
+        "step-identify": "Drive validation and severity determination with Incident Commander and Technical Lead.",
+        "step-investigate": "Lead scoping, forensics, and containment options. Protect evidence integrity.",
+        "step-respond": "Coordinate eradication and communications timing with PIO and operations.",
+        "step-recover": "Verify systems are clean before reconnecting; recommend monitoring thresholds.",
+        "step-followup": "Document root cause, dwell time, and control gaps for action tracking.",
+        "general": "You anchor CSIR execution; keep records and rationale for every recommendation.",
+        "definitions": "Use formal definitions when coordinating with compliance and PSA.",
+        "triage": "Lead the triage worksheet and ensure decision logs are stored.",
+        "flow": "Ensure transitions between steps are documented and justified.",
+        "comms": "Prepare executive-ready updates while protecting investigation integrity.",
+        "reporting": "Partner with compliance to supply evidence-backed statements.",
+        "evidence": "Chain-of-custody must be pristine; avoid cross-contamination.",
+        "audit": "Provide timelines, playbooks, and evidence inventories.",
+        "scenarios": "Highlight containment paths that maintain grid safety.",
+        "quiz": "Base answers on CSIR Plan expectations for responders.",
+        "checklist": "Verify checklist aligns with current detection and response playbooks.",
+        "certificate": "Captures your responder role at completion."
+      }
+    },
+    {
+      "id": "compliance-audit",
+      "name": "Compliance & Audit",
+      "callouts": {
+        "step-prepare": "Ensure retention, reporting matrices, and evidence templates match the CSIR Plan.",
+        "step-identify": "Confirm reportable thresholds and timers are tracked once severity is declared.",
+        "step-investigate": "Monitor evidence handling to satisfy audit and legal needs.",
+        "step-respond": "Log decisions and approvals for containment and eradication.",
+        "step-recover": "Capture restoration approvals and configuration baselines for audit trails.",
+        "step-followup": "Lead documentation updates and tracking of corrective actions.",
+        "general": "You safeguard documentation quality and reporting accuracy.",
+        "definitions": "Ensure teams use the correct terminology in tickets and reports.",
+        "triage": "Record who set severity and why; retain artifacts that support the decision.",
+        "flow": "Verify every step has evidence stored with retention metadata.",
+        "comms": "Coordinate with PIO to ensure messaging aligns with obligations.",
+        "reporting": "Prepare and submit regulatory reports on time with supporting evidence.",
+        "evidence": "Check that hashes, custodians, and storage locations are logged.",
+        "audit": "Lead audit responses and ensure professional conduct.",
+        "scenarios": "Assess whether scenario responses produce adequate evidence and logs.",
+        "quiz": "Focus on obligations and documentation discipline.",
+        "checklist": "Verify checklist items trace back to CSIR Plan requirements.",
+        "certificate": "Records you completed compliance-aware CSIR training."
+      }
+    },
+    {
+      "id": "other-staff",
+      "name": "Other SCL Staff",
+      "callouts": {
+        "step-prepare": "Know how to reach the Incident Commander or ECS when something looks wrong.",
+        "step-identify": "Report suspicious emails or device behavior immediately; do not attempt your own fixes.",
+        "step-investigate": "Avoid touching suspected systems; wait for guidance.",
+        "step-respond": "Follow instructions and do not discuss incidents externally.",
+        "step-recover": "Validate your business processes once systems are restored.",
+        "step-followup": "Share observations that can improve awareness training.",
+        "general": "Escalate fast and avoid speculation. Your prompt reports protect operations.",
+        "definitions": "Use the term ‘suspected incident’ when escalating to avoid confusion.",
+        "triage": "Provide impact context for your area; do not overstate or understate effects.",
+        "flow": "Know the six steps exist so you understand progress updates.",
+        "comms": "Direct any media or vendor inquiries to PIO/Incident Commander.",
+        "reporting": "If asked for input, provide factual timelines only.",
+        "evidence": "Save emails or screenshots as requested; do not forward sensitive details widely.",
+        "audit": "If interviewed, keep answers brief and factual.",
+        "scenarios": "Consider how your daily tools might signal an issue.",
+        "quiz": "Answer based on escalation expectations.",
+        "checklist": "Use the checklist as a reminder of how to escalate and cooperate.",
+        "certificate": "Shows you learned how to escalate and support CSIR."
+      }
+    }
+  ]
+}

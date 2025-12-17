@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Abnormal controller commands detected",
+    "situation": "Engineering workstation shows unexpected write attempts to a substation controller outside change window.",
+    "expected": "Treat as potential cyber incident, notify Incident Commander, and shift to containment-ready posture.",
+    "step": "Identify → Investigate",
+    "why": "Unauthorized commands can alter protection schemes and risk safety. Early containment prevents cascading impacts.",
+    "roleVariants": {
+      "ot-operator": "Capture screenshots, block local changes, and contact the Incident Commander immediately.",
+      "system-admin": "Check change calendar, collect logs from the workstation, and prepare to isolate the source if authorized.",
+      "security-team": "Validate command origin, pull endpoint telemetry, and advise on segmentation controls.",
+      "compliance-audit": "Document the timeline and confirm whether the activity meets reportable criteria.",
+      "other-staff": "Do not touch the workstation; call ECS or the Incident Commander at once.",
+      "default": "Escalate, preserve evidence, and await containment direction."
+    }
+  },
+  {
+    "title": "Malware alert on historian server",
+    "situation": "Security monitoring flags a known OT-targeting malware signature on the historian server.",
+    "expected": "Move to high severity, coordinate containment, and prepare recovery from clean backups.",
+    "step": "Investigate → Respond",
+    "why": "Historians bridge operations and analytics; compromise can spread or corrupt data.",
+    "roleVariants": {
+      "ot-operator": "Notify that historian data may be stale; rely on primary controls and log manual readings if needed.",
+      "system-admin": "Preserve memory and disk artifacts, then isolate the server per approval.",
+      "security-team": "Lead forensics, confirm signature validity, and propose eradication steps.",
+      "compliance-audit": "Ensure evidence is retained and reporting timers are tracked once severity is set.",
+      "other-staff": "Avoid accessing historian dashboards until cleared; follow updates.",
+      "default": "Support containment and maintain evidence integrity."
+    }
+  },
+  {
+    "title": "Phishing leads to credential misuse",
+    "situation": "User reports a convincing phishing email; shortly after, unusual VPN logins appear from new geography.",
+    "expected": "Disable affected credentials, validate scope, and check for lateral movement.",
+    "step": "Identify → Investigate → Respond",
+    "why": "Credentials can provide direct access to OT management systems; fast action reduces blast radius.",
+    "roleVariants": {
+      "ot-operator": "Confirm if any control system access was attempted; report anomalies immediately.",
+      "system-admin": "Disable accounts, force password resets, and review access logs for privileged systems.",
+      "security-team": "Correlate VPN, AD, and OT access logs; recommend containment and monitoring rules.",
+      "compliance-audit": "Track whether reportable thresholds are met and log decision times.",
+      "other-staff": "Forward the phishing email headers to ECS and stop using the account until cleared.",
+      "default": "Secure the account, investigate scope, and document actions."
+    }
+  },
+  {
+    "title": "Vendor remote support channel abused",
+    "situation": "Unexpected remote session established on an OT server via vendor support tool outside approved hours.",
+    "expected": "Treat as high severity until validated, suspend the session, and contact vendor through official channel.",
+    "step": "Respond → Recover",
+    "why": "Unauthorized remote access can bypass standard controls and introduce changes or malware.",
+    "roleVariants": {
+      "ot-operator": "Alert operations leadership and note any control anomalies during the window.",
+      "system-admin": "Terminate unapproved sessions if authorized, preserve session logs, and rotate credentials if needed.",
+      "security-team": "Validate remote host identity, gather telemetry, and guide containment with Incident Commander.",
+      "compliance-audit": "Record vendor contacts, approvals, and whether notification obligations were triggered.",
+      "other-staff": "Do not engage the remote user; notify ECS/Incident Commander immediately.",
+      "default": "Pause access, validate authorization, and document all actions."
+    }
+  }
+]

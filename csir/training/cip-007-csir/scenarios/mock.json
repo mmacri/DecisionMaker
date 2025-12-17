@@ -1,0 +1,54 @@
+{
+  "mock": {
+    "questions": [
+      {
+        "prompt": "You validated malware on an HMI with no outage. What should the Incident Commander decide?",
+        "options": [
+          "Declare a full Reportable Cyber Security Incident",
+          "Classify as an Attempt to Compromise and start the end-of-next-business-day reporting clock",
+          "Close the alert without documentation",
+          "Wait for leadership to return"
+        ],
+        "answer": 1,
+        "audit": "Classification drives DOE-417 timing and evidence handling.",
+        "lens": "Reportability"
+      },
+      {
+        "prompt": "Containment isolated the affected server. Who must be notified first based on the communications matrix?",
+        "options": [
+          "The vendor support desk",
+          "Your peer in another department",
+          "SOC/Incident Commander with timestamps",
+          "Only the person who found it"
+        ],
+        "answer": 2,
+        "audit": "Communications must follow the documented matrix with time-stamped proof.",
+        "lens": "Communication discipline"
+      },
+      {
+        "prompt": "Recovery is complete after restoring from backup. What must the Technical Responder and Incident Commander do before returning to service?",
+        "options": [
+          "Declare victory immediately",
+          "Verify clean state with scans and get leadership approval to go live",
+          "Ask the vendor to send a note",
+          "Skip documentation to save time"
+        ],
+        "answer": 1,
+        "audit": "Return-to-service requires validation evidence and approval.",
+        "lens": "Recovery controls"
+      },
+      {
+        "prompt": "A phishing simulation was reported by General Staff. What should Compliance capture?",
+        "options": [
+          "Nothing—it was a simulation",
+          "A short log entry noting it was an Attempt to Compromise with timestamps",
+          "Full DOE-417 report",
+          "Only verbal confirmation"
+        ],
+        "answer": 1,
+        "audit": "Even simulations reinforce reporting discipline and evidence habits.",
+        "lens": "Broader exposure"
+      }
+    ]
+  }
+}

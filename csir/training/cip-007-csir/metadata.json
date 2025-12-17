@@ -1,0 +1,178 @@
+{
+  "moduleId": "csir",
+  "mode": "csir",
+  "contentPack": "training/cip-007-csir",
+  "trainingName": "Operational Technology Cyber Security Incident Response Training",
+  "title": "CIP-007 CSIR Training",
+  "estimatedTime": "60\u201375 minutes",
+  "requireRoleSelection": true,
+  "statusBadges": {
+    "notStarted": "Not Started",
+    "inProgress": "In Progress",
+    "ready": "Ready for Audit",
+    "completed": "Completed"
+  },
+  "nav": [
+    {
+      "id": "dashboard",
+      "label": "Orientation",
+      "href": "csir.html"
+    },
+    {
+      "id": "orientation",
+      "label": "Module 1 \u2014 Welcome & Expectations",
+      "href": "csir-orientation.html"
+    },
+    {
+      "id": "scope",
+      "label": "Module 2 \u2014 Incident Lifecycle",
+      "href": "csir-scope.html",
+      "description": "Preparation through follow-up with reportability cues"
+    },
+    {
+      "id": "plan",
+      "label": "Module 3 \u2014 Playbook & Workflow",
+      "href": "csir-plan.html"
+    },
+    {
+      "id": "execution",
+      "label": "Module 4 \u2014 Role Responsibilities",
+      "href": "csir-roles.html"
+    },
+    {
+      "id": "etiquette",
+      "label": "Module 5 \u2014 Audit Etiquette",
+      "href": "csir-etiquette.html"
+    },
+    {
+      "id": "mock",
+      "label": "Module 6 \u2014 Scenario Lab",
+      "href": "csir-mock.html"
+    },
+    {
+      "id": "final-check",
+      "label": "Module 7 \u2014 Final Knowledge Check",
+      "href": "csir-final.html"
+    },
+    {
+      "id": "certificate",
+      "label": "Module 8 \u2014 Certificate",
+      "href": "csir-certificate.html"
+    },
+    {
+      "id": "resources",
+      "label": "Resources & References",
+      "href": "csir-resources.html",
+      "optional": true
+    }
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "label": "Orientation"
+    },
+    {
+      "number": 2,
+      "label": "Lifecycle"
+    },
+    {
+      "number": 3,
+      "label": "Workflow"
+    },
+    {
+      "number": 4,
+      "label": "Roles"
+    },
+    {
+      "number": 5,
+      "label": "Etiquette"
+    },
+    {
+      "number": 6,
+      "label": "Scenario Lab"
+    },
+    {
+      "number": 7,
+      "label": "Finalize"
+    }
+  ],
+  "pageStepMap": {
+    "dashboard": 1,
+    "orientation": 1,
+    "scope": 2,
+    "plan": 3,
+    "execution": 4,
+    "etiquette": 5,
+    "mock": 6,
+    "final-check": 7,
+    "certificate": 7,
+    "resources": 7
+  },
+  "phases": [
+    {
+      "title": "Phase 0 \u2014 Orientation",
+      "description": "Purpose and audit mapping",
+      "badge": "Orientation",
+      "pages": [
+        "dashboard",
+        "orientation"
+      ]
+    },
+    {
+      "title": "Module 2 \u2014 Incident Lifecycle",
+      "description": "Preparation through follow-up, mapped to CSIR Plan 8.1–8.5",
+      "badge": "Lifecycle",
+      "pages": [
+        "scope"
+      ]
+    },
+    {
+      "title": "Module 3 \u2014 Playbook & Workflow",
+      "description": "Decision path, communications, and reporting checkpoints",
+      "badge": "Workflow",
+      "pages": [
+        "plan"
+      ]
+    },
+    {
+      "title": "Module 4 \u2014 Role Responsibilities",
+      "description": "Tailored duties, checklists, and reference material",
+      "badge": "Roles",
+      "pages": [
+        "execution"
+      ]
+    },
+    {
+      "title": "Module 5 \u2014 Audit Etiquette",
+      "description": "Interview skills and responses",
+      "badge": "Audit",
+      "pages": [
+        "etiquette"
+      ]
+    },
+    {
+      "title": "Module 6 \u2014 Scenario Lab",
+      "description": "Branching drills and decision points",
+      "badge": "Practice",
+      "pages": [
+        "mock"
+      ]
+    },
+    {
+      "title": "Module 7 \u2014 Final Check",
+      "description": "Scenario knowledge check, reporting, and certificate",
+      "badge": "Final",
+      "pages": [
+        "final-check",
+        "certificate",
+        "resources"
+      ]
+    }
+  ],
+  "pageRequirements": {
+    "orientation": "orientationAck",
+    "scope": "scopeCheck",
+    "final-check": "quizPassed",
+    "certificate": "certificateIssued"
+  }
+}
