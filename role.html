@@ -29,28 +29,42 @@
 
   <script type="module">
     import { setRole, loadProgress, clearIfDifferentCourse } from './js/storage.js';
-    import pack from './contentpacks/scl-csir/pack.json' assert { type: 'json' };
 
-    clearIfDifferentCourse(pack.course.version);
     const grid = document.getElementById('roleGrid');
-    const saved = loadProgress().roleId;
+    const continueBtn = document.getElementById('continue');
 
-    pack.roles.forEach((role) => {
-      const card = document.createElement('div');
-      card.className = 'role-card';
-      if (saved === role.id) card.classList.add('selected');
-      card.innerHTML = `<h3>${role.label}</h3><p class="small">${role.whoItsFor}</p><div class="role-meta">Est. ${role.estMinutes} minutes</div>`;
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.role-card').forEach((c) => c.classList.remove('selected'));
-        card.classList.add('selected');
-        setRole(role.id);
-        document.getElementById('continue').disabled = false;
-      });
-      grid.appendChild(card);
-    });
+    async function loadRoles() {
+      try {
+        const response = await fetch('./contentpacks/scl-csir/pack.json');
+        if (!response.ok) throw new Error('Unable to load role data');
+        const pack = await response.json();
 
-    if (saved) document.getElementById('continue').disabled = false;
-    document.getElementById('continue').addEventListener('click', () => window.location.href = 'profile.html');
+        clearIfDifferentCourse(pack.course.version);
+        const saved = loadProgress().roleId;
+
+        pack.roles.forEach((role) => {
+          const card = document.createElement('div');
+          card.className = 'role-card';
+          if (saved === role.id) card.classList.add('selected');
+          card.innerHTML = `<h3>${role.label}</h3><p class="small">${role.whoItsFor}</p><div class="role-meta">Est. ${role.estMinutes} minutes</div>`;
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.role-card').forEach((c) => c.classList.remove('selected'));
+            card.classList.add('selected');
+            setRole(role.id);
+            continueBtn.disabled = false;
+          });
+          grid.appendChild(card);
+        });
+
+        if (saved) continueBtn.disabled = false;
+      } catch (err) {
+        grid.innerHTML = '<p class="alert">We could not load the CSIR role options. Please refresh and try again.</p>';
+        console.error(err);
+      }
+    }
+
+    loadRoles();
+    continueBtn.addEventListener('click', () => window.location.href = 'profile.html');
   </script>
 </body>
 </html>
