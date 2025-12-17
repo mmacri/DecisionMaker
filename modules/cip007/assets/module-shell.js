@@ -392,18 +392,23 @@
     } else {
       switch (pageId) {
         case 'index':
+        case 'setup':
           target.innerHTML = renderLanding(content);
           break;
         case 'intro':
+        case 'introduction':
           target.innerHTML = renderIntro(content, role);
           break;
         case 'flow':
+        case 'training-flow':
           target.innerHTML = renderFlow(content, role);
           break;
         case 'roles':
+        case 'role-guidance':
           target.innerHTML = renderRoles(content, role);
           break;
         case 'overview':
+        case 'requirements-overview':
           target.innerHTML = renderOverview(content, role);
           break;
         case 'r1':
@@ -414,10 +419,14 @@
         case 'r6':
           target.innerHTML = renderRequirement(content, pageId, role);
           break;
+        case 'audit-etiquette':
+          target.innerHTML = renderAuditEtiquette(content, role);
+          break;
         case 'scenarios':
           target.innerHTML = renderScenarios(content, role);
           break;
         case 'quiz':
+        case 'knowledge-check':
           target.innerHTML = renderQuiz(content, state);
           break;
         case 'checklist':
@@ -427,6 +436,7 @@
           target.innerHTML = renderResources(content, role);
           break;
         case 'complete':
+        case 'completion':
           target.innerHTML = renderCompletion(content, role);
           break;
         default:
@@ -436,7 +446,7 @@
 
     if (pageId === 'orientation') attachOrientationGate(content, state);
     if (pageId === 'scope') attachScopeCheck(content, state);
-    if (pageId === 'quiz' || pageId === 'final-check') attachQuizHandlers(content, state);
+    if (pageId === 'quiz' || pageId === 'knowledge-check' || pageId === 'final-check') attachQuizHandlers(content, state);
     if (pageId === 'checklist' && state.quizPassed) attachChecklistHandlers(content);
     if (pageId === 'complete') attachCompletionHandler(content);
   }
@@ -612,6 +622,8 @@
     if (!submit) return;
     submit.onclick = () => {
       const role = getActiveRole(content, state);
+      const activePage = document.body.dataset.pageId || 'quiz';
+      const quizPageId = activePage === 'knowledge-check' ? 'knowledge-check' : activePage;
       const questions = getQuizQuestions(content, role);
       const answers = questions.map((_, idx) => {
         const checked = document.querySelector(`input[name="q${idx}"]:checked`);
@@ -644,7 +656,8 @@
         state.quizPassed = true;
         saveState(moduleId, state);
         unlockChecklistNav(content.mode === 'csir');
-        markComplete(content, 'final-check', state, role);
+        markComplete(content, quizPageId, state, role);
+        if (content.mode === 'csir') markComplete(content, 'final-check', state, role);
       } else {
         result.innerHTML = `<strong>Score: ${score}%</strong> — You need ${content.quiz.passScore}% to pass. Review the requirements and try again.`;
       }
@@ -662,9 +675,10 @@
         link.href = 'certificate.html';
       }
     });
-    const nextBtn = document.querySelector('.bottom-cta a.primary.disabled');
+    const nextBtn = document.querySelector('.bottom-cta a.disabled');
     if (nextBtn) {
       nextBtn.classList.remove('disabled');
+      nextBtn.classList.add('primary');
       nextBtn.href = includeCertificate ? 'certificate.html' : 'checklist.html';
     }
   }
@@ -906,6 +920,23 @@
       <ul>${section.rules.map((r) => `<li>${r}</li>`).join('')}</ul>
       <div class="list-grid">${examples}</div>
       ${renderRoleCallout(content, 'etiquette', role) || ''}
+    `;
+  }
+
+  function renderAuditEtiquette(content, role) {
+    const section = content.auditEtiquette || content.etiquette;
+    if (!section) return '<p>Audit etiquette guidance will appear here.</p>';
+    const examples = (section.examples || [])
+      .map((ex) => `<div class="scenario"><strong>${ex.prompt}</strong><p>❌ ${ex.bad}</p><p>✅ ${ex.good}</p></div>`)
+      .join('');
+    const rules = (section.rules || [])
+      .map((rule) => `<li>${rule}</li>`) 
+      .join('');
+    return `
+      <h2 class="section-title">Audit Etiquette & Interview Training</h2>
+      <ul>${rules}</ul>
+      ${examples ? `<div class="list-grid">${examples}</div>` : ''}
+      ${renderRoleCallout(content, 'audit-etiquette', role) || renderRoleCallout(content, 'etiquette', role) || ''}
     `;
   }
 
