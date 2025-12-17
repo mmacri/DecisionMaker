@@ -284,6 +284,63 @@
 
     .toast.success { border-left-color: #15803d; }
 
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 15;
+    }
+
+    .overlay[hidden] { display: none; }
+
+    .overlay-card {
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 1.25rem;
+      width: min(560px, 100%);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 0.5rem;
+    }
+
+    .overlay-card p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+
+    .overlay-card form {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.6rem;
+    }
+
     .profile-pill {
       display: inline-flex;
       align-items: center;
@@ -311,6 +368,52 @@
   </style>
 </head>
 <body>
+  <div class="overlay" id="registration-overlay" role="dialog" aria-modal="true" aria-labelledby="registration-title" hidden>
+    <div class="overlay-card">
+      <h2 id="registration-title">Choose your role to begin</h2>
+      <p>We personalize the CSIR-guided training path, capture your certificate details, and store a local-only roster for audit-friendly reporting.</p>
+      <form id="registration-form">
+        <div class="field">
+          <label for="reg-name">Full name</label>
+          <input id="reg-name" name="name" autocomplete="name" placeholder="Enter your name for the certificate" required />
+        </div>
+        <div class="field">
+          <label for="reg-email">Work email</label>
+          <input id="reg-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required />
+        </div>
+        <div class="field">
+          <label for="reg-access">Access type</label>
+          <select id="reg-access" name="access" required>
+            <option value="">Choose access type</option>
+            <option value="user">Training user</option>
+            <option value="admin">Admin (manage roster)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="reg-role">Role</label>
+          <select id="reg-role" name="role" required>
+            <option value="">Select your role</option>
+            <option>Operator</option>
+            <option>System Administrator</option>
+            <option>Security Analyst</option>
+            <option>Compliance / Audit</option>
+          </select>
+        </div>
+        <div class="meta-grid">
+          <div class="highlight" style="margin:0;">
+            <strong>Audit-friendly</strong>
+            <p class="lead">Start and completion dates stay in a secured local list for quick reporting.</p>
+          </div>
+          <div class="highlight" style="margin:0;">
+            <strong>Role-guided</strong>
+            <p class="lead">Navigation and certificates are tailored to the CSIR track you select.</p>
+          </div>
+        </div>
+        <button type="submit" id="registration-submit">Start training</button>
+        <p class="footer-note">Details never leave this device. They are only used for your guided experience and certificate download.</p>
+      </form>
+    </div>
+  </div>
   <header>
     <div class="top-row">
       <div>
@@ -335,9 +438,10 @@
         <p class="badge">CISR Ready</p>
         <p>Use the controls below to load and review the audited training module with zero external dependencies.</p>
         <div class="controls">
-          <button id="launch">Launch training module</button>
+          <button id="launch" disabled title="Complete registration to begin">Launch training module</button>
           <a class="link-btn" id="open-tab" href="modules/cip007/setup.html" target="_blank" rel="noopener">Open in new tab</a>
           <a class="link-btn" href="modules/cip007/csir.html">Try the CIP-007 CSIR guided path</a>
+          <button id="complete-module" class="link-btn" style="justify-content:center;">Complete module & issue certificate</button>
           <div class="status"><span class="dot" aria-hidden="true"></span><span id="status-text">Module cached locally</span></div>
         </div>
       </div>
@@ -373,7 +477,16 @@
             <label>Full name
               <input id="learner-name" type="text" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" placeholder="Enter your preferred display name" />
             </label>
+            <label>Email
+              <input id="learner-email" type="email" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" placeholder="name@example.com" />
+            </label>
             <div style="margin-top:0.75rem; display:grid; gap:0.5rem;">
+              <label>Access type
+                <select id="learner-access" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
+                  <option value="user">Training user</option>
+                  <option value="admin">Admin (manage roster)</option>
+                </select>
+              </label>
               <label>Role
                 <select id="learner-role" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
                   <option value="">Select your role</option>
@@ -401,12 +514,44 @@
             <h3>Overall Progress</h3>
             <p class="lead" id="overall-progress">No activity yet. Launch a module to start.</p>
             <ul id="module-summary"></ul>
+            <div id="role-guidance" class="footer-note"></div>
           </div>
         </div>
 
         <div class="section-panel" style="margin-top:1rem;">
           <h3>Certificates</h3>
           <ul id="dashboard-certificates"></ul>
+        </div>
+
+        <div class="section-panel" style="margin-top:1rem;">
+          <h3>Local reporting roster</h3>
+          <p class="lead">A secured local list of learners, their emails, and start/completion dates for your records.</p>
+          <div id="roster-admin" class="highlight" hidden>
+            <h4>Admin roster controls</h4>
+            <p class="lead">Admins can add, edit, or delete any learner record stored locally.</p>
+            <form id="roster-form" class="grid two-col" style="margin-top:0.5rem;">
+              <label>Name
+                <input id="roster-name" type="text" required />
+              </label>
+              <label>Email
+                <input id="roster-email" type="email" required />
+              </label>
+              <label>Role
+                <input id="roster-role" type="text" placeholder="Operator, Analyst, etc." />
+              </label>
+              <label>Start date
+                <input id="roster-start" type="date" />
+              </label>
+              <label>Completion date
+                <input id="roster-complete" type="date" />
+              </label>
+              <div style="display:flex;align-items:flex-end;gap:0.5rem;">
+                <button type="submit" id="roster-submit">Save learner</button>
+                <button type="button" class="link-btn" id="roster-reset">Clear form</button>
+              </div>
+            </form>
+          </div>
+          <div id="roster"></div>
         </div>
       </section>
 
@@ -469,13 +614,25 @@
       path: 'modules/cip007/setup.html'
     };
 
+    let rosterEditEmail = null;
+
     const STORAGE_KEY = 'cisr-learning-profile';
+
+    function isAdmin(state) {
+      return (state?.learner?.accountType || 'user') === 'admin';
+    }
 
     function loadState() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { learner: {}, modules: {}, certificates: [] };
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        return {
+          learner: { accountType: 'user', ...(parsed.learner || {}) },
+          modules: parsed.modules || {},
+          certificates: parsed.certificates || [],
+          registry: parsed.registry || []
+        };
       } catch (err) {
-        return { learner: {}, modules: {}, certificates: [] };
+        return { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
       }
     }
 
@@ -485,13 +642,52 @@
       renderProgress(next);
       renderDashboard(next);
       renderProfileBanner(next);
+      renderRoster(next);
+      renderRoleGuidance(next);
+    }
+
+    function upsertRegistry(state, completionDate) {
+      const { learner } = state;
+      if (!learner.email || !learner.name || !learner.role) return;
+      const existing = state.registry.findIndex((entry) => entry.email === learner.email);
+      const record = {
+        name: learner.name,
+        email: learner.email,
+        role: learner.role,
+        accountType: learner.accountType || 'user',
+        startDate: learner.startDate || new Date().toISOString(),
+        completionDate: completionDate || learner.completionDate || ''
+      };
+      if (existing >= 0) {
+        state.registry[existing] = { ...state.registry[existing], ...record };
+      } else {
+        state.registry.push(record);
+      }
+    }
+
+    function ensureRegistration() {
+      const state = loadState();
+      if (state.learner.name && state.learner.email && state.learner.role && state.learner.accountType) {
+        document.getElementById('launch').disabled = false;
+        return true;
+      }
+      document.getElementById('reg-name').value = state.learner.name || '';
+      document.getElementById('reg-email').value = state.learner.email || '';
+      document.getElementById('reg-role').value = state.learner.role || '';
+      document.getElementById('reg-access').value = state.learner.accountType || '';
+      document.getElementById('registration-overlay').hidden = false;
+      showToast('Please enter your name, email, role, and access type to continue.', 'info');
+      return false;
     }
 
     function loadModule() {
+      if (!ensureRegistration()) return;
       statusText.textContent = 'Loading module…';
       frame.src = moduleConfig.path;
       statusText.textContent = 'Module ready — navigation updated';
       const state = loadState();
+      state.learner.startDate = state.learner.startDate || new Date().toISOString();
+      upsertRegistry(state);
       state.modules[moduleConfig.id] = state.modules[moduleConfig.id] || { title: moduleConfig.title, status: 'Started' };
       saveState(state);
     }
@@ -526,16 +722,21 @@
       certList.innerHTML = '';
       if (!state.certificates.length) {
         hint.style.display = 'block';
+        certList.innerHTML = '<li class="lead">Finish a knowledge check and checklist to claim a certificate.</li>';
         return;
       }
       hint.style.display = 'none';
       state.certificates.forEach((cert) => {
         const item = document.createElement('li');
+        item.innerHTML = `<strong>${cert.module}</strong><br /><span class="lead">Issued ${cert.date}</span>`;
+        item.innerHTML += `<br />To ${cert.name}${cert.role ? ` (${cert.role})` : ''}${cert.email ? ` · ${cert.email}` : ''}`;
         const link = document.createElement('a');
         link.href = cert.link;
-        link.textContent = `${cert.module} — ${cert.date}`;
+        link.textContent = 'Download certificate';
         link.download = cert.filename;
         link.className = 'link-btn';
+        link.style.marginTop = '0.35rem';
+        item.appendChild(document.createElement('br'));
         item.appendChild(link);
         certList.appendChild(item);
       });
@@ -543,6 +744,8 @@
 
     function renderDashboard(state) {
       document.getElementById('learner-name').value = state.learner.name || '';
+      document.getElementById('learner-email').value = state.learner.email || '';
+      document.getElementById('learner-access').value = state.learner.accountType || 'user';
       document.getElementById('learner-role').value = state.learner.role || '';
       document.getElementById('learner-goal').value = state.learner.goal || '';
 
@@ -590,6 +793,8 @@
         state.certificates.forEach((cert) => {
           const li = document.createElement('li');
           li.innerHTML = `<strong>${cert.module}</strong> · ${cert.date}<br />Issued to ${cert.name}`;
+          if (cert.role) li.innerHTML += ` (${cert.role})`;
+          if (cert.email) li.innerHTML += `<br /><span class="lead">Email: ${cert.email}</span>`;
           const link = document.createElement('a');
           link.href = cert.link;
           link.download = cert.filename;
@@ -605,15 +810,145 @@
 
     function renderProfileBanner(state) {
       const banner = document.getElementById('profile-banner');
-      const { name, role, goal } = state.learner || {};
+      const { name, role, goal, accountType } = state.learner || {};
       if (!name && !role && !goal) {
         banner.style.display = 'none';
         return;
       }
       const roleText = role ? `· ${role}` : '';
+      const typeText = accountType === 'admin' ? 'Admin' : 'Training user';
       const goalText = goal ? `· ${goal}` : '';
-      banner.textContent = `${name || 'Learner'} ${roleText} ${goalText}`.trim();
+      banner.textContent = `${name || 'Learner'} · ${typeText} ${roleText} ${goalText}`.trim();
       banner.style.display = 'inline-flex';
+    }
+
+    function issueCertificate() {
+      if (!ensureRegistration()) return;
+      const state = loadState();
+      const now = new Date();
+      state.learner.startDate = state.learner.startDate || now.toISOString();
+      state.learner.completionDate = state.learner.completionDate || now.toISOString();
+      const moduleEntry = state.modules[moduleConfig.id] || { title: moduleConfig.title };
+      moduleEntry.status = 'Completed';
+      moduleEntry.lastSection = 'certificate';
+      moduleEntry.knowledgeScore = moduleEntry.knowledgeScore || 100;
+      moduleEntry.completedOn = moduleEntry.completedOn || now.toISOString();
+      state.modules[moduleConfig.id] = moduleEntry;
+
+      const certificate = {
+        module: moduleConfig.title,
+        date: now.toLocaleDateString(),
+        name: state.learner.name || 'Learner',
+        role: state.learner.role,
+        email: state.learner.email,
+        filename: `certificate-${moduleConfig.id}-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}.txt`,
+        link: ''
+      };
+
+      const certificateBody = `Certificate of Completion\n\nIssued to: ${certificate.name} (${certificate.role})\nEmail: ${certificate.email}\nModule: ${certificate.module}\nStart date: ${state.learner.startDate ? new Date(state.learner.startDate).toLocaleDateString() : 'Not captured'}\nCompletion date: ${new Date(state.learner.completionDate).toLocaleDateString()}\n\nTraining content guided by the CSIR materials included in this site.`;
+      const blob = new Blob([certificateBody], { type: 'text/plain' });
+      certificate.link = URL.createObjectURL(blob);
+
+      const existingIndex = state.certificates.findIndex((c) => c.module === certificate.module && c.email === certificate.email);
+      if (existingIndex >= 0) {
+        state.certificates[existingIndex] = certificate;
+      } else {
+        state.certificates.push(certificate);
+      }
+
+      upsertRegistry(state, state.learner.completionDate);
+      saveState(state);
+      showToast('Certificate ready for download', 'success');
+    }
+
+    function renderRoster(state) {
+      const roster = document.getElementById('roster');
+      const adminPanel = document.getElementById('roster-admin');
+      if (!roster) return;
+      roster.innerHTML = '';
+      const adminMode = isAdmin(state);
+      if (adminPanel) adminPanel.hidden = !adminMode;
+
+      const visibleEntries = adminMode
+        ? state.registry || []
+        : (state.registry || []).filter((entry) => entry.email === state.learner.email);
+
+      if (!visibleEntries.length) {
+        roster.innerHTML = adminMode
+          ? '<p class="lead">No registrations yet. Admins can add learners manually or capture them via registration.</p>'
+          : '<p class="lead">No registrations yet for your account. Start training to add yourself to the roster.</p>';
+        return;
+      }
+      const table = document.createElement('table');
+      table.style.width = '100%';
+      table.style.borderCollapse = 'collapse';
+      const header = document.createElement('tr');
+      const columns = adminMode
+        ? ['Name', 'Email', 'Role', 'Start date', 'Completion date', 'Actions']
+        : ['Name', 'Email', 'Role', 'Start date', 'Completion date'];
+      columns.forEach((label) => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        th.style.textAlign = 'left';
+        th.style.padding = '0.35rem 0.25rem';
+        header.appendChild(th);
+      });
+      table.appendChild(header);
+      visibleEntries.forEach((entry) => {
+        const row = document.createElement('tr');
+        [entry.name, entry.email, entry.role, entry.startDate ? new Date(entry.startDate).toLocaleDateString() : '—', entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'].forEach((value) => {
+          const cell = document.createElement('td');
+          cell.textContent = value;
+          cell.style.padding = '0.35rem 0.25rem';
+          cell.style.borderTop = '1px solid var(--border)';
+          row.appendChild(cell);
+        });
+        if (adminMode) {
+          const actions = document.createElement('td');
+          actions.style.padding = '0.35rem 0.25rem';
+          actions.style.borderTop = '1px solid var(--border)';
+          const edit = document.createElement('button');
+          edit.textContent = 'Edit';
+          edit.className = 'link-btn roster-edit';
+          edit.dataset.email = entry.email;
+          const del = document.createElement('button');
+          del.textContent = 'Delete';
+          del.className = 'link-btn roster-delete';
+          del.dataset.email = entry.email;
+          del.style.marginLeft = '0.35rem';
+          actions.append(edit, del);
+          row.appendChild(actions);
+        }
+        table.appendChild(row);
+      });
+      roster.appendChild(table);
+    }
+
+    function renderRoleGuidance(state) {
+      const target = document.getElementById('role-guidance');
+      if (!target) return;
+      const guidance = {
+        Operator: 'Follow the CSIR scenarios and operations quick-check to stay aligned with field procedures.',
+        'System Administrator': 'Prioritize hardening tasks, patch cycles, and remote access controls in the CSIR walkthrough.',
+        'Security Analyst': 'Review monitoring triggers, log sources, and incident response steps in the guided module.',
+        'Compliance / Audit': 'Use the checklist and metadata links to confirm evidence coverage before assessments.'
+      };
+      const role = state.learner.role;
+      if (!role || !guidance[role]) {
+        target.textContent = 'Select a role to see guided CSIR pointers for your track.';
+        return;
+      }
+      target.textContent = guidance[role];
+    }
+
+    function populateRosterForm(entry = {}) {
+      document.getElementById('roster-name').value = entry.name || '';
+      document.getElementById('roster-email').value = entry.email || '';
+      document.getElementById('roster-role').value = entry.role || '';
+      document.getElementById('roster-start').value = entry.startDate ? entry.startDate.slice(0, 10) : '';
+      document.getElementById('roster-complete').value = entry.completionDate ? entry.completionDate.slice(0, 10) : '';
+      rosterEditEmail = entry.email || null;
+      document.getElementById('roster-submit').textContent = rosterEditEmail ? 'Update learner' : 'Save learner';
     }
 
     function showToast(message, variant = 'info') {
@@ -630,6 +965,34 @@
     }
 
     document.getElementById('launch').addEventListener('click', loadModule);
+    document.getElementById('complete-module').addEventListener('click', issueCertificate);
+
+    document.getElementById('registration-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const accountType = document.getElementById('reg-access').value;
+      const role = document.getElementById('reg-role').value;
+      if (!name || !email || !role || !accountType) {
+        showToast('Please complete all required fields.', 'info');
+        return;
+      }
+      const state = loadState();
+      const now = new Date().toISOString();
+      state.learner = {
+        ...state.learner,
+        name,
+        email,
+        accountType,
+        role,
+        startDate: state.learner.startDate || now
+      };
+      upsertRegistry(state);
+      saveState(state);
+      document.getElementById('registration-overlay').hidden = true;
+      document.getElementById('launch').disabled = false;
+      showToast('Registration saved. Launch the module to begin.', 'success');
+    });
 
     document.querySelectorAll('nav.top-nav button').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -645,19 +1008,92 @@
       const state = loadState();
       state.learner = {
         name: document.getElementById('learner-name').value.trim(),
+        email: document.getElementById('learner-email').value.trim(),
+        accountType: document.getElementById('learner-access').value || 'user',
         role: document.getElementById('learner-role').value,
-        goal: document.getElementById('learner-goal').value
+        goal: document.getElementById('learner-goal').value,
+        startDate: state.learner.startDate || new Date().toISOString()
       };
+      upsertRegistry(state);
       saveState(state);
       showToast('Profile saved', 'success');
     });
 
     document.getElementById('reset-progress').addEventListener('click', () => {
       if (!confirm('This will clear your saved profile, progress, and certificates. Continue?')) return;
-      const cleared = { learner: {}, modules: {}, certificates: [] };
+      const cleared = { learner: {}, modules: {}, certificates: [], registry: [] };
       saveState(cleared);
       frame.src = 'about:blank';
       showToast('Progress reset', 'success');
+    });
+
+    const rosterForm = document.getElementById('roster-form');
+    if (rosterForm) {
+      rosterForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can change the roster.', 'info');
+          return;
+        }
+        const entry = {
+          name: document.getElementById('roster-name').value.trim(),
+          email: document.getElementById('roster-email').value.trim(),
+          role: document.getElementById('roster-role').value.trim(),
+          accountType: 'user',
+          startDate: document.getElementById('roster-start').value
+            ? new Date(document.getElementById('roster-start').value).toISOString()
+            : '',
+          completionDate: document.getElementById('roster-complete').value
+            ? new Date(document.getElementById('roster-complete').value).toISOString()
+            : ''
+        };
+        if (!entry.name || !entry.email) {
+          showToast('Name and email are required for roster entries.', 'info');
+          return;
+        }
+        const existingIdx = state.registry.findIndex((r) => r.email === (rosterEditEmail || entry.email));
+        if (existingIdx >= 0) {
+          state.registry[existingIdx] = { ...state.registry[existingIdx], ...entry };
+        } else {
+          state.registry.push(entry);
+        }
+        saveState(state);
+        populateRosterForm({});
+        showToast('Roster updated', 'success');
+      });
+
+      document.getElementById('roster-reset').addEventListener('click', () => {
+        populateRosterForm({});
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target.classList.contains('roster-edit')) {
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can edit roster entries.', 'info');
+          return;
+        }
+        const entry = state.registry.find((r) => r.email === event.target.dataset.email);
+        if (entry) {
+          populateRosterForm(entry);
+          document.getElementById('learner-access').value = state.learner.accountType || 'user';
+        }
+      }
+      if (event.target.classList.contains('roster-delete')) {
+        const email = event.target.dataset.email;
+        if (!confirm(`Delete ${email} from the roster?`)) return;
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can remove roster entries.', 'info');
+          return;
+        }
+        state.registry = (state.registry || []).filter((r) => r.email !== email);
+        saveState(state);
+        populateRosterForm({});
+        showToast('Roster entry removed', 'success');
+      }
     });
 
     document.getElementById('back-top').addEventListener('click', () => {
@@ -673,9 +1109,20 @@
     renderCertificates(initialState);
     renderDashboard(initialState);
     renderProfileBanner(initialState);
+    renderRoster(initialState);
+    renderRoleGuidance(initialState);
 
-    // Auto-load on first paint for a managed experience
-    loadModule();
+      if (
+        initialState.learner.name &&
+        initialState.learner.email &&
+        initialState.learner.role &&
+        initialState.learner.accountType
+      ) {
+        document.getElementById('launch').disabled = false;
+        loadModule();
+      } else {
+        document.getElementById('registration-overlay').hidden = false;
+      }
   </script>
 </body>
 </html>
