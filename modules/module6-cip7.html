@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DecisionMaker Release 2 — Guided Flow Engine + Progress + Resume</title>
+  <link rel="stylesheet" href="../assets/css/flowEngine.css">
   <style>
     html, body { height: 100%; margin: 0; }
     body { overflow: hidden; font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; background: #f6f7fb; color: #0f172a; }
@@ -93,32 +94,6 @@
       position: relative;
     }
 
-    .flow-header{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding: 12px 16px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
-    .flow-left { display: flex; flex-direction: column; gap: 6px; }
-    .flow-breadcrumb{ font-weight: 700; color: #111827; }
-    .flow-progress{ font-size: 0.9rem; opacity: 0.8; }
-    .flow-actions{ display: flex; align-items: center; gap: 8px; }
-    .flow-actions button { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.12); background: #fff; cursor: pointer; font-weight: 700; transition: background 0.15s ease, transform 0.15s ease; }
-    .flow-actions button:hover { background: #eef2ff; transform: translateY(-1px); }
-    .flow-actions button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-primary { background: #4f46e5; color: #fff; border-color: #4338ca; }
-    .btn-primary:hover { background: #4338ca; }
-    .btn-secondary { background: #f8fafc; }
-
     .content-card {
       background: #fff;
       border: 1px solid rgba(0,0,0,0.06);
@@ -193,19 +168,18 @@
       </div>
     </aside>
     <main class="app-main">
-      <div class="flow-header">
+      <div class="flow-header" id="flowHeader">
         <div class="flow-left">
           <div class="flow-breadcrumb">You are here: <span id="flowCurrentTitle"></span></div>
           <div class="flow-progress">Progress: <span id="flowDoneCount"></span>/<span id="flowTotalCount"></span></div>
         </div>
         <div class="flow-actions">
-          <button id="flowResumeBtn" class="btn-secondary">Resume</button>
-          <button id="flowBackBtn" class="btn-secondary">Back</button>
-          <button id="flowNextBtn" class="btn-primary">Next</button>
+          <button id="flowBackBtn" class="btn-secondary" type="button">Back</button>
+          <button id="flowNextBtn" class="btn-primary" type="button">Next</button>
         </div>
       </div>
 
-      <section id="landing" class="content-card">
+      <section id="landing" class="content-card" data-title="Landing">
         <div class="section-meta">
           <h2>Redirecting to the CIP-007 Guided Training</h2>
           <span class="badge">Start</span>
@@ -214,7 +188,7 @@
         <p>If you are not redirected automatically, <a href="./cip007/setup.html">open the new guided module.</a></p>
       </section>
 
-      <section id="intro" class="content-card">
+      <section id="intro" class="content-card" data-title="Introduction">
         <div class="section-meta">
           <h2>Introduction</h2>
           <span class="badge">Start</span>
@@ -222,7 +196,7 @@
         <p>Welcome to the CIP-007 guided experience. Everything you need is organized into clear steps with progress tracking so you always know what comes next.</p>
       </section>
 
-      <section id="training-flow" class="content-card">
+      <section id="training-flow" class="content-card" data-title="Training Flow">
         <div class="section-meta">
           <h2>Training Flow</h2>
           <span class="badge">Orientation</span>
@@ -231,7 +205,7 @@
         <div class="note">Tip: Completed sections show a checkmark in the navigation when you advance with the Next button.</div>
       </section>
 
-      <section id="role-guidance" class="content-card">
+      <section id="role-guidance" class="content-card" data-title="Role Guidance">
         <div class="section-meta">
           <h2>Role Guidance</h2>
           <span class="badge">Orientation</span>
@@ -239,7 +213,7 @@
         <p>Use this module to align responsibilities across operations, compliance, and technical teams. Progress tracking helps each role stay synchronized.</p>
       </section>
 
-      <section id="requirements-overview" class="content-card">
+      <section id="requirements-overview" class="content-card" data-title="Requirements Overview">
         <div class="section-meta">
           <h2>Requirements Overview</h2>
           <span class="badge">Requirements</span>
@@ -247,7 +221,7 @@
         <p>Summaries and quick references for CIP-007 expectations sit here. Expand specific areas in the navigation to jump straight to details.</p>
       </section>
 
-      <section id="r1" class="content-card">
+      <section id="r1" class="content-card" data-title="R1 – Ports & Services">
         <div class="section-meta">
           <h2>R1 – Ports & Services</h2>
           <span class="badge">Requirements</span>
@@ -255,7 +229,7 @@
         <p>Keep track of authorized ports and services for your cyber assets, ensuring unauthorized access points are identified and removed.</p>
       </section>
 
-      <section id="r2" class="content-card">
+      <section id="r2" class="content-card" data-title="R2 – Patch Management">
         <div class="section-meta">
           <h2>R2 – Patch Management</h2>
           <span class="badge">Requirements</span>
@@ -263,7 +237,7 @@
         <p>Preparation tasks and prerequisites live in this section. Use it to ensure everything is ready before you begin applying security updates.</p>
       </section>
 
-      <section id="r3" class="content-card">
+      <section id="r3" class="content-card" data-title="R3 – Malware Prevention">
         <div class="section-meta">
           <h2>R3 – Malware Prevention</h2>
           <span class="badge">Requirements</span>
@@ -271,7 +245,7 @@
         <p>Response guidance and step-by-step actions appear here when you select the related navigation item.</p>
       </section>
 
-      <section id="r4" class="content-card">
+      <section id="r4" class="content-card" data-title="R4 – Security Event Monitoring">
         <div class="section-meta">
           <h2>R4 – Security Event Monitoring</h2>
           <span class="badge">Requirements</span>
@@ -279,7 +253,7 @@
         <p>Use this guidance to keep logging and alerting tuned so operational and compliance teams can respond quickly.</p>
       </section>
 
-      <section id="r5" class="content-card">
+      <section id="r5" class="content-card" data-title="R5 – Account Management">
         <div class="section-meta">
           <h2>R5 – Account Management</h2>
           <span class="badge">Requirements</span>
@@ -287,7 +261,7 @@
         <p>Recovery guidance helps you return systems to steady state while maintaining account governance requirements.</p>
       </section>
 
-      <section id="r6" class="content-card">
+      <section id="r6" class="content-card" data-title="R6 – Interactive Remote Access">
         <div class="section-meta">
           <h2>R6 – Interactive Remote Access</h2>
           <span class="badge">Requirements</span>
@@ -295,7 +269,7 @@
         <p>Use this space for operational checklists and controls that keep remote access secure.</p>
       </section>
 
-      <section id="scenarios" class="content-card">
+      <section id="scenarios" class="content-card" data-title="Scenarios">
         <div class="section-meta">
           <h2>Scenarios</h2>
           <span class="badge">Practice</span>
@@ -303,7 +277,7 @@
         <p>Work through scenarios to practice applying the requirements to realistic operating conditions.</p>
       </section>
 
-      <section id="knowledge-check" class="content-card">
+      <section id="knowledge-check" class="content-card" data-title="Knowledge Check">
         <div class="section-meta">
           <h2>Knowledge Check</h2>
           <span class="badge">Practice</span>
@@ -311,7 +285,7 @@
         <p>Confirm what you have learned with a short quiz. Your score helps identify areas to review before completing the module.</p>
       </section>
 
-      <section id="checklist" class="content-card">
+      <section id="checklist" class="content-card" data-title="Operational Checklist">
         <div class="section-meta">
           <h2>Operational Checklist</h2>
           <span class="badge">Practice</span>
@@ -319,7 +293,7 @@
         <p>Finalize your work, confirm completion criteria, and capture proof for certification.</p>
       </section>
 
-      <section id="resources" class="content-card">
+      <section id="resources" class="content-card" data-title="Resources">
         <div class="section-meta">
           <h2>Resources</h2>
           <span class="badge">Reference</span>
@@ -327,180 +301,15 @@
         <p>Pull job aids, definitions, and links you need to keep the training handy as you operate.</p>
       </section>
 
-      <section id="completion" class="content-card">
+      <section id="completion" class="content-card" data-title="Completion">
         <div class="section-meta">
           <h2>Completion</h2>
           <span class="badge">Finish</span>
         </div>
-        <p>Your progress is captured automatically. Use the Resume button to continue later or return to any section from the navigation.</p>
+        <p>Your progress is captured automatically. Return to any section from the navigation and the module will reopen where you left off.</p>
       </section>
     </main>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const MODULE_SECTIONS = [
-        { id: 'landing', title: 'Landing' },
-        { id: 'intro', title: 'Introduction' },
-        { id: 'training-flow', title: 'Training Flow' },
-        { id: 'role-guidance', title: 'Role Guidance' },
-        { id: 'requirements-overview', title: 'Requirements Overview' },
-        { id: 'r1', title: 'R1 – Ports & Services' },
-        { id: 'r2', title: 'R2 – Patch Management' },
-        { id: 'r3', title: 'R3 – Malware Prevention' },
-        { id: 'r4', title: 'R4 – Security Event Monitoring' },
-        { id: 'r5', title: 'R5 – Account Management' },
-        { id: 'r6', title: 'R6 – Interactive Remote Access' },
-        { id: 'scenarios', title: 'Scenarios' },
-        { id: 'knowledge-check', title: 'Knowledge Check' },
-        { id: 'checklist', title: 'Operational Checklist' },
-        { id: 'resources', title: 'Resources' },
-        { id: 'completion', title: 'Completion' }
-      ];
-
-      const PROGRESS_KEY = 'dm_module6_progress_v1';
-      const appMain = document.querySelector('.app-main');
-      const flowHeader = document.querySelector('.flow-header');
-      const links = document.querySelectorAll('.nav-link');
-      const flowCurrentTitle = document.getElementById('flowCurrentTitle');
-      const flowDoneCount = document.getElementById('flowDoneCount');
-      const flowTotalCount = document.getElementById('flowTotalCount');
-      const backBtn = document.getElementById('flowBackBtn');
-      const nextBtn = document.getElementById('flowNextBtn');
-      const resumeBtn = document.getElementById('flowResumeBtn');
-
-      flowTotalCount.textContent = MODULE_SECTIONS.length;
-
-      const loadProgress = () => {
-        try {
-          const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-          if (saved && saved.lastId && Array.isArray(saved.completedIds)) {
-            const filtered = saved.completedIds.filter(id => MODULE_SECTIONS.some(section => section.id === id));
-            return { lastId: saved.lastId, completedIds: Array.from(new Set(filtered)), updatedAt: saved.updatedAt };
-          }
-        } catch (err) {
-          console.warn('Progress could not be parsed', err);
-        }
-        return { lastId: MODULE_SECTIONS[0].id, completedIds: [], updatedAt: new Date().toISOString() };
-      };
-
-      let progressState = loadProgress();
-      let activeSectionId = MODULE_SECTIONS.find(section => section.id === (window.location.hash || '').replace('#', ''))?.id
-        || progressState.lastId
-        || MODULE_SECTIONS[0].id;
-
-      const saveProgress = () => {
-        progressState.updatedAt = new Date().toISOString();
-        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progressState));
-      };
-
-      const setActiveNav = (sectionId) => {
-        links.forEach(link => {
-          const matches = link.getAttribute('href') === `#${sectionId}`;
-          link.classList.toggle('active', matches);
-          if (matches) {
-            const accordion = link.closest('.accordion');
-            accordion?.classList.add('open');
-          }
-        });
-      };
-
-      const updateCompletionStyles = () => {
-        MODULE_SECTIONS.forEach(section => {
-          const sectionEl = document.getElementById(section.id);
-          const navLink = document.querySelector(`.nav-link[href="#${section.id}"]`);
-          const completed = progressState.completedIds.includes(section.id);
-          sectionEl?.classList.toggle('completed', completed);
-          navLink?.classList.toggle('completed', completed);
-        });
-        flowDoneCount.textContent = progressState.completedIds.length;
-      };
-
-      const updateHeader = (sectionId) => {
-        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === sectionId);
-        const activeSection = MODULE_SECTIONS[currentIndex] || MODULE_SECTIONS[0];
-        flowCurrentTitle.textContent = activeSection.title;
-        backBtn.disabled = currentIndex <= 0;
-        nextBtn.disabled = currentIndex >= MODULE_SECTIONS.length - 1;
-      };
-
-      const scrollToSection = (sectionId) => {
-        const target = document.getElementById(sectionId);
-        if (!target) return;
-        const headerHeight = flowHeader?.offsetHeight || 0;
-        const offset = target.offsetTop - headerHeight - 12;
-        appMain.scrollTo({ top: offset, behavior: 'smooth' });
-      };
-
-      const goToSection = (sectionId, { updateHash = true } = {}) => {
-        if (!MODULE_SECTIONS.some(section => section.id === sectionId)) return;
-        activeSectionId = sectionId;
-        progressState.lastId = sectionId;
-        saveProgress();
-        setActiveNav(sectionId);
-        updateHeader(sectionId);
-        if (updateHash) history.replaceState(null, '', `#${sectionId}`);
-        scrollToSection(sectionId);
-      };
-
-      const markComplete = (sectionId) => {
-        if (!progressState.completedIds.includes(sectionId)) {
-          progressState.completedIds.push(sectionId);
-          saveProgress();
-          updateCompletionStyles();
-        }
-      };
-
-      links.forEach(link => {
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          const id = link.getAttribute('href').replace('#', '');
-          goToSection(id);
-        });
-      });
-
-      backBtn.addEventListener('click', () => {
-        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === activeSectionId);
-        if (currentIndex > 0) {
-          goToSection(MODULE_SECTIONS[currentIndex - 1].id);
-        }
-      });
-
-      nextBtn.addEventListener('click', () => {
-        const currentIndex = MODULE_SECTIONS.findIndex(section => section.id === activeSectionId);
-        if (currentIndex < MODULE_SECTIONS.length - 1) {
-          markComplete(activeSectionId);
-          goToSection(MODULE_SECTIONS[currentIndex + 1].id);
-        }
-      });
-
-      resumeBtn.addEventListener('click', () => {
-        goToSection(progressState.lastId || MODULE_SECTIONS[0].id);
-      });
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            if (id && activeSectionId !== id) {
-              activeSectionId = id;
-              progressState.lastId = id;
-              saveProgress();
-              setActiveNav(id);
-              updateHeader(id);
-              history.replaceState(null, '', `#${id}`);
-            }
-          }
-        });
-      }, { root: appMain, threshold: 0.55 });
-
-      MODULE_SECTIONS.forEach(section => {
-        const el = document.getElementById(section.id);
-        if (el) observer.observe(el);
-      });
-
-      updateCompletionStyles();
-      goToSection(activeSectionId, { updateHash: true });
-    });
-  </script>
+  <script src="../assets/js/flowEngine.js"></script>
 </body>
 </html>
