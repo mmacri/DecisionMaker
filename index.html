@@ -372,6 +372,8 @@
     <div class="overlay-card">
       <h2 id="registration-title">Enter your details to begin</h2>
       <p>We personalize the CSIR-guided training path, capture your certificate details, and store a local-only roster for audit-friendly reporting. Access is user-first—admins can be provisioned only by an existing admin.</p>
+      <h2 id="registration-title">Choose your role to begin</h2>
+      <p>We personalize the CSIR-guided training path, capture your certificate details, and store a local-only roster for audit-friendly reporting.</p>
       <form id="registration-form">
         <div class="field">
           <label for="reg-name">Full name</label>
@@ -380,6 +382,14 @@
         <div class="field">
           <label for="reg-email">Work email</label>
           <input id="reg-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required />
+        </div>
+        <div class="field">
+          <label for="reg-access">Access type</label>
+          <select id="reg-access" name="access" required>
+            <option value="">Choose access type</option>
+            <option value="user">Training user</option>
+            <option value="admin">Admin (manage roster)</option>
+          </select>
         </div>
         <div class="field">
           <label for="reg-role">Role</label>
@@ -486,6 +496,12 @@
               <input id="learner-email" type="email" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" placeholder="name@example.com" />
             </label>
             <div style="margin-top:0.75rem; display:grid; gap:0.5rem;">
+              <label>Access type
+                <select id="learner-access" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
+                  <option value="user">Training user</option>
+                  <option value="admin">Admin (manage roster)</option>
+                </select>
+              </label>
               <label>Role
                 <select id="learner-role" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
                   <option value="">Select your role</option>
@@ -640,6 +656,7 @@
       try {
         const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
         const nextState = {
+        return {
           learner: { accountType: 'user', ...(parsed.learner || {}) },
           modules: parsed.modules || {},
           certificates: parsed.certificates || [],
@@ -651,6 +668,8 @@
         const fallback = { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
         seedAdmin(fallback);
         return fallback;
+      } catch (err) {
+        return { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
       }
     }
 
@@ -698,6 +717,7 @@
     function ensureRegistration() {
       const state = loadState();
       if (state.learner.name && state.learner.email && state.learner.role) {
+      if (state.learner.name && state.learner.email && state.learner.role && state.learner.accountType) {
         document.getElementById('launch').disabled = false;
         return true;
       }
@@ -706,6 +726,9 @@
       document.getElementById('reg-role').value = state.learner.role || '';
       document.getElementById('registration-overlay').hidden = false;
       showToast('Please enter your name, email, and role to continue.', 'info');
+      document.getElementById('reg-access').value = state.learner.accountType || '';
+      document.getElementById('registration-overlay').hidden = false;
+      showToast('Please enter your name, email, role, and access type to continue.', 'info');
       return false;
     }
 
@@ -774,6 +797,7 @@
     function renderDashboard(state) {
       document.getElementById('learner-name').value = state.learner.name || '';
       document.getElementById('learner-email').value = state.learner.email || '';
+      document.getElementById('learner-access').value = state.learner.accountType || 'user';
       document.getElementById('learner-role').value = state.learner.role || '';
       document.getElementById('learner-goal').value = state.learner.goal || '';
 
@@ -913,6 +937,7 @@
       const header = document.createElement('tr');
       const columns = adminMode
         ? ['Name', 'Email', 'Role', 'Access', 'Start date', 'Completion date', 'Actions']
+        ? ['Name', 'Email', 'Role', 'Start date', 'Completion date', 'Actions']
         : ['Name', 'Email', 'Role', 'Start date', 'Completion date'];
       columns.forEach((label) => {
         const th = document.createElement('th');
@@ -933,6 +958,7 @@
           entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'
         ].forEach((value) => {
           if (value === null) return;
+        [entry.name, entry.email, entry.role, entry.startDate ? new Date(entry.startDate).toLocaleDateString() : '—', entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'].forEach((value) => {
           const cell = document.createElement('td');
           cell.textContent = value;
           cell.style.padding = '0.35rem 0.25rem';
@@ -1010,6 +1036,9 @@
       const email = document.getElementById('reg-email').value.trim();
       const role = document.getElementById('reg-role').value;
       if (!name || !email || !role) {
+      const accountType = document.getElementById('reg-access').value;
+      const role = document.getElementById('reg-role').value;
+      if (!name || !email || !role || !accountType) {
         showToast('Please complete all required fields.', 'info');
         return;
       }
@@ -1020,6 +1049,7 @@
         name,
         email,
         accountType: state.learner.accountType || 'user',
+        accountType,
         role,
         startDate: state.learner.startDate || now
       };
@@ -1071,6 +1101,7 @@
         name: document.getElementById('learner-name').value.trim(),
         email: document.getElementById('learner-email').value.trim(),
         accountType: state.learner.accountType || 'user',
+        accountType: document.getElementById('learner-access').value || 'user',
         role: document.getElementById('learner-role').value,
         goal: document.getElementById('learner-goal').value,
         startDate: state.learner.startDate || new Date().toISOString()
@@ -1103,6 +1134,7 @@
           email: document.getElementById('roster-email').value.trim(),
           role: document.getElementById('roster-role').value.trim(),
           accountType: document.getElementById('roster-account').value || 'user',
+          accountType: 'user',
           startDate: document.getElementById('roster-start').value
             ? new Date(document.getElementById('roster-start').value).toISOString()
             : '',
@@ -1140,6 +1172,7 @@
         const entry = state.registry.find((r) => r.email === event.target.dataset.email);
         if (entry) {
           populateRosterForm(entry);
+          document.getElementById('learner-access').value = state.learner.accountType || 'user';
         }
       }
       if (event.target.classList.contains('roster-delete')) {
