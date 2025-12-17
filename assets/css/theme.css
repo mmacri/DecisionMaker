@@ -1,0 +1,130 @@
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --accent: #2f6fdb;
+  --accent-strong: #1f4f9f;
+  --text: #1f2933;
+  --muted: #5f6b77;
+  --border: #d8dde4;
+  --navy: #0b1c38;
+  --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --radius: 8px;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+p {
+  margin: 0 0 1rem 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-strong);
+}
+
+.button,
+button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.button.secondary,
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+.button:disabled,
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button:hover:not(:disabled),
+button:hover:not(:disabled) {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.callout {
+  border-left: 4px solid var(--accent);
+  background: #eef2fb;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: #e6edf9;
+  color: var(--accent-strong);
+  font-weight: 600;
+  margin-right: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.breadcrumb {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.progress-inline {
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+
+.list-tight li {
+  margin-bottom: 0.35rem;
+}
+
+.table-like {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.5rem 1rem;
+}
+
+.alert {
+  border-left: 4px solid #c0392b;
+  background: #fbecec;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
