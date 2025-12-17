@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select your role</title>
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand"><img src="assets/logo.svg" alt="SCL logo">Role Selection</div>
+      <div class="status-pill">Step 1 of 3</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel card">
+      <div class="pill">Required</div>
+      <h2 class="section-title">Choose your path</h2>
+      <p class="section-sub">Role selection locks in the tasks and knowledge checks that match your responsibilities.</p>
+      <div id="roleGrid" class="role-grid"></div>
+      <div class="footer-actions">
+        <a href="index.html" class="button secondary">Back</a>
+        <button id="continue" class="button" disabled>Continue</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { setRole, loadProgress } from './js/storage.js';
+    async function loadRoles() {
+      const res = await fetch('contentpacks/scl-csir/pack.json');
+      const pack = await res.json();
+      const grid = document.getElementById('roleGrid');
+      const saved = loadProgress().roleId;
+      pack.roles.forEach((role) => {
+        const card = document.createElement('div');
+        card.className = 'role-card';
+        if (saved === role.id) card.classList.add('selected');
+        card.innerHTML = `<h3>${role.label}</h3><p>${role.whoItsFor}</p><div class="role-meta">Est. ${role.estMinutes} minutes</div>`;
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.role-card').forEach((c) => c.classList.remove('selected'));
+          card.classList.add('selected');
+          setRole(role.id);
+          document.getElementById('continue').disabled = false;
+        });
+        grid.appendChild(card);
+      });
+      if (saved) document.getElementById('continue').disabled = false;
+    }
+    document.getElementById('continue').addEventListener('click', () => {
+      window.location.href = 'profile.html';
+    });
+    loadRoles();
+  </script>
+</body>
+</html>

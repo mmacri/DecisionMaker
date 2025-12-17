@@ -1,0 +1,446 @@
+{
+    "meta": {
+        "id": "scl-csir",
+        "title": "Seattle City Light \u2013 OT CSIR Training",
+        "version": "v1.0 \u2022 December 2025",
+        "estMinutes": 45
+    },
+    "roles": [
+        {
+            "id": "incident-commander",
+            "label": "Incident Commander",
+            "whoItsFor": "Leads coordination, approves actions, and keeps leadership informed.",
+            "estMinutes": 45
+        },
+        {
+            "id": "incident-technical-lead",
+            "label": "Incident Technical Lead",
+            "whoItsFor": "Owns investigation, containment, and recovery sequencing for OT/IT assets.",
+            "estMinutes": 45
+        },
+        {
+            "id": "enterprise-cyber-security",
+            "label": "Enterprise Cyber Security",
+            "whoItsFor": "ECS/PSA analysts coordinating detection, reporting, and regulator outreach.",
+            "estMinutes": 40
+        },
+        {
+            "id": "nerc-cip-lead",
+            "label": "NERC-CIP Compliance Lead",
+            "whoItsFor": "Compliance advisors ensuring CIP mapping, DOE-417 handling, and evidence care.",
+            "estMinutes": 40
+        },
+        {
+            "id": "operations-staff",
+            "label": "Operations / General Staff",
+            "whoItsFor": "Any SCL staff who may observe or report abnormalities in OT environments.",
+            "estMinutes": 30
+        }
+    ],
+    "steps": [
+        {
+            "id": "responsibilities",
+            "title": "SCL staff responsibilities",
+            "subtitle": "Recognize, report, and refresh annually",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "text",
+                    "heading": "Everyone has a duty to act",
+                    "body": "All SCL staff must stay alert to abnormalities, immediately report suspected incidents, and complete required training each year. You never need permission to escalate within your chain or to ECS/PSA when you suspect malicious activity."
+                },
+                {
+                    "type": "list",
+                    "heading": "Immediate actions",
+                    "items": [
+                        "Observe and preserve: note time, system, reporter, and visible impact.",
+                        "Report promptly to ECS/PSA and your supervisor; use the 15-minute escalation rule if no response.",
+                        "Avoid speculation in email/chat; use approved bridges and evidence-handling guidance."
+                    ]
+                },
+                {
+                    "type": "callout",
+                    "heading": "Golden Hour mindset",
+                    "body": "Critical or reportable events must be escalated inside 60 minutes. Early notification enables containment and regulatory timelines."
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "What is every staff member expected to do when they notice an abnormal OT condition?",
+                        "options": [
+                            "Wait for a manager to schedule a meeting",
+                            "Report it immediately to ECS/PSA and their supervisor",
+                            "Try to fix it silently to avoid alarms",
+                            "Post about it on social media"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "prompt": "How often must SCL staff complete CSIR-related training?",
+                        "options": [
+                            "Once at hire only",
+                            "Every two years",
+                            "Annually",
+                            "Only after an incident"
+                        ],
+                        "answer": 2
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "definitions",
+            "title": "Definitions & intent",
+            "subtitle": "Know what is reportable",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "text",
+                    "heading": "Key terms",
+                    "body": "Cyber Event: any observable change. Attempt to Compromise (AtC): an intentional attempt to violate security. Cyber Security Incident: a malicious event that jeopardizes confidentiality, integrity, or availability. Reportable Cyber Security Incident: a confirmed incident that meets regulator thresholds (e.g., BES impact, loss of monitoring, OT disruption)."
+                },
+                {
+                    "type": "list",
+                    "heading": "Intent matters",
+                    "items": [
+                        "Accidental misconfigurations may be incidents but usually are not reportable unless they impair reliability or security.",
+                        "AtCs are reportable to regulators by the next business day even if unsuccessful.",
+                        "Reportable incidents must be elevated within one hour of determination."
+                    ]
+                },
+                {
+                    "type": "callout",
+                    "heading": "When unsure, treat as suspicious",
+                    "body": "Escalate to ECS/PSA; they can assist with triage and reportability decisions."
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "Which statement about an Attempt to Compromise (AtC) is correct?",
+                        "options": [
+                            "It is only reportable if it takes down a system",
+                            "It is reportable by the next business day even if blocked",
+                            "It is logged but never reported",
+                            "It only applies to IT systems"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "prompt": "What differentiates a Cyber Security Incident from a generic Cyber Event?",
+                        "options": [
+                            "Incidents are accidental and events are intentional",
+                            "Incidents jeopardize confidentiality, integrity, or availability",
+                            "Events are always more severe than incidents",
+                            "Events only occur on weekends"
+                        ],
+                        "answer": 1
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "severity",
+            "title": "Severity levels",
+            "subtitle": "Critical, High, Medium, Low",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "table",
+                    "heading": "Severity guidance",
+                    "columns": [
+                        "Level",
+                        "Description",
+                        "Examples"
+                    ],
+                    "rows": [
+                        [
+                            "Critical",
+                            "Safety, OT reliability, or public impact is at risk.",
+                            "BES outage risk, control center loss, ransomware on OT"
+                        ],
+                        [
+                            "High",
+                            "Major IT disruption or credible threat to operations.",
+                            "AD compromise, widespread phishing with access"
+                        ],
+                        [
+                            "Medium",
+                            "Localized impact with limited spread.",
+                            "Single asset malware, contained credential theft"
+                        ],
+                        [
+                            "Low",
+                            "Minimal impact, monitoring only.",
+                            "Port scans, unsuccessful login attempts"
+                        ]
+                    ]
+                },
+                {
+                    "type": "list",
+                    "heading": "How to use severities",
+                    "items": [
+                        "Critical and High events start immediate bridges and rapid escalation.",
+                        "Medium may proceed during business hours but must be logged and monitored.",
+                        "Low keeps watch-list visibility; adjust if new evidence appears."
+                    ]
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "Which situation is Critical?",
+                        "options": [
+                            "Multiple failed logins on a kiosk",
+                            "Loss of OT monitoring screens in a control center",
+                            "A blocked phishing email",
+                            "A user forgetting a password"
+                        ],
+                        "answer": 1
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "workflow",
+            "title": "Workflow phases & goals",
+            "subtitle": "Preparation through lessons learned",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "list",
+                    "heading": "Phases aligned to NIST",
+                    "items": [
+                        "Preparation: maintain contacts, playbooks, access to OT sites.",
+                        "Identification: confirm indicators, classify severity, notify ECS/PSA.",
+                        "Containment, Eradication, Recovery: protect people and reliability first; choose short-term containment that preserves evidence.",
+                        "Lessons Learned: capture timelines, DOE-417 references, and playbook updates."
+                    ]
+                },
+                {
+                    "type": "callout",
+                    "heading": "Notification spans phases",
+                    "body": "Notification begins during identification and continues as containment decisions are made. Use 15-minute escalation if responders do not acknowledge."
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "When should notification begin?",
+                        "options": [
+                            "Only after eradication",
+                            "During identification and updated through containment",
+                            "After lessons learned",
+                            "Only if media calls"
+                        ],
+                        "answer": 1
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "roles",
+            "title": "Roles & responsibilities",
+            "subtitle": "Who leads, who supports",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "list",
+                    "heading": "Core roles",
+                    "items": [
+                        "Incident Commander: directs strategy, assigns owners, clears communications.",
+                        "Incident Technical Lead: leads investigation, isolation steps, and evidence preservation.",
+                        "Enterprise Cyber Security: monitors detections, coordinates reporting, recommends containment, interfaces with CISA/E-ISAC.",
+                        "NERC-CIP Compliance Leads: map reportability, steward DOE-417 drafts, ensure evidence chain.",
+                        "CSIR Team Members: execute playbooks, log actions, and validate recovery.",
+                        "Operations/Asset Owner: confirm safe, reliable operation and approve OT actions."
+                    ]
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "Who owns investigation and containment steps?",
+                        "options": [
+                            "Communications",
+                            "Incident Technical Lead",
+                            "HR",
+                            "Finance"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "prompt": "Who ensures CIP mapping and DOE-417 handling?",
+                        "options": [
+                            "Incident Commander",
+                            "NERC-CIP Compliance Leads",
+                            "Vendors",
+                            "Facilities"
+                        ],
+                        "answer": 1
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "reporting",
+            "title": "Reporting workflow & timelines",
+            "subtitle": "Escalation, regulators, and contacts",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "text",
+                    "heading": "Authority to report",
+                    "body": "Any reporter can elevate to ECS/PSA without waiting for a meeting. ECS/PSA can file regulatory notifications while the bridge continues."
+                },
+                {
+                    "type": "list",
+                    "heading": "Timelines",
+                    "items": [
+                        "Reportable Cyber Security Incident: notify regulators within one hour of determination.",
+                        "Attempt to Compromise: notify by the next business day.",
+                        "Use DOE-417 for reportable OT events; store drafts in the secure ECS repository."
+                    ]
+                },
+                {
+                    "type": "list",
+                    "heading": "Who to contact",
+                    "items": [
+                        "Escalate to ECS/PSA and duty leadership first; apply the 15-minute escalation rule.",
+                        "Regulator delivery: E-ISAC, CISA Central, SOC emails; confirm by phone when possible.",
+                        "Encourage phone confirmation for critical submissions to reduce ambiguity."
+                    ]
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "How quickly must a reportable cyber security incident be notified to regulators?",
+                        "options": [
+                            "Within one hour of determination",
+                            "Within 24 hours",
+                            "Within a week",
+                            "Only if operations stop"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "prompt": "Where are DOE-417 drafts stored?",
+                        "options": [
+                            "Personal email",
+                            "Unsecured shared drive",
+                            "Secure ECS repository",
+                            "Printed binder only"
+                        ],
+                        "answer": 2
+                    }
+                ]
+            },
+            "downloads": []
+        },
+        {
+            "id": "safety",
+            "title": "Safety first & CIP mapping",
+            "subtitle": "Operate safely and map to CIP",
+            "requiredForRoles": [],
+            "contentBlocks": [
+                {
+                    "type": "callout",
+                    "heading": "Safety principle",
+                    "body": "Safe, secure, reliable operation is the top priority. If a containment action conflicts with grid or site safety, contact the Asset Owner immediately and coordinate a safe alternative."
+                },
+                {
+                    "type": "list",
+                    "heading": "CIP mapping (appendix)",
+                    "items": [
+                        "CIP-008 incident reporting aligns with CSIR reporting timelines and DOE-417 use.",
+                        "CIP-007 logging/monitoring requirements feed identification and evidence preservation.",
+                        "CIP-010 change management applies to containment and recovery changes."
+                    ]
+                }
+            ],
+            "knowledgeCheck": {
+                "type": "quiz",
+                "passingScore": 80,
+                "questions": [
+                    {
+                        "prompt": "If a containment step risks reliability, what should you do?",
+                        "options": [
+                            "Proceed anyway",
+                            "Pause and consult the Asset Owner for a safe alternative",
+                            "Ignore the incident",
+                            "Email the vendor"
+                        ],
+                        "answer": 1
+                    }
+                ]
+            },
+            "downloads": []
+        }
+    ],
+    "finalExam": {
+        "title": "Final Exam",
+        "passingScore": 80,
+        "questions": [
+            {
+                "prompt": "Notification for a reportable incident must occur\u2026",
+                "options": [
+                    "Within one hour of determination",
+                    "After recovery",
+                    "Only if IT approves",
+                    "Within a week"
+                ],
+                "answer": 0
+            },
+            {
+                "prompt": "Which role maps CIP reportability and DOE-417 drafts?",
+                "options": [
+                    "Incident Technical Lead",
+                    "NERC-CIP Compliance Leads",
+                    "Facilities",
+                    "HR"
+                ],
+                "answer": 1
+            },
+            {
+                "prompt": "What is the primary focus when containment conflicts with safety?",
+                "options": [
+                    "Keep schedule",
+                    "Prioritize safe, reliable operation and involve the Asset Owner",
+                    "Ignore operations",
+                    "Choose the fastest option regardless of risk"
+                ],
+                "answer": 1
+            },
+            {
+                "prompt": "Attempt to Compromise notifications are due\u2026",
+                "options": [
+                    "Within one hour",
+                    "Next business day",
+                    "Never",
+                    "Only if it succeeds"
+                ],
+                "answer": 1
+            }
+        ]
+    },
+    "certificateText": "This certifies that {{name}} completed the Seattle City Light \u2013 OT CSIR Training as {{role}} on {{date}}."
+}

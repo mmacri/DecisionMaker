@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSIR Course Runner</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand"><img src="assets/logo.svg" alt="">Course Runner</div>
+      <div class="status-pill" id="learnerInfo">Loading...</div>
+      <div class="status-pill" id="courseMeta"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="panel" style="padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <div class="pill">Seattle City Light – OT CSIR Training</div>
+          <h2 id="courseTitle" class="section-title" style="margin:6px 0;">Loading...</h2>
+          <p class="section-sub" style="margin:0;">Steps are locked until you view the content and pass the knowledge check. Final exam unlocks your certificate.</p>
+        </div>
+        <div class="progress" style="min-width:240px;">
+          <div class="small" id="progressText">0% complete</div>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="drawer-toggle"><button id="drawerToggle" class="button secondary">Toggle steps</button></div>
+      <aside class="panel drawer" id="drawer">
+        <div class="stepper">
+          <h4>Guided steps</h4>
+          <div id="stepList"></div>
+        </div>
+      </aside>
+      <section id="content" class="content-area"></section>
+    </div>
+
+    <div class="footer-actions">
+      <div class="alert">Steps remain locked until you view the page and pass the quiz. Final exam unlocks the certificate.</div>
+      <div style="display:flex; gap:8px;">
+        <a href="profile.html" class="button secondary">Back</a>
+        <button id="backBtn" class="button secondary">Previous</button>
+        <button id="nextBtn" class="button">Next</button>
+        <a href="certificate.html" id="certificateLink" class="button" style="display:none;">View Certificate</a>
+        <button id="resetProgress" class="button secondary">Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="lockedModal" class="panel" style="max-width:480px;">
+    <h3>Finish the current step first</h3>
+    <p class="small">To keep the workflow realistic, you must view each step and pass its knowledge check before moving on.</p>
+    <button id="closeModal" class="button">Close</button>
+  </dialog>
+
+  <div id="completionBanner" class="banner" style="display:none; max-width:1180px; margin:20px auto;">All steps complete and final exam passed. Continue to the certificate.</div>
+
+  <script type="module" src="js/courseRunner.js"></script>
+</body>
+</html>
