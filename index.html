@@ -11,6 +11,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+  <div class="topbar">
+    <div class="header-meta">
+      <div class="badge">Seattle City Light — CSIR</div>
+      <div id="progress-count" class="progress-inline">0 / 20 complete</div>
+    </div>
+    <div class="role-switch">
+      <div class="muted">Current role</div>
+      <strong id="role-display"></strong>
+    </div>
+  </div>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="logo">SCL OT CSIR</div>
@@ -24,14 +34,14 @@
             <a data-page="role-select" href="#/role-select">Choose Your Role</a>
           </div>
         </div>
-        <div class="nav-group" data-group="learn">
+        <div class="nav-group collapsed" data-group="learn">
           <header class="accordion-toggle nav-section-title">Learn</header>
           <div class="nav-items">
             <a data-page="event-vs-incident" href="#/event-vs-incident">Event vs Incident</a>
             <a data-page="severity-triage" href="#/severity-triage">Severity &amp; Triage</a>
           </div>
         </div>
-        <div class="nav-group" data-group="do">
+        <div class="nav-group collapsed" data-group="do">
           <header class="accordion-toggle nav-section-title">Do (CSIR Steps)</header>
           <div class="nav-items">
             <a data-page="step-prepare" href="#/step-prepare">Prepare</a>
@@ -42,7 +52,7 @@
             <a data-page="step-followup" href="#/step-followup">Follow Up</a>
           </div>
         </div>
-        <div class="nav-group" data-group="operate">
+        <div class="nav-group collapsed" data-group="operate">
           <header class="accordion-toggle nav-section-title">Operate</header>
           <div class="nav-items">
             <a data-page="comms" href="#/comms">Communications</a>
@@ -52,7 +62,7 @@
             <a data-page="scenarios" href="#/scenarios">Scenarios</a>
           </div>
         </div>
-        <div class="nav-group" data-group="finish">
+        <div class="nav-group collapsed" data-group="finish">
           <header class="accordion-toggle nav-section-title">Finish</header>
           <div class="nav-items">
             <a data-page="knowledge-check" href="#/knowledge-check">Knowledge Check</a>
@@ -67,16 +77,6 @@
       </div>
     </aside>
     <main>
-      <div class="topbar">
-        <div class="header-meta">
-          <div class="badge">Seattle City Light — CSIR</div>
-          <div id="progress-count" class="progress-inline">0 / 20 complete</div>
-        </div>
-        <div class="role-switch">
-          <div class="muted">Current role</div>
-          <strong id="role-display"></strong>
-        </div>
-      </div>
       <div class="content-area">
         <div class="progress-bar"><span id="progress-bar-inner" style="width:0%"></span></div>
         <div id="page-container"></div>

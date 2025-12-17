@@ -24,6 +24,17 @@ const UI = (() => {
     document.querySelectorAll('.nav-items a').forEach(a => {
       a.classList.toggle('active', a.dataset.page === pageId);
     });
+    const target = document.querySelector(`.nav-items a[data-page="${pageId}"]`);
+    if (target) {
+      const group = target.closest('.nav-group');
+      document.querySelectorAll('.nav-group').forEach(g => {
+        if (g === group) {
+          g.classList.remove('collapsed');
+        } else {
+          g.classList.add('collapsed');
+        }
+      });
+    }
     const progress = Progress.state();
     const pages = Router.getPages();
     const percent = Math.round((progress.completedPages.length / pages.length) * 100);
@@ -164,7 +175,12 @@ const UI = (() => {
     resumeButton();
     document.querySelectorAll('.nav-group header').forEach(header => {
       header.addEventListener('click', () => {
-        header.parentElement.classList.toggle('collapsed');
+        const parentGroup = header.parentElement;
+        const willOpen = parentGroup.classList.contains('collapsed');
+        document.querySelectorAll('.nav-group').forEach(group => group.classList.add('collapsed'));
+        if (willOpen) {
+          parentGroup.classList.remove('collapsed');
+        }
       });
     });
     Router.init();
