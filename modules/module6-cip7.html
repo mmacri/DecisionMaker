@@ -2,24 +2,252 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=./cip007/setup.html">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CIP-007 Guided Training Redirect</title>
+  <title>DecisionMaker Release 1 — Fix Left Nav Visibility & Scrolling</title>
   <style>
-    body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; background:#0b1221; color:#e2e8f0; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; padding:1.5rem; }
-    .card { background:#0f172a; border:1px solid #1f2937; border-radius:12px; padding:1.5rem; max-width:520px; text-align:center; }
-    a { color:#38bdf8; font-weight:700; }
+    html, body { height: 100%; margin: 0; }
+    body { overflow: hidden; font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; background: #f8fafc; color: #0f172a; }
+
+    .app-shell {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .app-sidebar {
+      width: 280px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+      border-right: 1px solid rgba(0,0,0,0.08);
+      background: #fff;
+      padding: 16px 14px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    .nav-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .accordion {
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 10px;
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .accordion-header span {
+      font-size: 0.9rem;
+    }
+
+    .accordion-toggle { transition: transform 0.2s ease; }
+    .accordion.open .accordion-toggle { transform: rotate(90deg); }
+
+    .accordion-panel {
+      display: none;
+      padding: 6px 0 10px;
+    }
+
+    .accordion.open .accordion-panel { display: block; }
+
+    .nav-list { list-style: none; margin: 0; padding: 0; }
+
+    .nav-link {
+      display: block;
+      padding: 8px 14px;
+      color: #0f172a;
+      border-left: 3px solid transparent;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .nav-link:hover { background: #eef2ff; border-color: #4f46e5; }
+    .nav-link.active { background: #e0e7ff; border-color: #4f46e5; color: #312e81; }
+
+    .app-main {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 24px;
+      background: #f8fafc;
+    }
+
+    .content-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      margin-bottom: 18px;
+    }
+
+    .content-card h2 { margin-top: 0; margin-bottom: 10px; }
+    .content-card p { margin: 0 0 12px; line-height: 1.5; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Redirecting to the CIP-007 Guided Training</h1>
-    <p>The long-scroll version has been replaced with a multi-page guided experience.</p>
-    <p>If you are not redirected automatically, <a href="./cip007/setup.html">open the new guided module.</a></p>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-title">CIP-007 Guided Training</div>
+      <div class="nav-groups">
+        <div class="accordion open" data-group="start">
+          <div class="accordion-header">
+            <span>Start</span>
+            <span class="accordion-toggle">▶</span>
+          </div>
+          <div class="accordion-panel">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#landing">Landing</a></li>
+              <li><a class="nav-link" href="#orientation">Orientation</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion" data-group="learn">
+          <div class="accordion-header">
+            <span>Learn</span>
+            <span class="accordion-toggle">▶</span>
+          </div>
+          <div class="accordion-panel">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#requirements">Requirements overview</a></li>
+              <li><a class="nav-link" href="#roles">Roles & responsibilities</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion" data-group="do">
+          <div class="accordion-header">
+            <span>Do (Phases)</span>
+            <span class="accordion-toggle">▶</span>
+          </div>
+          <div class="accordion-panel">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#prepare">Prepare</a></li>
+              <li><a class="nav-link" href="#respond">Respond</a></li>
+              <li><a class="nav-link" href="#recover">Recover</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion" data-group="operate">
+          <div class="accordion-header">
+            <span>Operate</span>
+            <span class="accordion-toggle">▶</span>
+          </div>
+          <div class="accordion-panel">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#operate">Ongoing operations</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion" data-group="finish">
+          <div class="accordion-header">
+            <span>Finish</span>
+            <span class="accordion-toggle">▶</span>
+          </div>
+          <div class="accordion-panel">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#finish">Complete & certify</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="app-main">
+      <section id="landing" class="content-card">
+        <h2>Redirecting to the CIP-007 Guided Training</h2>
+        <p>The long-scroll version has been replaced with a multi-page guided experience. Use the navigation to jump to the area you want to review.</p>
+        <p>If you are not redirected automatically, <a href="./cip007/setup.html">open the new guided module.</a></p>
+      </section>
+      <section id="orientation" class="content-card">
+        <h2>Orientation</h2>
+        <p>Get familiar with how the guided training is organized and how to navigate between sections without losing your place.</p>
+      </section>
+      <section id="requirements" class="content-card">
+        <h2>Requirements overview</h2>
+        <p>Summaries and quick references for CIP-007 expectations sit here. Expand specific areas in the navigation to jump straight to details.</p>
+      </section>
+      <section id="roles" class="content-card">
+        <h2>Roles & responsibilities</h2>
+        <p>Keep track of which responsibilities belong to which roles so you can coordinate efficiently throughout the module.</p>
+      </section>
+      <section id="prepare" class="content-card">
+        <h2>Prepare</h2>
+        <p>Preparation tasks and prerequisites live in this section. Use it to ensure everything is ready before you begin.</p>
+      </section>
+      <section id="respond" class="content-card">
+        <h2>Respond</h2>
+        <p>Response guidance and step-by-step actions appear here when you select the related navigation item.</p>
+      </section>
+      <section id="recover" class="content-card">
+        <h2>Recover</h2>
+        <p>Recovery guidance helps you return systems to steady state while maintaining compliance requirements.</p>
+      </section>
+      <section id="operate" class="content-card">
+        <h2>Ongoing operations</h2>
+        <p>Use this space for operational checklists and recurring actions you need while running the program.</p>
+      </section>
+      <section id="finish" class="content-card">
+        <h2>Complete & certify</h2>
+        <p>Finalize your work, confirm completion criteria, and capture proof for certification.</p>
+      </section>
+    </main>
   </div>
   <script>
-    const target = new URL('./cip007/setup.html', window.location.href);
-    window.location.replace(target.toString());
+    document.addEventListener('DOMContentLoaded', () => {
+      const accordions = document.querySelectorAll('.accordion');
+      const links = document.querySelectorAll('.nav-link');
+
+      accordions.forEach((accordion, idx) => {
+        const header = accordion.querySelector('.accordion-header');
+        header.addEventListener('click', () => {
+          accordion.classList.toggle('open');
+        });
+        if (idx === 0) accordion.classList.add('open');
+      });
+
+      const setActiveFromHash = () => {
+        const currentHash = window.location.hash || '#landing';
+        links.forEach(link => {
+          const matches = link.getAttribute('href') === currentHash;
+          link.classList.toggle('active', matches);
+          if (matches) {
+            const parentAccordion = link.closest('.accordion');
+            if (parentAccordion) parentAccordion.classList.add('open');
+          }
+        });
+      };
+
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          const parentAccordion = link.closest('.accordion');
+          if (parentAccordion && !parentAccordion.classList.contains('open')) {
+            parentAccordion.classList.add('open');
+          }
+        });
+      });
+
+      window.addEventListener('hashchange', setActiveFromHash);
+      setActiveFromHash();
+    });
   </script>
 </body>
 </html>
