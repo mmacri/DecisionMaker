@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSIR Certificate</title>
+  <title>Certificate — SCL OT CSIR</title>
   <link rel="stylesheet" href="css/theme.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,34 +11,29 @@
 <body class="page">
   <header class="header">
     <div class="header-inner">
-      <div class="brand"><img src="assets/logo.svg" alt="">Completion</div>
-      <div class="status-pill">Download & Verify</div>
+      <div class="brand"><img src="assets/logo.svg" alt="SCL">Certificate</div>
+      <div class="footer-actions">
+        <a class="button ghost" href="learn.html">Back to training</a>
+        <button class="button secondary" id="reset">Reset training</button>
+      </div>
     </div>
   </header>
 
   <main class="container">
-    <section class="panel card certificate-card">
-      <div class="pill">Seattle City Light – OT CSIR Training</div>
-      <h2 class="section-title">Certificate & evidence</h2>
-      <p class="section-sub">Download the PDF certificate and a PNG screenshot of this summary for your records.</p>
-      <div id="certificatePanel" class="content-block" style="text-align:center;">
-        <h3 style="margin-bottom:8px;">Certificate of Completion</h3>
-        <p id="certCourse" class="section-sub" style="margin:0;">Loading...</p>
-        <p><strong id="certName"></strong></p>
-        <p class="small">Role path: <span id="certRole"></span></p>
-        <p class="small">Completion date: <span id="certDate"></span></p>
-        <p class="small">Certificate ID: <span id="certId"></span></p>
-        <p class="small">Verify by re-computing the SHA-256 hash of name + role + completion date.</p>
-      </div>
-      <div class="footer-actions">
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button id="downloadCert" class="button">Download PDF</button>
-          <button id="downloadPng" class="button secondary">Download Screenshot</button>
-          <button id="reset" class="button secondary">Reset course</button>
-        </div>
-        <a href="learn.html" class="button secondary">Back to course</a>
-      </div>
+    <section class="panel card certificate-card" id="certificatePanel">
+      <div class="tag">Completion confirmed</div>
+      <h2 id="certCourse">Seattle City Light – OT CSIR Training</h2>
+      <p class="certificate-meta">This certifies that <strong id="certName"></strong> successfully completed the CSIR training for the <strong id="certRole"></strong> path.</p>
+      <p class="certificate-meta">Completion date: <span id="certDate"></span></p>
+      <p class="certificate-meta">Certificate ID: <span id="certId"></span></p>
+      <div class="alert" style="margin-top:12px;">If your browser blocks multiple downloads, allow downloads to receive both PDF and PNG files.</div>
     </section>
+
+    <div class="footer-actions" style="justify-content:flex-start;">
+      <button id="downloadPdf" class="button">Download PDF</button>
+      <button id="downloadPng" class="button secondary">Download PNG</button>
+      <button id="downloadShot" class="button secondary">Download completion screenshot</button>
+    </div>
   </main>
 
   <script type="module" src="js/cert.js"></script>

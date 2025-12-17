@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Learning — SCL OT CSIR</title>
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand"><img src="assets/logo.svg" alt="SCL">My Learning</div>
+      <div class="footer-actions">
+        <a class="button ghost" href="index.html">Home</a>
+        <a class="button" href="role.html">Begin/Change Role</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel card">
+      <div class="pill">Dashboard</div>
+      <h2 class="section-title">Seattle City Light – OT CSIR Training</h2>
+      <p class="section-sub">Track status, resume, and re-download your certificate when complete. Progress is stored locally in your browser.</p>
+      <div id="statusRow" class="alert">Loading status...</div>
+      <div class="footer-actions">
+        <button id="resumeBtn" class="button" disabled>Resume training</button>
+        <a id="downloadCertBtn" class="button secondary" href="certificate.html" style="display:none;">Re-download certificate</a>
+        <button id="resetBtn" class="button secondary">Reset training</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="resetModal" class="modal panel">
+    <h3>Reset training?</h3>
+    <p class="small">This clears local progress, role selection, and exam results.</p>
+    <div class="footer-actions">
+      <button id="cancelReset" class="button secondary">Cancel</button>
+      <button id="confirmReset" class="button">Reset now</button>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { loadProgress, resetProgress, isCourseComplete } from './js/storage.js';
+
+    async function initDashboard() {
+      const res = await fetch('contentpacks/scl-csir/pack.json');
+      const pack = await res.json();
+      const statusRow = document.getElementById('statusRow');
+      const resumeBtn = document.getElementById('resumeBtn');
+      const downloadBtn = document.getElementById('downloadCertBtn');
+      const progress = loadProgress();
+
+      let status = 'Not started';
+      let resumeTarget = 'role.html';
+
+      if (progress.roleId && progress.learnerName) {
+        const required = pack.roles.find((r) => r.id === progress.roleId)?.requiredStepIds || [];
+        const complete = isCourseComplete(required, pack.finalExam.passingScore);
+        if (complete) {
+          status = 'Complete';
+          resumeTarget = 'certificate.html';
+          downloadBtn.style.display = 'inline-flex';
+        } else if (progress.completedSteps.length > 0 || progress.viewedSteps.length > 0) {
+          status = 'In progress';
+          resumeTarget = 'learn.html';
+        } else {
+          status = 'Ready to begin';
+          resumeTarget = 'learn.html';
+        }
+      }
+
+      statusRow.textContent = `${status} • ${progress.learnerName || 'No name set'} ${progress.roleId ? '• ' + progress.roleId : ''}`;
+      resumeBtn.disabled = false;
+      resumeBtn.addEventListener('click', () => window.location.href = resumeTarget);
+
+      document.getElementById('resetBtn').addEventListener('click', () => document.getElementById('resetModal').showModal());
+      document.getElementById('cancelReset').addEventListener('click', () => document.getElementById('resetModal').close());
+      document.getElementById('confirmReset').addEventListener('click', () => { resetProgress(); window.location.href = 'role.html'; });
+    }
+
+    initDashboard();
+  </script>
+</body>
+</html>
