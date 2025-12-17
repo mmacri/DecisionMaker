@@ -112,7 +112,7 @@ const UI = (() => {
       btn.onclick = () => toggleModal('start-modal', false);
     });
 
-    startBtn.onclick = () => Router.go('role-select');
+    startBtn.onclick = () => toggleModal('start-modal', true);
 
     const confirm = modal.querySelector('#start-confirm');
     confirm.onclick = () => {
@@ -134,12 +134,9 @@ const UI = (() => {
 
     if (resumeBtn) {
       const progress = Progress.state();
-      if (progress.lastPage && progress.lastPage !== 'landing') {
-        resumeBtn.disabled = false;
-        resumeBtn.onclick = () => Router.go(progress.lastPage);
-      } else {
-        resumeBtn.disabled = true;
-      }
+      const resumeTarget = progress.lastPage && progress.lastPage !== 'landing' ? progress.lastPage : 'role-select';
+      resumeBtn.disabled = false;
+      resumeBtn.onclick = () => Router.go(resumeTarget);
     }
   };
 
