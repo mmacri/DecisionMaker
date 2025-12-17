@@ -23,7 +23,7 @@
       <div class="footer-actions">
         <a class="button ghost" href="../index.html">Training home</a>
         <button id="switchRole" class="button secondary">Switch role</button>
-        <a class="button" href="learn.html">Enter training</a>
+        <a class="button" id="enterTrainingNav" href="learn.html">Enter training</a>
       </div>
     </div>
   </header>
@@ -62,7 +62,7 @@
           </ul>
           <div class="banner" style="margin-top:14px;">Certification: complete Modules 1–6, pass the Module 7 exam (≥80% overall and classification/reporting ≥70%), and complete at least one full Module 6 scenario.</div>
           <div class="footer-actions">
-            <a class="button" href="learn.html">Enter training</a>
+            <a class="button" id="enterTrainingHero" href="learn.html">Enter training</a>
             <a class="button secondary" href="#module-1">Explore modules</a>
             <a class="button ghost" id="resumeLink" href="my-learning.html" style="display:none;">Resume where I left off</a>
           </div>
@@ -149,6 +149,9 @@
             <div id="assumptionDetail" class="alert" style="display:none;"></div>
           </div>
         </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
+        </div>
       </div>
 
       <div class="panel card" id="module-2">
@@ -196,6 +199,9 @@
             </div>
           </div>
         </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
+        </div>
       </div>
 
       <div class="panel card" id="module-3">
@@ -238,6 +244,9 @@
             </div>
           </div>
         </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
+        </div>
       </div>
 
       <div class="panel card" id="module-4">
@@ -277,6 +286,9 @@
               <p class="small">Micro-scenario: advance through phases, deciding when to escalate or continue investigating. Feedback references the workflow tables.</p>
             </div>
           </div>
+        </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
         </div>
       </div>
 
@@ -319,6 +331,9 @@
             </div>
           </div>
         </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
+        </div>
       </div>
 
       <div class="panel card" id="module-6">
@@ -350,6 +365,9 @@
             </div>
           </div>
         </div>
+        <div class="footer-actions">
+          <a class="button start-module" href="learn.html">Start this module</a>
+        </div>
       </div>
 
       <div class="panel card" id="module-7">
@@ -372,7 +390,7 @@
               <li>On pass: display “CSIR Training Completed,” log date/score, unlock downloadable certificate.</li>
             </ul>
             <div class="footer-actions">
-              <a class="button" href="learn.html">Take the exam</a>
+              <a class="button start-module" href="learn.html">Start this module</a>
               <a class="button secondary" href="certificate.html">View certificate</a>
             </div>
           </div>
@@ -391,6 +409,9 @@
     </div>
   </dialog>
 
+  <script src="js/curriculum.js"></script>
+  <script type="module" src="js/storage.js"></script>
   <script type="module" src="js/home.js"></script>
+  <script type="module" src="js/index-sync.js"></script>
 </body>
 </html>

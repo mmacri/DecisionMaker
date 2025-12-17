@@ -1,4 +1,4 @@
-import { loadProgress, resetProgress, setCertificateId } from './storage.js';
+import { loadProgress, resetProgress, setCertificateId, getMode } from './storage.js';
 import { enforceNameBeforeCertificate } from './router.js';
 import { downloadElementPng, downloadPageScreenshot } from './screenshot.js';
 
@@ -41,6 +41,11 @@ function downloadPdf(progress, roleLabel, certId, courseTitle) {
 async function initCertificate() {
   enforceNameBeforeCertificate();
   const progress = loadProgress();
+  const examPassed = progress.exam?.passed || progress.finalExamScore?.passed;
+  if (!examPassed || getMode() !== 'guided') {
+    window.location.href = 'learn.html#exam';
+    return;
+  }
   const res = await fetch('contentpacks/scl-csir/pack.json');
   const pack = await res.json();
   const role = pack.roles.find((r) => r.id === progress.roleId);

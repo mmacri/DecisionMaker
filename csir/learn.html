@@ -14,6 +14,7 @@
       <div class="brand"><img src="assets/logo.svg" alt="">SCL OT CSIR Training</div>
       <div class="footer-actions" style="gap:8px;">
         <a class="button ghost" href="../index.html">Training home</a>
+        <a class="button secondary" id="backToCurriculum" href="index.html">Back to Curriculum</a>
         <div class="status-pill" id="learnerInfo">Loading...</div>
         <div class="status-pill" id="courseMeta"></div>
       </div>
@@ -33,6 +34,13 @@
       <aside id="drawerMobile" class="drawer-mobile"></aside>
 
       <main class="main-content">
+        <div id="m1" class="module-anchor"></div>
+        <div id="m2" class="module-anchor"></div>
+        <div id="m3" class="module-anchor"></div>
+        <div id="m4" class="module-anchor"></div>
+        <div id="m5" class="module-anchor"></div>
+        <div id="m6" class="module-anchor"></div>
+        <div id="exam" class="module-anchor"></div>
         <div class="panel" style="padding:16px; margin-bottom:16px; position:sticky; top:12px; z-index:10;">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <div>
@@ -79,6 +87,9 @@
 
   <div id="completionBanner" class="banner" style="display:none; max-width:1180px; margin:20px auto;">All required steps and the final exam are complete. Checklist and certificate are unlocked.</div>
 
+  <script src="js/curriculum.js"></script>
+  <script type="module" src="js/storage.js"></script>
+  <script type="module" src="js/runtime-sync.js"></script>
   <script type="module" src="js/courseRunner.js"></script>
 </body>
 </html>
