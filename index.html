@@ -382,6 +382,14 @@
           <input id="reg-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required />
         </div>
         <div class="field">
+          <label for="reg-access">Access type</label>
+          <select id="reg-access" name="access" required>
+            <option value="">Choose access type</option>
+            <option value="user">Training user</option>
+            <option value="admin">Admin (manage roster)</option>
+          </select>
+        </div>
+        <div class="field">
           <label for="reg-role">Role</label>
           <select id="reg-role" name="role" required>
             <option value="">Select your role</option>
@@ -473,6 +481,12 @@
               <input id="learner-email" type="email" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" placeholder="name@example.com" />
             </label>
             <div style="margin-top:0.75rem; display:grid; gap:0.5rem;">
+              <label>Access type
+                <select id="learner-access" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
+                  <option value="user">Training user</option>
+                  <option value="admin">Admin (manage roster)</option>
+                </select>
+              </label>
               <label>Role
                 <select id="learner-role" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
                   <option value="">Select your role</option>
@@ -512,6 +526,31 @@
         <div class="section-panel" style="margin-top:1rem;">
           <h3>Local reporting roster</h3>
           <p class="lead">A secured local list of learners, their emails, and start/completion dates for your records.</p>
+          <div id="roster-admin" class="highlight" hidden>
+            <h4>Admin roster controls</h4>
+            <p class="lead">Admins can add, edit, or delete any learner record stored locally.</p>
+            <form id="roster-form" class="grid two-col" style="margin-top:0.5rem;">
+              <label>Name
+                <input id="roster-name" type="text" required />
+              </label>
+              <label>Email
+                <input id="roster-email" type="email" required />
+              </label>
+              <label>Role
+                <input id="roster-role" type="text" placeholder="Operator, Analyst, etc." />
+              </label>
+              <label>Start date
+                <input id="roster-start" type="date" />
+              </label>
+              <label>Completion date
+                <input id="roster-complete" type="date" />
+              </label>
+              <div style="display:flex;align-items:flex-end;gap:0.5rem;">
+                <button type="submit" id="roster-submit">Save learner</button>
+                <button type="button" class="link-btn" id="roster-reset">Clear form</button>
+              </div>
+            </form>
+          </div>
           <div id="roster"></div>
         </div>
       </section>
@@ -575,19 +614,25 @@
       path: 'modules/cip007/setup.html'
     };
 
+    let rosterEditEmail = null;
+
     const STORAGE_KEY = 'cisr-learning-profile';
+
+    function isAdmin(state) {
+      return (state?.learner?.accountType || 'user') === 'admin';
+    }
 
     function loadState() {
       try {
         const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
         return {
-          learner: parsed.learner || {},
+          learner: { accountType: 'user', ...(parsed.learner || {}) },
           modules: parsed.modules || {},
           certificates: parsed.certificates || [],
           registry: parsed.registry || []
         };
       } catch (err) {
-        return { learner: {}, modules: {}, certificates: [], registry: [] };
+        return { learner: { accountType: 'user' }, modules: {}, certificates: [], registry: [] };
       }
     }
 
@@ -609,6 +654,7 @@
         name: learner.name,
         email: learner.email,
         role: learner.role,
+        accountType: learner.accountType || 'user',
         startDate: learner.startDate || new Date().toISOString(),
         completionDate: completionDate || learner.completionDate || ''
       };
@@ -621,15 +667,16 @@
 
     function ensureRegistration() {
       const state = loadState();
-      if (state.learner.name && state.learner.email && state.learner.role) {
+      if (state.learner.name && state.learner.email && state.learner.role && state.learner.accountType) {
         document.getElementById('launch').disabled = false;
         return true;
       }
       document.getElementById('reg-name').value = state.learner.name || '';
       document.getElementById('reg-email').value = state.learner.email || '';
       document.getElementById('reg-role').value = state.learner.role || '';
+      document.getElementById('reg-access').value = state.learner.accountType || '';
       document.getElementById('registration-overlay').hidden = false;
-      showToast('Please enter your name, email, and role to continue.', 'info');
+      showToast('Please enter your name, email, role, and access type to continue.', 'info');
       return false;
     }
 
@@ -698,6 +745,7 @@
     function renderDashboard(state) {
       document.getElementById('learner-name').value = state.learner.name || '';
       document.getElementById('learner-email').value = state.learner.email || '';
+      document.getElementById('learner-access').value = state.learner.accountType || 'user';
       document.getElementById('learner-role').value = state.learner.role || '';
       document.getElementById('learner-goal').value = state.learner.goal || '';
 
@@ -762,14 +810,15 @@
 
     function renderProfileBanner(state) {
       const banner = document.getElementById('profile-banner');
-      const { name, role, goal } = state.learner || {};
+      const { name, role, goal, accountType } = state.learner || {};
       if (!name && !role && !goal) {
         banner.style.display = 'none';
         return;
       }
       const roleText = role ? `· ${role}` : '';
+      const typeText = accountType === 'admin' ? 'Admin' : 'Training user';
       const goalText = goal ? `· ${goal}` : '';
-      banner.textContent = `${name || 'Learner'} ${roleText} ${goalText}`.trim();
+      banner.textContent = `${name || 'Learner'} · ${typeText} ${roleText} ${goalText}`.trim();
       banner.style.display = 'inline-flex';
     }
 
@@ -814,17 +863,30 @@
 
     function renderRoster(state) {
       const roster = document.getElementById('roster');
+      const adminPanel = document.getElementById('roster-admin');
       if (!roster) return;
       roster.innerHTML = '';
-      if (!state.registry || !state.registry.length) {
-        roster.innerHTML = '<p class="lead">No registrations yet. Save a profile to build your local roster.</p>';
+      const adminMode = isAdmin(state);
+      if (adminPanel) adminPanel.hidden = !adminMode;
+
+      const visibleEntries = adminMode
+        ? state.registry || []
+        : (state.registry || []).filter((entry) => entry.email === state.learner.email);
+
+      if (!visibleEntries.length) {
+        roster.innerHTML = adminMode
+          ? '<p class="lead">No registrations yet. Admins can add learners manually or capture them via registration.</p>'
+          : '<p class="lead">No registrations yet for your account. Start training to add yourself to the roster.</p>';
         return;
       }
       const table = document.createElement('table');
       table.style.width = '100%';
       table.style.borderCollapse = 'collapse';
       const header = document.createElement('tr');
-      ['Name', 'Email', 'Role', 'Start date', 'Completion date'].forEach((label) => {
+      const columns = adminMode
+        ? ['Name', 'Email', 'Role', 'Start date', 'Completion date', 'Actions']
+        : ['Name', 'Email', 'Role', 'Start date', 'Completion date'];
+      columns.forEach((label) => {
         const th = document.createElement('th');
         th.textContent = label;
         th.style.textAlign = 'left';
@@ -832,7 +894,7 @@
         header.appendChild(th);
       });
       table.appendChild(header);
-      state.registry.forEach((entry) => {
+      visibleEntries.forEach((entry) => {
         const row = document.createElement('tr');
         [entry.name, entry.email, entry.role, entry.startDate ? new Date(entry.startDate).toLocaleDateString() : '—', entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : '—'].forEach((value) => {
           const cell = document.createElement('td');
@@ -841,6 +903,22 @@
           cell.style.borderTop = '1px solid var(--border)';
           row.appendChild(cell);
         });
+        if (adminMode) {
+          const actions = document.createElement('td');
+          actions.style.padding = '0.35rem 0.25rem';
+          actions.style.borderTop = '1px solid var(--border)';
+          const edit = document.createElement('button');
+          edit.textContent = 'Edit';
+          edit.className = 'link-btn roster-edit';
+          edit.dataset.email = entry.email;
+          const del = document.createElement('button');
+          del.textContent = 'Delete';
+          del.className = 'link-btn roster-delete';
+          del.dataset.email = entry.email;
+          del.style.marginLeft = '0.35rem';
+          actions.append(edit, del);
+          row.appendChild(actions);
+        }
         table.appendChild(row);
       });
       roster.appendChild(table);
@@ -863,6 +941,16 @@
       target.textContent = guidance[role];
     }
 
+    function populateRosterForm(entry = {}) {
+      document.getElementById('roster-name').value = entry.name || '';
+      document.getElementById('roster-email').value = entry.email || '';
+      document.getElementById('roster-role').value = entry.role || '';
+      document.getElementById('roster-start').value = entry.startDate ? entry.startDate.slice(0, 10) : '';
+      document.getElementById('roster-complete').value = entry.completionDate ? entry.completionDate.slice(0, 10) : '';
+      rosterEditEmail = entry.email || null;
+      document.getElementById('roster-submit').textContent = rosterEditEmail ? 'Update learner' : 'Save learner';
+    }
+
     function showToast(message, variant = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -883,8 +971,9 @@
       event.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
+      const accountType = document.getElementById('reg-access').value;
       const role = document.getElementById('reg-role').value;
-      if (!name || !email || !role) {
+      if (!name || !email || !role || !accountType) {
         showToast('Please complete all required fields.', 'info');
         return;
       }
@@ -894,6 +983,7 @@
         ...state.learner,
         name,
         email,
+        accountType,
         role,
         startDate: state.learner.startDate || now
       };
@@ -919,6 +1009,7 @@
       state.learner = {
         name: document.getElementById('learner-name').value.trim(),
         email: document.getElementById('learner-email').value.trim(),
+        accountType: document.getElementById('learner-access').value || 'user',
         role: document.getElementById('learner-role').value,
         goal: document.getElementById('learner-goal').value,
         startDate: state.learner.startDate || new Date().toISOString()
@@ -934,6 +1025,75 @@
       saveState(cleared);
       frame.src = 'about:blank';
       showToast('Progress reset', 'success');
+    });
+
+    const rosterForm = document.getElementById('roster-form');
+    if (rosterForm) {
+      rosterForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can change the roster.', 'info');
+          return;
+        }
+        const entry = {
+          name: document.getElementById('roster-name').value.trim(),
+          email: document.getElementById('roster-email').value.trim(),
+          role: document.getElementById('roster-role').value.trim(),
+          accountType: 'user',
+          startDate: document.getElementById('roster-start').value
+            ? new Date(document.getElementById('roster-start').value).toISOString()
+            : '',
+          completionDate: document.getElementById('roster-complete').value
+            ? new Date(document.getElementById('roster-complete').value).toISOString()
+            : ''
+        };
+        if (!entry.name || !entry.email) {
+          showToast('Name and email are required for roster entries.', 'info');
+          return;
+        }
+        const existingIdx = state.registry.findIndex((r) => r.email === (rosterEditEmail || entry.email));
+        if (existingIdx >= 0) {
+          state.registry[existingIdx] = { ...state.registry[existingIdx], ...entry };
+        } else {
+          state.registry.push(entry);
+        }
+        saveState(state);
+        populateRosterForm({});
+        showToast('Roster updated', 'success');
+      });
+
+      document.getElementById('roster-reset').addEventListener('click', () => {
+        populateRosterForm({});
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target.classList.contains('roster-edit')) {
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can edit roster entries.', 'info');
+          return;
+        }
+        const entry = state.registry.find((r) => r.email === event.target.dataset.email);
+        if (entry) {
+          populateRosterForm(entry);
+          document.getElementById('learner-access').value = state.learner.accountType || 'user';
+        }
+      }
+      if (event.target.classList.contains('roster-delete')) {
+        const email = event.target.dataset.email;
+        if (!confirm(`Delete ${email} from the roster?`)) return;
+        const state = loadState();
+        if (!isAdmin(state)) {
+          showToast('Only admins can remove roster entries.', 'info');
+          return;
+        }
+        state.registry = (state.registry || []).filter((r) => r.email !== email);
+        saveState(state);
+        populateRosterForm({});
+        showToast('Roster entry removed', 'success');
+      }
     });
 
     document.getElementById('back-top').addEventListener('click', () => {
@@ -952,12 +1112,17 @@
     renderRoster(initialState);
     renderRoleGuidance(initialState);
 
-    if (initialState.learner.name && initialState.learner.email && initialState.learner.role) {
-      document.getElementById('launch').disabled = false;
-      loadModule();
-    } else {
-      document.getElementById('registration-overlay').hidden = false;
-    }
+      if (
+        initialState.learner.name &&
+        initialState.learner.email &&
+        initialState.learner.role &&
+        initialState.learner.accountType
+      ) {
+        document.getElementById('launch').disabled = false;
+        loadModule();
+      } else {
+        document.getElementById('registration-overlay').hidden = false;
+      }
   </script>
 </body>
 </html>
