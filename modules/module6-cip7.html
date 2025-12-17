@@ -123,6 +123,33 @@
 
     .lock { color: var(--warning); font-weight: 900; }
 
+    .pill.warning { background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); }
+
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: var(--panel);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .back-top {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      z-index: 6;
+    }
+
     .page {
       display: none;
       max-width: 1100px;
@@ -241,7 +268,7 @@
       <p class="pill">CIP-007 · System Security Management</p>
       <h2 style="margin:0;">Guided Training</h2>
       <p>Mission control for the rebuilt CIP-007 learning experience.</p>
-      <div class="progress"><span id="progress-count">1 / 16</span><span id="progress-text">Sections completed</span></div>
+        <div class="progress"><span id="progress-count">1 / 18</span><span id="progress-text">Sections completed</span></div>
     </div>
     <nav aria-label="Module sections">
       <ul id="nav-list"></ul>
@@ -277,8 +304,50 @@
       </div>
       <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
         <button class="next" id="start-training" aria-label="Start the guided training">▶ Start Training</button>
+        <button data-next="setup" class="next">Go to setup</button>
       </div>
       <p class="lead" style="margin-top:1rem; color:var(--muted);">No scrolling required. Follow the prompts to move through each section.</p>
+    </section>
+
+    <section id="setup" class="page" data-title="Learner Setup">
+      <div class="sticky-header">
+        <strong>Role- and goal-based flow</strong> — Tailor the module to your needs to surface required sections and unlock audit etiquette when needed.
+      </div>
+      <p class="pill">Step 1 — Personalize</p>
+      <h2>Tell us about you</h2>
+      <p class="lead">Your selections are stored locally to personalize navigation, show the right checklist gates, and populate certificates.</p>
+      <div class="grid two-col">
+        <div class="card">
+          <label>Full name<br />
+            <input id="learner-name" type="text" placeholder="Preferred display name" style="width:100%;padding:0.65rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);" />
+          </label>
+          <p class="lead">This name will appear on your completion certificate.</p>
+        </div>
+        <div class="card">
+          <label>Role<br />
+            <select id="learner-role" style="width:100%;padding:0.65rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+              <option value="">Select your role</option>
+              <option>Operator</option>
+              <option>System Administrator</option>
+              <option>Security Analyst</option>
+              <option>Compliance / Audit</option>
+            </select>
+          </label>
+          <label style="margin-top:0.75rem;">Learning goal<br />
+            <select id="learner-goal" style="width:100%;padding:0.65rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+              <option value="">Pick a focus</option>
+              <option>Basic awareness</option>
+              <option>Operational readiness</option>
+              <option>Audit preparation</option>
+            </select>
+          </label>
+          <p class="lead" id="goal-note">Select a goal to see required steps.</p>
+        </div>
+      </div>
+      <div class="cta">
+        <button data-prev="landing">Back</button>
+        <button id="save-setup" class="next" data-next="introduction">Save and continue</button>
+      </div>
     </section>
 
     <section id="introduction" class="page" data-title="Introduction">
@@ -665,6 +734,54 @@
       </div>
     </section>
 
+    <section id="audit-etiquette" class="page" data-title="Audit Etiquette">
+      <p class="pill warning">Required for Audit Preparation</p>
+      <h2>Audit Etiquette</h2>
+      <p class="lead">Adapted from cip-audit-ready guidance: understand what auditors need, how to answer, and what to avoid so evidence speaks for itself.</p>
+      <div class="grid two-col">
+        <div class="card">
+          <h3>Auditors’ objectives</h3>
+          <ul>
+            <li>Verify controls meet the documented requirement.</li>
+            <li>Trace answers back to evidence, not opinions.</li>
+            <li>Confirm consistency between practice and procedure.</li>
+          </ul>
+          <h3>Do</h3>
+          <ul>
+            <li>Answer only what is asked and pause when done.</li>
+            <li>Point to records, logs, or screenshots as evidence.</li>
+            <li>Use precise timing (UTC/local) and system names.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Don’t</h3>
+          <ul>
+            <li>Speculate or guess when unsure.</li>
+            <li>Volunteer unrelated issues or future plans.</li>
+            <li>Use ambiguous phrases like “should be” or “maybe.”</li>
+          </ul>
+          <h3>Red-flag phrases</h3>
+          <ul>
+            <li>“We don’t usually log that.”</li>
+            <li>“I think someone handled it.”</li>
+            <li>“We plan to fix that later.”</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem;">
+        <h3>Practice prompts</h3>
+        <ul>
+          <li>“Show how you documented a deferred patch.” → Open the ticket, state date/time, mitigation used.</li>
+          <li>“How do you restrict vendor access?” → Describe gateway, MFA, time limits, and link to session log.</li>
+          <li>“Walk through your log review cadence.” → Reference procedure section and last review evidence.</li>
+        </ul>
+      </div>
+      <div class="cta">
+        <button data-prev="r6">Back</button>
+        <button data-next="scenarios" class="next">Next: Scenarios</button>
+      </div>
+    </section>
+
     <section id="scenarios" class="page" data-title="Scenarios">
       <p class="pill">Step 4 — Apply Through Scenarios</p>
       <h2>Scenarios</h2>
@@ -685,7 +802,7 @@
         <p><strong>Situation:</strong> Vendor requests short-term remote access for troubleshooting.<br /><strong>What Should Happen:</strong> Use approved gateway with MFA, time-limit the account, and record the session.<br /><strong>Requirement:</strong> R6<br /><strong>Why It Matters:</strong> Limits external risk while work proceeds.</p>
       </div>
       <div class="cta">
-        <button data-prev="r6">Back</button>
+        <button data-prev="audit-etiquette">Back</button>
         <button data-next="knowledge-check" class="next">Next: Knowledge Check</button>
       </div>
     </section>
@@ -763,9 +880,12 @@
   </main>
 
   <script>
-    const totalPages = 16;
+    const totalPages = 18;
+    const STORAGE_KEY = 'cisr-learning-profile';
+    const moduleId = 'module6-cip7';
 
     const sections = [
+      { id: 'setup', label: 'Setup' },
       { id: 'introduction', label: 'Introduction' },
       { id: 'training-flow', label: 'Training Flow' },
       { id: 'role-guidance', label: 'Role Guidance' },
@@ -773,9 +893,10 @@
       { id: 'r1', label: 'R1 – Ports & Services' },
       { id: 'r2', label: 'R2 – Patch Management' },
       { id: 'r3', label: 'R3 – Malware Prevention' },
-      { id: 'r4', label: 'R4 – Security Event Monitoring' },
-      { id: 'r5', label: 'R5 – Account Management' },
-      { id: 'r6', label: 'R6 – Interactive Remote Access' },
+      { id: 'r4', label: 'Security Event Monitoring' },
+      { id: 'r5', label: 'Account Management' },
+      { id: 'r6', label: 'Interactive Remote Access' },
+      { id: 'audit-etiquette', label: 'Audit Etiquette' },
       { id: 'scenarios', label: 'Scenarios' },
       { id: 'knowledge-check', label: 'Knowledge Check' },
       { id: 'operational-checklist', label: 'Operational Checklist', locked: true },
@@ -783,10 +904,35 @@
       { id: 'completion', label: 'Completion' }
     ];
 
-    const visited = new Set(['landing']);
-    let knowledgeComplete = false;
-
     const navList = document.getElementById('nav-list');
+    const pages = document.querySelectorAll('.page');
+    const progressCount = document.getElementById('progress-count');
+    const goalNote = document.getElementById('goal-note');
+
+    let visited = new Set(['landing']);
+    let knowledgeScore = 0;
+    let knowledgeComplete = false;
+    let checklistCompleted = false;
+    let goal = '';
+    let learnerName = '';
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { learner: {}, modules: {}, certificates: [] };
+      } catch (err) {
+        return { learner: {}, modules: {}, certificates: [] };
+      }
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function currentModule(state = loadState()) {
+      state.modules[moduleId] = state.modules[moduleId] || { title: 'CIP-007 System Security Management' };
+      return state.modules[moduleId];
+    }
+
     sections.forEach((section) => {
       const li = document.createElement('li');
       const btn = document.createElement('button');
@@ -802,9 +948,6 @@
       navList.appendChild(li);
     });
 
-    const pages = document.querySelectorAll('.page');
-    const progressCount = document.getElementById('progress-count');
-
     function updateProgress() {
       progressCount.textContent = `${visited.size} / ${totalPages}`;
       document.querySelectorAll('nav button').forEach((btn) => {
@@ -813,9 +956,35 @@
           mark.style.display = 'inline';
         }
       });
+
+      const state = loadState();
+      const module = currentModule(state);
+      module.lastSection = Array.from(visited).pop();
+      module.progress = Math.round((visited.size / totalPages) * 100);
+      module.status = knowledgeComplete && checklistCompleted ? 'Completed' : 'In progress';
+      module.knowledgeScore = knowledgeScore;
+      state.modules[moduleId] = module;
+      saveState(state);
+    }
+
+    function enforceGoalRules() {
+      const knowledgeButton = navList.querySelector('button[data-target="knowledge-check"]');
+      const auditButton = navList.querySelector('button[data-target="audit-etiquette"]');
+      if (goal === 'Audit preparation') {
+        goalNote.textContent = 'Audit preparation selected — Audit Etiquette becomes required before the quiz unlocks.';
+        auditButton.disabled = false;
+        knowledgeButton.dataset.lockedByGoal = 'true';
+      } else {
+        goalNote.textContent = 'Select a goal to see required steps.';
+        delete knowledgeButton.dataset.lockedByGoal;
+      }
     }
 
     function showPage(id) {
+      if (id === 'knowledge-check' && goal === 'Audit preparation' && !visited.has('audit-etiquette')) {
+        alert('Complete the Audit Etiquette section before starting the knowledge check.');
+        return;
+      }
       pages.forEach((page) => page.classList.remove('active'));
       const target = document.getElementById(id);
       if (target) {
@@ -846,10 +1015,20 @@
     });
 
     document.getElementById('start-training').addEventListener('click', () => {
+      showPage('setup');
+    });
+
+    document.getElementById('save-setup').addEventListener('click', () => {
+      const state = loadState();
+      learnerName = document.getElementById('learner-name').value.trim() || state.learner.name || 'Learner';
+      goal = document.getElementById('learner-goal').value || state.learner.goal || '';
+      const role = document.getElementById('learner-role').value || state.learner.role || '';
+      state.learner = { name: learnerName, goal, role };
+      saveState(state);
+      enforceGoalRules();
       showPage('introduction');
     });
 
-    // Knowledge check setup
     const quizData = [
       { q: 'Why does CIP-007 emphasize least functionality?', options: ['It speeds up networks', 'It reduces attack surface by limiting open ports and services', 'It improves user experience'], answer: 1 },
       { q: 'What should you do if a patch cannot be applied within the expected window?', options: ['Ignore it until the next cycle', 'Document the reason, apply mitigating measures, and schedule installation', 'Remove the system from service permanently'], answer: 1 },
@@ -882,7 +1061,6 @@
           if (optIndex === item.answer) {
             btn.classList.add('correct');
             block.querySelector('.feedback').textContent = 'Correct. Keep going!';
-            checkQuizCompletion();
           } else {
             btn.classList.add('incorrect');
             block.querySelector('.feedback').textContent = 'Not quite. Try again.';
@@ -898,32 +1076,111 @@
       quizContainer.appendChild(block);
     });
 
-    function checkQuizCompletion() {
-      const allCorrect = Array.from(document.querySelectorAll('.question')).every((q, idx) => {
+    function evaluateQuiz() {
+      const answeredCorrect = Array.from(document.querySelectorAll('.question')).filter((q, idx) => {
         const correctBtn = q.querySelectorAll('button')[quizData[idx].answer];
         return correctBtn.classList.contains('correct');
-      });
-
-      if (allCorrect) {
+      }).length;
+      knowledgeScore = Math.round((answeredCorrect / quizData.length) * 100);
+      const status = document.getElementById('quiz-status');
+      status.style.display = 'block';
+      status.textContent = `Knowledge check scored ${knowledgeScore}% (${answeredCorrect} of ${quizData.length}).`;
+      if (knowledgeScore >= 80) {
         knowledgeComplete = true;
-        document.getElementById('quiz-status').style.display = 'block';
         document.getElementById('checklist-lock').style.display = 'none';
         document.getElementById('checklist-content').style.display = 'grid';
         const checklistButton = navList.querySelector('button[data-target="operational-checklist"]');
         checklistButton.disabled = false;
+      } else {
+        knowledgeComplete = false;
+        checklistCompleted = false;
+        document.getElementById('checklist-lock').style.display = 'block';
+        document.getElementById('checklist-content').style.display = 'none';
+        navList.querySelector('button[data-target="operational-checklist"]').disabled = true;
       }
+      updateProgress();
     }
 
     document.getElementById('after-quiz').addEventListener('click', (event) => {
       if (!knowledgeComplete) {
         event.preventDefault();
-        alert('Complete the knowledge check to proceed to the checklist.');
+        alert('Score at least 80% on the knowledge check to proceed to the checklist.');
         return;
       }
       showPage('operational-checklist');
     });
 
+    document.getElementById('after-quiz').insertAdjacentHTML('beforebegin', '<button style="width:100%;" id="grade-quiz">Grade knowledge check</button>');
+    document.getElementById('grade-quiz').addEventListener('click', evaluateQuiz);
+
+    document.getElementById('checklist-content').insertAdjacentHTML('beforeend', '<p style="margin-top:0.5rem;"><button id="mark-checklist" style="width:100%;">Mark checklist completed</button><span id="checklist-status" class="lead" style="display:block;margin-top:0.35rem;"></span></p>');
+    document.getElementById('mark-checklist').addEventListener('click', () => {
+      if (!knowledgeComplete) {
+        alert('Finish the knowledge check first.');
+        return;
+      }
+      checklistCompleted = true;
+      document.getElementById('checklist-status').textContent = 'Checklist completed and logged locally.';
+      maybeGenerateCertificate();
+      updateProgress();
+    });
+
+    function maybeGenerateCertificate() {
+      if (!knowledgeComplete || !checklistCompleted) return;
+      const state = loadState();
+      const module = currentModule(state);
+      const issuedAt = new Date();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const displayDate = issuedAt.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+      learnerName = document.getElementById('learner-name').value.trim() || state.learner.name || 'Learner';
+      module.status = 'Completed';
+      module.knowledgeScore = knowledgeScore;
+      module.completedAt = issuedAt.toISOString();
+      module.lastSection = 'completion';
+
+      const certificateText = `CIP-007 System Security Management
+Learner: ${learnerName}
+Goal: ${goal || 'Not specified'}
+Completed: ${displayDate} (${timezone})
+Knowledge Check: ${knowledgeScore}%
+Checklist: Completed`;
+      const blob = new Blob([certificateText], { type: 'text/plain' });
+      const link = URL.createObjectURL(blob);
+      const filename = `${learnerName.replace(/\s+/g, '-')}-CIP007-certificate.txt`;
+      const certRecord = {
+        module: 'CIP-007 System Security Management',
+        name: learnerName,
+        date: `${displayDate} (${timezone})`,
+        link,
+        filename
+      };
+
+      state.modules[moduleId] = module;
+      const existing = state.certificates.find((c) => c.filename === filename);
+      if (!existing) state.certificates.push(certRecord);
+      saveState(state);
+
+      const completionArea = document.getElementById('completion');
+      if (!completionArea.querySelector('#download-certificate')) {
+        completionArea.insertAdjacentHTML('beforeend', `<div class="card" style="margin-top:1rem;"><h3>Certificate ready</h3><p class="lead">Download your personalized certificate or access it from the My Learning dashboard.</p><a class="link-btn" id="download-certificate" href="${link}" download="${filename}">Download Certificate</a></div>`);
+      } else {
+        const download = document.getElementById('download-certificate');
+        download.href = link;
+        download.download = filename;
+      }
+    }
+
+    document.getElementById('back-to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    const initialState = loadState();
+    learnerName = initialState.learner.name || '';
+    goal = initialState.learner.goal || '';
+    document.getElementById('learner-name').value = learnerName;
+    document.getElementById('learner-goal').value = goal;
+    document.getElementById('learner-role').value = initialState.learner.role || '';
+    enforceGoalRules();
     updateProgress();
   </script>
+  <button class="back-top" id="back-to-top" aria-label="Back to top">↑ Back to top</button>
 </body>
 </html>

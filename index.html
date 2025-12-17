@@ -52,9 +52,9 @@
       top: 0;
       z-index: 5;
       backdrop-filter: blur(12px);
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.85);
       border-bottom: 1px solid var(--border);
-      padding: 1.25rem 1.5rem 1rem;
+      padding: 0.75rem 1.5rem 0.65rem;
     }
 
     header h1 {
@@ -64,9 +64,34 @@
     }
 
     header p {
-      margin: 0.35rem 0 0;
+      margin: 0.35rem 0 0.5rem;
       color: var(--muted);
     }
+
+    nav.top-nav {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.35rem;
+    }
+
+    nav.top-nav button {
+      font: inherit;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.5rem 0.85rem;
+      background: linear-gradient(160deg, var(--card), rgba(56, 189, 248, 0.12));
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    nav.top-nav button.active {
+      border-color: var(--accent);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    nav.top-nav button:hover { transform: translateY(-1px); }
 
     .layout {
       display: grid;
@@ -82,7 +107,7 @@
       box-shadow: var(--shadow);
       padding: 1rem;
       position: sticky;
-      top: 90px;
+      top: 96px;
       height: fit-content;
     }
 
@@ -96,9 +121,7 @@
       background: linear-gradient(145deg, rgba(56, 189, 248, 0.09), rgba(34, 197, 94, 0.08));
     }
 
-    .module-card h3 {
-      margin: 0;
-    }
+    .module-card h3 { margin: 0; }
 
     .badge {
       display: inline-flex;
@@ -111,6 +134,11 @@
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: var(--text);
       width: fit-content;
+    }
+
+    .badge.secondary {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
     }
 
     button, .link-btn {
@@ -139,6 +167,26 @@
       outline-offset: 2px;
     }
 
+    .section-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .section-panel h4 { margin: 0 0 0.35rem; }
+
+    .section-panel ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+
+    .embed {
+      border: none;
+      width: 100%;
+      height: calc(100vh - 200px);
+      border-radius: 12px;
+      background: var(--card);
+    }
+
     .viewer {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -149,41 +197,7 @@
       overflow: hidden;
     }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .toc {
-      margin: 1rem 0 0;
-      padding: 0.75rem;
-      border-radius: 12px;
-      border: 1px dashed var(--border);
-      background: rgba(15, 23, 42, 0.45);
-      max-height: 260px;
-      overflow: auto;
-    }
-
-    .toc strong { display: block; margin-bottom: 0.5rem; }
-
-    .toc a {
-      color: var(--accent);
-      text-decoration: none;
-      display: block;
-      padding: 0.35rem 0.25rem;
-      border-radius: 8px;
-    }
-
-    .toc a:hover { background: rgba(56, 189, 248, 0.12); }
-
-    .embed {
-      border: none;
-      width: 100%;
-      height: calc(100vh - 200px);
-      border-radius: 12px;
-      background: var(--card);
-    }
+    .controls { display: flex; flex-direction: column; gap: 0.6rem; }
 
     .status {
       display: flex;
@@ -201,6 +215,23 @@
       box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.14);
     }
 
+    .grid { display: grid; gap: 0.8rem; }
+    .two-col { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+    .highlight {
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.12), rgba(34, 197, 94, 0.12));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .lead { color: var(--muted); }
+
+    .cert-list { margin: 0; padding-left: 1.1rem; }
+
+    .section.hidden { display: none; }
+
     .footer-note {
       margin-top: 1rem;
       color: var(--muted);
@@ -208,10 +239,25 @@
       line-height: 1.5;
     }
 
+    .back-top {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      padding: 0.6rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      z-index: 5;
+    }
+
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
       aside { position: static; }
       .embed { height: 70vh; }
+      nav.top-nav { position: sticky; top: 0; background: rgba(15, 23, 42, 0.9); padding: 0.5rem 0; }
     }
   </style>
 </head>
@@ -219,6 +265,13 @@
   <header>
     <h1>CISR Managed Training</h1>
     <p>Live, self-contained delivery of CIP-007 Security Management content sourced from the official GitHub materials.</p>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <button data-section="training" class="active">My Training</button>
+      <button data-section="learning">My Learning</button>
+      <button data-section="practice">Practice</button>
+      <button data-section="resources">Resources</button>
+      <button data-section="about">About</button>
+    </nav>
   </header>
 
   <div class="layout">
@@ -235,9 +288,15 @@
         </div>
       </div>
 
-      <div class="toc" id="toc" aria-label="Table of contents">
-        <strong>Quick navigator</strong>
-        <p style="margin:0;color:var(--muted);">Launch the module to view sections and jump to requirements.</p>
+      <div class="section-panel">
+        <h4>Training sections</h4>
+        <ul id="progress-list" aria-live="polite"></ul>
+      </div>
+
+      <div class="section-panel">
+        <h4>Certificates</h4>
+        <ul class="cert-list" id="cert-list"></ul>
+        <p class="footer-note" id="cert-hint" style="margin-top:0.5rem;">Certificates appear here once earned.</p>
       </div>
 
       <div class="footer-note">
@@ -247,13 +306,106 @@
     </aside>
 
     <main class="viewer" aria-live="polite">
-      <iframe id="module-frame" class="embed" title="CIP-007 Training Module" src="about:blank"></iframe>
+      <section id="training" class="section">
+        <iframe id="module-frame" class="embed" title="CIP-007 Training Module" src="about:blank"></iframe>
+      </section>
+
+      <section id="learning" class="section hidden">
+        <div class="grid two-col">
+          <div class="highlight">
+            <h2>My Learning Dashboard</h2>
+            <p class="lead">Capture your name, role, and goals to personalize training and track progress across modules.</p>
+            <label>Full name
+              <input id="learner-name" type="text" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;" placeholder="Enter your preferred display name" />
+            </label>
+            <div style="margin-top:0.75rem; display:grid; gap:0.5rem;">
+              <label>Role
+                <select id="learner-role" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
+                  <option value="">Select your role</option>
+                  <option>Operator</option>
+                  <option>System Administrator</option>
+                  <option>Security Analyst</option>
+                  <option>Compliance / Audit</option>
+                </select>
+              </label>
+              <label>Learning goal
+                <select id="learner-goal" style="width:100%;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-top:0.3rem;">
+                  <option value="">Pick a focus</option>
+                  <option>Basic awareness</option>
+                  <option>Operational readiness</option>
+                  <option>Audit preparation</option>
+                </select>
+              </label>
+            </div>
+            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
+              <button id="save-profile">Save profile</button>
+              <button id="reset-progress" class="link-btn" style="margin-left:auto;">Reset progress</button>
+            </div>
+          </div>
+          <div class="highlight">
+            <h3>Overall Progress</h3>
+            <p class="lead" id="overall-progress">No activity yet. Launch a module to start.</p>
+            <ul id="module-summary"></ul>
+          </div>
+        </div>
+
+        <div class="section-panel" style="margin-top:1rem;">
+          <h3>Certificates</h3>
+          <ul id="dashboard-certificates"></ul>
+        </div>
+      </section>
+
+      <section id="practice" class="section hidden">
+        <h2>Practice</h2>
+        <p class="lead">Short drills and scenarios to stay sharp between formal modules.</p>
+        <div class="grid two-col">
+          <div class="highlight">
+            <h3>Scenario refresh</h3>
+            <p>Revisit the incident and remote-access scenarios to rehearse the right response paths.</p>
+            <a class="link-btn" href="modules/module6-cip7.html#scenarios" target="_blank">Open scenarios</a>
+          </div>
+          <div class="highlight">
+            <h3>Mini-quiz</h3>
+            <p>Validate your knowledge with a quick 4-question check that mirrors the full assessment.</p>
+            <a class="link-btn" href="modules/module6-cip7.html#knowledge-check" target="_blank">Start mini-quiz</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources" class="section hidden">
+        <h2>Resources</h2>
+        <div class="grid two-col">
+          <div class="highlight">
+            <h3>Operational checklists</h3>
+            <p>Downloadable, printable task lists for each requirement with evidence notes and cadence reminders.</p>
+            <a class="link-btn" href="modules/module6-cip7.html#operational-checklist" target="_blank">Open checklist</a>
+          </div>
+          <div class="highlight">
+            <h3>Policy references</h3>
+            <p>Consolidated references to patch management, remote access, malware prevention, and monitoring standards.</p>
+            <a class="link-btn" href="training/cip-007-csir/metadata.json" target="_blank">View metadata</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section hidden">
+        <h2>About this experience</h2>
+        <p class="lead">A streamlined training delivery with persistent navigation, audit-ready content, and certificate tracking.</p>
+        <div class="highlight">
+          <ul>
+            <li>Reduced scrolling with sticky navigation and section jumping.</li>
+            <li>Audit etiquette is now included for audit-prep learners.</li>
+            <li>Certificates auto-generate when assessments and checklists are done.</li>
+          </ul>
+        </div>
+      </section>
     </main>
   </div>
 
+  <button class="back-top" aria-label="Back to top" id="back-top">↑ Back to top</button>
+
   <script>
     const frame = document.getElementById('module-frame');
-    const toc = document.getElementById('toc');
     const statusText = document.getElementById('status-text');
     const moduleConfig = {
       id: 'module6-cip7',
@@ -261,43 +413,175 @@
       path: 'modules/module6-cip7.html'
     };
 
-    async function loadModule() {
-      statusText.textContent = 'Loading module…';
-      frame.src = moduleConfig.path;
+    const STORAGE_KEY = 'cisr-learning-profile';
 
+    function loadState() {
       try {
-        const response = await fetch(moduleConfig.path);
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        renderToc(doc);
-        statusText.textContent = 'Module ready — navigation updated';
-      } catch (error) {
-        statusText.textContent = 'Unable to load module preview';
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { learner: {}, modules: {}, certificates: [] };
+      } catch (err) {
+        return { learner: {}, modules: {}, certificates: [] };
       }
     }
 
-    function renderToc(doc) {
-      const headings = Array.from(doc.querySelectorAll('main h2, main h3'));
-      if (!headings.length) {
-        toc.innerHTML = '<strong>Quick navigator</strong><p style="margin:0;color:var(--muted);">No sections found.</p>';
+    function saveState(next) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      renderCertificates(next);
+      renderProgress(next);
+      renderDashboard(next);
+    }
+
+    function loadModule() {
+      statusText.textContent = 'Loading module…';
+      frame.src = moduleConfig.path;
+      statusText.textContent = 'Module ready — navigation updated';
+      const state = loadState();
+      state.modules[moduleConfig.id] = state.modules[moduleConfig.id] || { title: moduleConfig.title, status: 'Started' };
+      saveState(state);
+    }
+
+    function renderProgress(state) {
+      const list = document.getElementById('progress-list');
+      list.innerHTML = '';
+      const module = state.modules[moduleConfig.id];
+      if (!module) {
+        list.innerHTML = '<li>Launch a module to see section progress.</li>';
         return;
       }
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${module.title}</strong><br /><span class="lead">${module.status || 'In progress'}</span>`;
+      if (module.lastSection) {
+        const resume = document.createElement('a');
+        resume.href = `${moduleConfig.path}#${module.lastSection}`;
+        resume.textContent = 'Resume where you left off';
+        resume.className = 'link-btn';
+        resume.style.marginTop = '0.5rem';
+        resume.target = '_blank';
+        resume.rel = 'noopener';
+        li.appendChild(document.createElement('br'));
+        li.appendChild(resume);
+      }
+      list.appendChild(li);
+    }
 
-      const list = document.createElement('div');
-      headings.forEach((heading) => {
-        const anchor = heading.id || heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    function renderCertificates(state) {
+      const certList = document.getElementById('cert-list');
+      const hint = document.getElementById('cert-hint');
+      certList.innerHTML = '';
+      if (!state.certificates.length) {
+        hint.style.display = 'block';
+        return;
+      }
+      hint.style.display = 'none';
+      state.certificates.forEach((cert) => {
+        const item = document.createElement('li');
         const link = document.createElement('a');
-        link.href = `${moduleConfig.path}#${anchor}`;
-        link.textContent = heading.textContent.trim();
-        list.appendChild(link);
+        link.href = cert.link;
+        link.textContent = `${cert.module} — ${cert.date}`;
+        link.download = cert.filename;
+        link.className = 'link-btn';
+        item.appendChild(link);
+        certList.appendChild(item);
       });
+    }
 
-      toc.innerHTML = '<strong>Quick navigator</strong>';
-      toc.appendChild(list);
+    function renderDashboard(state) {
+      document.getElementById('learner-name').value = state.learner.name || '';
+      document.getElementById('learner-role').value = state.learner.role || '';
+      document.getElementById('learner-goal').value = state.learner.goal || '';
+
+      const summary = document.getElementById('module-summary');
+      const certificates = document.getElementById('dashboard-certificates');
+      const overall = document.getElementById('overall-progress');
+      summary.innerHTML = '';
+      certificates.innerHTML = '';
+
+      const modules = Object.values(state.modules || {});
+      if (!modules.length) {
+        overall.textContent = 'No activity yet. Launch a module to start.';
+      } else {
+        const completed = modules.filter((m) => m.status === 'Completed').length;
+        const started = modules.length;
+        const scoreText = modules
+          .filter((m) => m.knowledgeScore)
+          .map((m) => `${m.title}: ${m.knowledgeScore}%`)
+          .join(' · ');
+        overall.textContent = `${completed} of ${started} modules completed.` + (scoreText ? ` Scores: ${scoreText}` : '');
+        modules.forEach((m) => {
+          const item = document.createElement('li');
+          item.innerHTML = `<strong>${m.title}</strong><br /><span class="lead">${m.status || 'In progress'}</span>`;
+          if (m.knowledgeScore) {
+            item.innerHTML += `<br /><span class="badge secondary">Knowledge check: ${m.knowledgeScore}%</span>`;
+          }
+          if (m.lastSection) {
+            const resume = document.createElement('a');
+            resume.href = `${moduleConfig.path}#${m.lastSection}`;
+            resume.textContent = 'Resume module';
+            resume.className = 'link-btn';
+            resume.style.marginTop = '0.35rem';
+            resume.target = '_blank';
+            resume.rel = 'noopener';
+            item.appendChild(document.createElement('br'));
+            item.appendChild(resume);
+          }
+          summary.appendChild(item);
+        });
+      }
+
+      if (!state.certificates.length) {
+        certificates.innerHTML = '<li class="lead">Earn a certificate by passing a knowledge check (≥80%) and completing the checklist.</li>';
+      } else {
+        state.certificates.forEach((cert) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${cert.module}</strong> · ${cert.date}<br />Issued to ${cert.name}`;
+          const link = document.createElement('a');
+          link.href = cert.link;
+          link.download = cert.filename;
+          link.textContent = 'Download certificate';
+          link.className = 'link-btn';
+          link.style.marginTop = '0.35rem';
+          li.appendChild(document.createElement('br'));
+          li.appendChild(link);
+          certificates.appendChild(li);
+        });
+      }
     }
 
     document.getElementById('launch').addEventListener('click', loadModule);
+
+    document.querySelectorAll('nav.top-nav button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('nav.top-nav button').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.section').forEach((section) => section.classList.add('hidden'));
+        document.getElementById(btn.dataset.section).classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    document.getElementById('save-profile').addEventListener('click', () => {
+      const state = loadState();
+      state.learner = {
+        name: document.getElementById('learner-name').value.trim(),
+        role: document.getElementById('learner-role').value,
+        goal: document.getElementById('learner-goal').value
+      };
+      saveState(state);
+    });
+
+    document.getElementById('reset-progress').addEventListener('click', () => {
+      const cleared = { learner: {}, modules: {}, certificates: [] };
+      saveState(cleared);
+      frame.src = 'about:blank';
+    });
+
+    document.getElementById('back-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const initialState = loadState();
+    renderProgress(initialState);
+    renderCertificates(initialState);
+    renderDashboard(initialState);
 
     // Auto-load on first paint for a managed experience
     loadModule();
