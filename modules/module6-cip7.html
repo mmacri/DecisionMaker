@@ -2,15 +2,352 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=../learn.html?course=scl-csir">
-  <title>Redirecting to new CSIR training</title>
-  <style>body{font-family:Arial, sans-serif; padding:40px;} .notice{max-width:520px; margin:auto; padding:20px; border:1px solid #ccc; border-radius:12px;}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIP-007 Guided Training</title>
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/flowEngine.css">
+  <style>
+    .section-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; box-shadow:0 6px 18px rgba(15,23,42,0.04);} 
+    .section-card h2 { margin-top:0; }
+    .pill { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:#eef2ff; color:#111827; font-weight:700; font-size:0.9rem; }
+    .grid { display:grid; gap:12px; }
+    .grid.two { grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); }
+    .grid.three { grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); }
+    .nav-link.completed::after { content:'\2713'; margin-left:8px; font-weight:800; color:#10b981; background:rgba(16,185,129,0.12); border-radius:999px; padding:2px 6px; font-size:0.8rem; }
+    .section-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; font-size:0.95rem; color:#4b5563; }
+    .list { padding-left:18px; }
+    .list li { margin-bottom:6px; }
+    .app-main { padding:16px; background:var(--bg); }
+    .topbar-title { font-weight:800; letter-spacing:0.4px; }
+    .note { background:#f8fafc; border:1px solid var(--border); padding:10px 12px; border-radius:10px; }
+  </style>
 </head>
 <body>
-  <div class="notice">
-    <h2>We've moved</h2>
-    <p>The CIP-007 guided module now redirects to the new Seattle City Light OT CSIR course runner.</p>
-    <p><a href="../learn.html?course=scl-csir">Continue to the CSIR course</a></p>
+  <div class="topbar">
+    <div class="topbar-title">CIP-007 Guided Training</div>
+    <div class="role-switch">Legacy CIP-007 reference</div>
   </div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">CIP-007</div>
+      <nav class="nav-groups">
+        <div class="nav-group">
+          <div class="nav-items">
+            <a class="nav-link" href="#landing">Landing</a>
+            <a class="nav-link" href="#intro">Introduction</a>
+            <a class="nav-link" href="#training-flow">Training Flow</a>
+            <a class="nav-link" href="#role-guidance">Role Guidance</a>
+            <a class="nav-link" href="#requirements-overview">Requirements Overview</a>
+            <a class="nav-link" href="#r1">R1 – Ports &amp; Services</a>
+            <a class="nav-link" href="#r2">R2 – Patch Management</a>
+            <a class="nav-link" href="#r3">R3 – Malware Prevention</a>
+            <a class="nav-link" href="#r4">R4 – Security Event Monitoring</a>
+            <a class="nav-link" href="#r5">R5 – Account Management</a>
+            <a class="nav-link" href="#r6">R6 – Interactive Remote Access</a>
+            <a class="nav-link" href="#scenarios">Scenarios</a>
+            <a class="nav-link" href="#knowledge-check">Knowledge Check</a>
+            <a class="nav-link" href="#checklist">Operational Checklist</a>
+            <a class="nav-link" href="#resources">Resources</a>
+            <a class="nav-link" href="#completion">Completion</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <div class="flow-header" id="flowHeader">
+        <div class="flow-left">
+          <div class="flow-breadcrumb">You are here: <span id="flowCurrentTitle"></span></div>
+          <div class="flow-progress">Progress: <span id="flowDoneCount"></span>/<span id="flowTotalCount"></span></div>
+        </div>
+        <div class="flow-actions">
+          <button id="flowBackBtn" class="btn-secondary" type="button">Back</button>
+          <button id="flowNextBtn" class="btn-primary" type="button">Next</button>
+        </div>
+      </div>
+
+      <section id="landing" data-title="Landing" class="section-card">
+        <div class="pill">Module landing</div>
+        <h2 id="landingTitle"></h2>
+        <p id="landingMission"></p>
+        <div>
+          <h3>You'll learn</h3>
+          <ul id="landingLearn" class="list"></ul>
+        </div>
+      </section>
+
+      <section id="intro" data-title="Introduction" class="section-card">
+        <h2>Why this matters</h2>
+        <ul id="introWhy" class="list"></ul>
+        <h3>Highlights</h3>
+        <ul id="introHighlights" class="list"></ul>
+      </section>
+
+      <section id="training-flow" data-title="Training Flow" class="section-card">
+        <h2>Training flow</h2>
+        <div id="flowSteps" class="grid two"></div>
+      </section>
+
+      <section id="role-guidance" data-title="Role Guidance" class="section-card">
+        <h2>Role guidance</h2>
+        <div class="grid two" id="roleCards"></div>
+      </section>
+
+      <section id="requirements-overview" data-title="Requirements Overview" class="section-card">
+        <h2>Requirements overview</h2>
+        <div id="requirementsGrid" class="grid two"></div>
+      </section>
+
+      <section id="r1" data-title="R1 – Ports &amp; Services" class="section-card requirement-card">
+        <h2>R1 – Ports &amp; Services</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r1Owner"></span></span></div>
+        <div class="grid two" id="r1Content"></div>
+      </section>
+
+      <section id="r2" data-title="R2 – Patch Management" class="section-card requirement-card">
+        <h2>R2 – Patch Management</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r2Owner"></span></span></div>
+        <div class="grid two" id="r2Content"></div>
+      </section>
+
+      <section id="r3" data-title="R3 – Malware Prevention" class="section-card requirement-card">
+        <h2>R3 – Malware Prevention</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r3Owner"></span></span></div>
+        <div class="grid two" id="r3Content"></div>
+      </section>
+
+      <section id="r4" data-title="R4 – Security Event Monitoring" class="section-card requirement-card">
+        <h2>R4 – Security Event Monitoring</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r4Owner"></span></span></div>
+        <div class="grid two" id="r4Content"></div>
+      </section>
+
+      <section id="r5" data-title="R5 – Account Management" class="section-card requirement-card">
+        <h2>R5 – Account Management</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r5Owner"></span></span></div>
+        <div class="grid two" id="r5Content"></div>
+      </section>
+
+      <section id="r6" data-title="R6 – Interactive Remote Access" class="section-card requirement-card">
+        <h2>R6 – Interactive Remote Access</h2>
+        <div class="section-meta"><span class="pill">Owner: <span id="r6Owner"></span></span></div>
+        <div class="grid two" id="r6Content"></div>
+      </section>
+
+      <section id="scenarios" data-title="Scenarios" class="section-card">
+        <h2>Scenarios</h2>
+        <div id="scenarioList" class="grid two"></div>
+      </section>
+
+      <section id="knowledge-check" data-title="Knowledge Check" class="section-card">
+        <h2>Knowledge check</h2>
+        <p class="note">Complete these questions in the legacy runtime. Passing unlocks the checklist and resources.</p>
+        <div id="quizPreview" class="grid two"></div>
+      </section>
+
+      <section id="checklist" data-title="Operational Checklist" class="section-card">
+        <h2>Operational checklist</h2>
+        <div class="grid two" id="checklistColumns"></div>
+      </section>
+
+      <section id="resources" data-title="Resources" class="section-card">
+        <h2>Resources</h2>
+        <div class="grid three" id="resourcesGrid"></div>
+      </section>
+
+      <section id="completion" data-title="Completion" class="section-card">
+        <h2>Completion</h2>
+        <ul id="nextSteps" class="list"></ul>
+        <p id="certificateNote" class="note"></p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    async function loadContent() {
+      try {
+        const res = await fetch('./cip007/data/cip007.content.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        populateLanding(data.landing);
+        populateIntro(data.intro);
+        populateFlow(data.flowContent);
+        populateRoles(data.roleOptions, data.roleHighlights?.['role-guidance']);
+        populateOverview(data.overview);
+        populateRequirement(data.requirements, 'r1');
+        populateRequirement(data.requirements, 'r2');
+        populateRequirement(data.requirements, 'r3');
+        populateRequirement(data.requirements, 'r4');
+        populateRequirement(data.requirements, 'r5');
+        populateRequirement(data.requirements, 'r6');
+        populateScenarios(data.scenarios);
+        populateQuiz(data.quiz);
+        populateChecklist(data.checklist);
+        populateResources(data.resources);
+        populateCompletion(data.completion);
+      } catch (err) {
+        console.error('Unable to load content', err);
+      }
+    }
+
+    function populateLanding(landing) {
+      if (!landing) return;
+      document.getElementById('landingTitle').textContent = landing.title;
+      document.getElementById('landingMission').textContent = landing.mission;
+      const list = document.getElementById('landingLearn');
+      landing.learn?.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    function populateIntro(intro) {
+      if (!intro) return;
+      const whyList = document.getElementById('introWhy');
+      intro.why?.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        whyList.appendChild(li);
+      });
+      const highlights = document.getElementById('introHighlights');
+      intro.highlights?.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        highlights.appendChild(li);
+      });
+    }
+
+    function populateFlow(steps = []) {
+      const container = document.getElementById('flowSteps');
+      steps.forEach((step) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        card.innerHTML = `<h4>${step.title}</h4><p>${step.detail}</p>`;
+        container.appendChild(card);
+      });
+    }
+
+    function populateRoles(roleOptions = [], highlights = {}) {
+      const container = document.getElementById('roleCards');
+      roleOptions.forEach((role) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        const detail = highlights?.[role] || '';
+        card.innerHTML = `<h4>${role}</h4><p>${detail}</p>`;
+        container.appendChild(card);
+      });
+    }
+
+    function populateOverview(items = []) {
+      const grid = document.getElementById('requirementsGrid');
+      items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        card.innerHTML = `<div class="pill">${item.req}</div><p><strong>Goal:</strong> ${item.goal}</p><p><strong>Owner:</strong> ${item.owner}</p><p><strong>Why:</strong> ${item.why}</p>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function populateRequirement(requirements = [], id) {
+      const req = requirements.find((r) => r.id === id);
+      if (!req) return;
+      const ownerSpan = document.getElementById(`${id}Owner`);
+      const content = document.getElementById(`${id}Content`);
+      if (ownerSpan) ownerSpan.textContent = req.owner;
+      if (!content) return;
+      const purpose = document.createElement('div');
+      purpose.className = 'note';
+      purpose.innerHTML = `<h4>Purpose</h4><p>${req.purpose}</p>`;
+
+      const risks = document.createElement('div');
+      risks.className = 'note';
+      risks.innerHTML = `<h4>Risks if missed</h4>${buildList(req.risks)}`;
+
+      const good = document.createElement('div');
+      good.className = 'note';
+      good.innerHTML = `<h4>What good looks like</h4>${buildList(req.good)}`;
+
+      const quick = document.createElement('div');
+      quick.className = 'note';
+      quick.innerHTML = `<h4>Quick checks</h4>${buildList(req.quickChecks)}`;
+
+      const done = document.createElement('div');
+      done.className = 'note';
+      done.innerHTML = `<h4>Done when</h4>${buildList(req.done)}`;
+
+      content.append(purpose, risks, good, quick, done);
+    }
+
+    function buildList(items = []) {
+      if (!items || !items.length) return '';
+      return `<ul class="list">${items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
+    }
+
+    function populateScenarios(items = []) {
+      const grid = document.getElementById('scenarioList');
+      items.forEach((scenario) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        card.innerHTML = `<p><strong>Situation:</strong> ${scenario.situation}</p><p><strong>Action:</strong> ${scenario.action}</p><p><strong>Requirement:</strong> ${scenario.requirement}</p><p><strong>Why:</strong> ${scenario.why}</p>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function populateQuiz(quiz) {
+      if (!quiz) return;
+      const container = document.getElementById('quizPreview');
+      quiz.questions?.slice(0, 4).forEach((question, idx) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        card.innerHTML = `<div class="pill">Question ${idx + 1}</div><p>${question.prompt}</p><p><strong>Pass score:</strong> ${quiz.passScore || 80}%</p>`;
+        container.appendChild(card);
+      });
+    }
+
+    function populateChecklist(checklist = {}) {
+      const container = document.getElementById('checklistColumns');
+      Object.keys(checklist).forEach((key) => {
+        const col = document.createElement('div');
+        col.className = 'note';
+        col.innerHTML = `<h4>${key}</h4>${buildChecklist(checklist[key])}`;
+        container.appendChild(col);
+      });
+    }
+
+    function buildChecklist(items = []) {
+      if (!items.length) return '';
+      return `<ul class="list">${items
+        .map((entry) => `<li><strong>${entry.item}</strong> — ${entry.frequency}</li>`)
+        .join('')}</ul>`;
+    }
+
+    function populateResources(resources = {}) {
+      const container = document.getElementById('resourcesGrid');
+      Object.entries(resources).forEach(([key, items]) => {
+        const card = document.createElement('div');
+        card.className = 'note';
+        const title = key.charAt(0).toUpperCase() + key.slice(1);
+        card.innerHTML = `<h4>${title}</h4>${buildList(items)}`;
+        container.appendChild(card);
+      });
+    }
+
+    function populateCompletion(completion = {}) {
+      const steps = document.getElementById('nextSteps');
+      completion.nextSteps?.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        steps.appendChild(li);
+      });
+      const note = document.getElementById('certificateNote');
+      if (note) note.textContent = completion.certificateNote || '';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadContent);
+  </script>
+  <script src="../assets/js/flowEngine.js"></script>
 </body>
 </html>
