@@ -6,6 +6,7 @@ const defaultProgress = (trackId) => ({
   lastLocation: { trackId, m: 1, s: 1 },
   scores: {},
   certificateEligible: false,
+  microProgress: {},
 });
 
 function loadProgress(trackId) {
@@ -30,6 +31,24 @@ function persist(trackId, data) {
 export const ProgressStore = {
   getProgress(trackId) {
     return loadProgress(trackId);
+  },
+  getMicroState(trackId, key, total = 0) {
+    const prog = loadProgress(trackId);
+    const state = prog.microProgress?.[key] || {};
+    return {
+      activeIndex: Math.min(state.activeIndex || 0, Math.max(total - 1, 0)),
+      completed: state.completed || [],
+      attempts: state.attempts || {},
+      answers: state.answers || {},
+      confirmations: state.confirmations || {},
+    };
+  },
+  setMicroState(trackId, key, value) {
+    const prog = loadProgress(trackId);
+    prog.microProgress = prog.microProgress || {};
+    prog.microProgress[key] = value;
+    persist(trackId, prog);
+    return value;
   },
   setStepComplete(trackId, m, s) {
     const prog = loadProgress(trackId);

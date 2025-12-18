@@ -16,6 +16,8 @@ body.player-shell {
   color: var(--text);
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .player-top {
@@ -61,7 +63,11 @@ body.player-shell {
 .course-map .map-item { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: center; color: var(--text); }
 .course-map .map-item .map-count { width: 32px; height: 32px; display: grid; place-items: center; background: rgba(11,56,140,0.08); border-radius: 8px; font-weight: 700; }
 .course-map .map-item .map-status { display: block; color: var(--muted); font-size: 12px; }
-.course-map .map-item.active { border-color: var(--primary); background: rgba(11,56,140,0.06); box-shadow: inset 2px 0 0 var(--primary); }
+.course-map .map-item.active {
+  border-color: var(--primary);
+  background: rgba(11, 56, 140, 0.06);
+  box-shadow: inset 4px 0 0 var(--primary);
+}
 .course-map .map-item:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .player-main { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 24px rgba(15,23,42,0.08); }
@@ -83,6 +89,9 @@ body.player-shell {
 
 .action-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
 .primary { background: var(--primary); color: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+.primary.stepper-next {
+  box-shadow: 0 8px 24px rgba(11, 56, 140, 0.25);
+}
 .secondary { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
 .primary[disabled], .secondary[disabled] { opacity: 0.6; cursor: not-allowed; }
 
@@ -96,6 +105,28 @@ body.player-shell {
 .quiz-result.pass { color: #0f5132; }
 
 .runtime-frame { width: 100%; height: 480px; border: 1px solid var(--border); border-radius: 10px; }
+
+.guided-wrap { display: flex; flex-direction: column; gap: 16px; }
+.micro-progress { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.micro-progress strong { color: var(--text); }
+.micro-title { margin: 0; font-size: 1.15rem; color: var(--text); }
+.micro-lesson, .micro-question { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: var(--surface); box-shadow: 0 8px 20px rgba(11, 17, 32, 0.05); }
+.micro-lesson p { margin: 0 0 10px; color: var(--text-2); line-height: 1.7; }
+.micro-lesson ul { margin: 0; padding-left: 18px; color: var(--text-2); }
+.micro-question h4 { margin: 0 0 8px; }
+.micro-options { display: grid; gap: 10px; }
+.micro-option { border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; background: #fff; cursor: pointer; transition: border 0.15s ease, box-shadow 0.15s ease; }
+.micro-option input { accent-color: var(--primary); }
+.micro-option.selected { border-color: var(--primary); box-shadow: 0 6px 16px rgba(11, 56, 140, 0.12); background: rgba(11, 56, 140, 0.04); }
+.micro-option .option-label { font-weight: 600; color: var(--text); }
+.micro-submit { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.micro-feedback { border-radius: 10px; padding: 10px 12px; background: rgba(11, 56, 140, 0.05); border: 1px solid rgba(11, 56, 140, 0.18); color: var(--text-2); }
+.micro-feedback.positive { background: rgba(22, 163, 74, 0.08); border-color: rgba(22, 163, 74, 0.3); color: #14532d; }
+.micro-feedback.warning { background: rgba(244, 180, 26, 0.1); border-color: rgba(244, 180, 26, 0.26); color: #92400e; }
+.micro-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.micro-nav .secondary { background: #f8fafc; }
+.micro-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(11, 56, 140, 0.08); color: var(--text-2); font-weight: 700; }
+.micro-lock { color: #9ca3af; font-size: 0.95rem; }
 
 .stepper { position: sticky; bottom: 0; background: var(--surface); border-top: 1px solid var(--border); display: grid; grid-template-columns: 140px 1fr 140px; align-items: center; gap: 10px; padding: 12px 16px; box-shadow: 0 -4px 12px rgba(15,23,42,0.05); }
 .stepper-meta { text-align: center; color: var(--muted); font-size: 14px; }

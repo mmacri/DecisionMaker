@@ -79,6 +79,9 @@ function render() {
     moduleLabel: `Module ${location.m}`,
     completed: stepCompleted,
     onComplete: (data) => completeStep(step, data),
+    trackId: track.id,
+    moduleNumber: location.m,
+    stepNumber: location.s,
   };
 
   ui.renderStep(step, context);
@@ -97,6 +100,8 @@ function setNavState(step, stepCompleted, totalSteps) {
         ? 'Mark the overview complete to continue.'
         : step.type === 'iframe'
           ? 'Confirm the interactive step to continue.'
+          : step.type === 'guided'
+            ? 'Complete all guided training micro-steps to continue.'
           : 'Complete the knowledge check to continue.')
     : '';
   const atStart = location.m === 1 && location.s === 1;

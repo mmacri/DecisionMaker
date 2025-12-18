@@ -1,3 +1,5 @@
+import { renderGuidedTraining } from './microstep-engine.js';
+
 export class PlayerUI {
   constructor() {
     this.courseMap = document.getElementById('courseMap');
@@ -123,6 +125,17 @@ export class PlayerUI {
 
     if (step.type === 'quiz' || step.type === 'exam') {
       wrapper.appendChild(this.renderQuiz(step, context));
+    }
+
+    if (step.type === 'guided') {
+      const guided = document.createElement('div');
+      wrapper.appendChild(guided);
+      renderGuidedTraining(step, guided, {
+        ...context,
+        trackId: context.trackId,
+        moduleNumber: context.moduleNumber,
+        stepNumber: context.stepNumber,
+      });
     }
 
     if (step.type === 'iframe') {

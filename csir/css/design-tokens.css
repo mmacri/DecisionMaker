@@ -1,22 +1,22 @@
 :root {
   /* neutrals */
-  --bg: #0b1220;
-  --surface: #0f1b2d;
-  --surface-2: #13253d;
-  --card: #0f1b2d;
-  --border: rgba(255, 255, 255, 0.10);
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-2: #f9fbff;
+  --card: #ffffff;
+  --border: #d9dde7;
 
   /* text */
-  --text: rgba(255, 255, 255, 0.92);
-  --text-2: rgba(255, 255, 255, 0.75);
-  --muted: rgba(255, 255, 255, 0.62);
+  --text: #0b1220;
+  --text-2: #1f2937;
+  --muted: #475569;
 
   /* primary */
-  --primary: #2b78ff;
-  --primary-ink: #08101f;
+  --primary: #0b388c;
+  --primary-ink: #0b1220;
 
   /* semantic */
-  --ok: #22c55e;
+  --ok: #16a34a;
   --warn: #f59e0b;
   --danger: #ef4444;
 
@@ -29,12 +29,12 @@
   /* typography */
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
   --h1: 28px;
-  --h2: 20px;
-  --h3: 16px;
-  --body: 15px;
+  --h2: 21px;
+  --h3: 17px;
+  --body: 16px;
   --small: 13px;
-  --lh: 1.5;
+  --lh: 1.65;
 
   /* shadows */
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --shadow: 0 8px 24px rgba(11, 17, 32, 0.08);
 }
