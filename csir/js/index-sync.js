@@ -34,7 +34,8 @@ function decorateModules(progress) {
 
     const startBtn = card.querySelector('.start-module');
     if (startBtn) {
-      startBtn.href = `learn.html${module.runtimeHash}`;
+      const modId = module.id.replace('module-', 'm');
+      startBtn.href = `player.html?module=${modId}`;
       startBtn.addEventListener('click', () => setMode('guided'));
     }
   });
@@ -54,7 +55,9 @@ function wireTrainingCtas(progress) {
 
   const resume = byId('resumeLink');
   if (resume && progress.lastRuntimeHash) {
-    resume.href = `learn.html${progress.lastRuntimeHash}`;
+    const module = window.CSIR_CURRICULUM?.find((m) => m.runtimeHash === progress.lastRuntimeHash);
+    const moduleParam = module ? module.id.replace('module-', 'm') : 'm1';
+    resume.href = `player.html?module=${moduleParam}`;
     resume.style.display = 'inline-flex';
   }
 
@@ -70,7 +73,9 @@ function wireTrainingCtas(progress) {
         window.location.href = 'role.html';
         return;
       }
-      window.location.href = `learn.html${targetHash}`;
+      const targetModule = window.CSIR_CURRICULUM?.find((m) => m.runtimeHash === targetHash);
+      const moduleParam = targetModule ? targetModule.id.replace('module-', 'm') : 'm1';
+      window.location.href = `player.html?module=${moduleParam}`;
     });
   });
 }

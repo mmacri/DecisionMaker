@@ -1,0 +1,46 @@
+<div class="module-overview">
+  <div class="pill">Module 2</div>
+  <h2 class="section-title">Roles, Responsibilities, Communications</h2>
+  <p class="section-sub">See the CSIR roles, pick your path, and follow the communications layers.</p>
+  <div class="role-reminder">
+    <div>
+      <h3>Your selected role</h3>
+      <p class="small">Role selection filters required callouts and scenarios.</p>
+      <div id="roleSummary" class="alert">Loading role summary…</div>
+      <button class="button secondary" id="remindSwitch">Switch role</button>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row header"><span>Role</span><span>Key responsibilities</span></div>
+      <div class="matrix-row"><span>Incident Commander</span><span>Lead CSIR Team, set objectives, ensure reporting on time, oversee ICS use.</span></div>
+      <div class="matrix-row"><span>Technical Lead</span><span>Lead technical investigation, refine classification/severity, recommend containment/recovery.</span></div>
+      <div class="matrix-row"><span>ECS</span><span>Maintain CSIR plan, support classification/reportability, support E‑ISAC/CISA reporting, retain evidence.</span></div>
+      <div class="matrix-row"><span>NERC‑CIP Compliance</span><span>Support CIP‑008 and CIP‑003 obligations, maintain compliance evidence, run annual review/tests.</span></div>
+      <div class="matrix-row"><span>CSIR Team Members</span><span>Provide SME input, perform hands‑on tasks, follow incident documentation practices.</span></div>
+      <div class="matrix-row"><span>Dispatchers/Control</span><span>Recognize abnormalities, initiate reporting via Service Desk/incident channels, maintain logs.</span></div>
+      <div class="matrix-row"><span>System Owners</span><span>Maintain recovery plans, backups, spare equipment; participate in recovery and follow‑up.</span></div>
+      <div class="matrix-row"><span>All SCL Staff</span><span>Recognize suspicious activity, promptly report suspected incidents, complete annual cyber training.</span></div>
+    </div>
+  </div>
+  <div class="grid two">
+    <div>
+      <h3>Communications flow</h3>
+      <p>Internal notifications move from local OT teams to Incident Commander and Technical Lead, with ECS and Compliance coordinating regulatory messaging. Severe or Tier 1/AtC cases escalate to City IMT and external agencies (E‑ISAC, CISA/NCCIC, regulators).</p>
+      <div class="rings">
+        <div class="ring inner">Dispatchers • Field Ops • Engineering • System Owners</div>
+        <div class="ring middle">Incident Commander • Technical Lead • ECS • CSIR Team • NERC‑CIP</div>
+        <div class="ring outer">City IMT • Regulatory Affairs • External agencies</div>
+      </div>
+    </div>
+    <div>
+      <h3>Role-specific prompt</h3>
+      <div class="prompt-card">
+        <p class="small">Example (Dispatcher): “You see repeated failed logins on a control system. What is your next step?”</p>
+        <ul class="list">
+          <li>Recognize the signal as potential Incident/AtC.</li>
+          <li>Report immediately via CSIR channels (Service Desk/incident bridge).</li>
+          <li>Preserve observations (time, system) and await direction.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

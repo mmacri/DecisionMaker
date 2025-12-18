@@ -141,7 +141,7 @@ export function getProgress() {
 
 export function setProgress(progress) {
   const merged = { ...defaultProgress(), ...progress };
-  persist(merged);
+  return persist(merged);
 }
 
 export function loadProgress() {

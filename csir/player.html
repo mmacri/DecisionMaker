@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCL OT CSIR Course Player</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/player.css">
+</head>
+<body class="player-shell">
+  <header class="player-header">
+    <div class="bar">
+      <div class="brand"><img src="assets/logo.svg" alt="SCL">SCL OT CSIR Training</div>
+      <div class="header-actions" style="flex:1; justify-content:center;">
+        <button id="mapToggle" class="map-toggle" aria-expanded="false">☰ Course map</button>
+        <div class="dropdown">
+          <div class="small muted">Module</div>
+          <div id="moduleDropdownLabel" class="pill">Loading…</div>
+          <select id="moduleSelect" aria-label="Select module"></select>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="role-pill" id="rolePill">Loading role…</div>
+        <button class="secondary" id="helpBtn">Help / Tour</button>
+        <button class="primary" id="exitTraining">Exit training</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="player-layout">
+    <aside class="course-map">
+      <h3>Course map</h3>
+      <ol id="courseMap" class="map-list"></ol>
+    </aside>
+
+    <main class="main-pane">
+      <div class="breadcrumb" id="breadcrumb">Home / Start</div>
+      <div class="progress-row">
+        <div id="overallProgress">Overall progress</div>
+        <div style="flex:1; min-width:180px;">
+          <div class="progress-bar"><div class="progress-fill" id="overallBar" style="width:0;"></div></div>
+        </div>
+      </div>
+
+      <section class="panel-shell" id="stepContent" data-module-id="" data-step-index="0">
+        <div class="step-meta">
+          <div>
+            <div class="pill" id="moduleStep">Step</div>
+            <h2 id="stepTitle" class="section-title" style="margin:6px 0;">Loading step…</h2>
+          </div>
+          <div class="pill">Single path forward</div>
+        </div>
+        <div class="overview-area" id="overviewContainer"></div>
+        <div class="runtime-area" id="runtimeContainer">
+          <p class="small">Training content runs inside the player. If loading takes more than a few seconds, refresh or reopen this module.</p>
+          <iframe id="runtimeFrame" title="CSIR runtime"></iframe>
+        </div>
+      </section>
+
+      <div class="stepper">
+        <button id="prevStep" class="secondary">Previous</button>
+        <div id="stepIndicator">Step navigation</div>
+        <button id="nextStep" class="primary">Next</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="js/player-curriculum.js"></script>
+  <script type="module" src="js/player-state.js"></script>
+  <script type="module" src="js/player.js"></script>
+</body>
+</html>
