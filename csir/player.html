@@ -6,78 +6,64 @@
   <title>SCL OT CSIR Course Player</title>
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/design-tokens.light.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/player.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/e7yNWkjZXl2bqsxvFeoJEB6Digw1VE3DybMT0SqnX+ANXoy2cuglRez2oJ6TP2PzefDs2fzGEylh4G6dkh2og==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
-<body class="page player player-shell">
-  <header class="player-header">
-    <div class="bar">
-      <div class="brand"><img src="assets/logo.svg" alt="SCL">SCL OT CSIR Training</div>
-      <div class="header-actions">
-        <button id="mapToggle" class="map-toggle" aria-expanded="false">☰ Course map</button>
-        <div class="role-pill" id="rolePill">Loading role…</div>
-        <button class="tertiary" id="helpBtn">Help / Tour</button>
-        <button class="tertiary" id="exitTraining">Exit training</button>
+<body class="player-shell">
+  <header class="player-top">
+    <div class="brand-block">
+      <img src="assets/logo.svg" alt="SCL logo">
+      <div>
+        <div class="eyebrow">Seattle City Light</div>
+        <div class="title">OT CSIR Training</div>
       </div>
+    </div>
+    <div class="top-actions">
+      <span class="pill" id="trackLabel">Loading…</span>
+      <a class="tertiary" href="index.html">Return to overview</a>
     </div>
   </header>
 
-  <div class="player-layout">
-    <aside class="course-map" aria-label="Course map">
-      <h3>Course map</h3>
-      <div class="map-list-wrap">
-        <ol id="courseMap" class="map-list"></ol>
+  <div class="player-grid">
+    <aside class="sidebar" aria-label="Course Map">
+      <div class="sidebar-head">
+        <h2>Course Map</h2>
+        <button id="mapCollapse" class="ghost">Hide</button>
       </div>
-      <div class="progress-row">
-        <div id="overallProgress" class="meta">Overall progress</div>
-        <div class="progress-bar slim"><div class="progress-fill" id="overallBar" style="width:0;"></div></div>
-      </div>
+      <ol id="courseMap" class="course-map"></ol>
     </aside>
 
-    <main class="main-pane">
-      <section class="location-banner">
+    <main class="player-main">
+      <div class="crumbs" id="breadcrumb">Home</div>
+      <header class="module-head">
         <div>
-          <div class="meta-line" id="moduleBreadcrumb">Module and step</div>
-          <h1 id="moduleTitle">Loading module…</h1>
-          <div class="breadcrumb" id="breadcrumb">Module location</div>
+          <p class="eyebrow" id="stepMeta">Module</p>
+          <h1 id="moduleTitle">Loading…</h1>
         </div>
-        <div class="module-progress">
-          <div class="meta" id="moduleStep">Step</div>
-          <div class="progress-bar slim"><div class="progress-fill" id="stepBar" style="width:0;"></div></div>
+        <div class="progress-meta">
+          <div class="progress-label" id="stepMetaLabel">Step</div>
+          <div class="progress-bar"><div id="stepProgressFill"></div></div>
         </div>
-      </section>
+      </header>
 
-      <section class="panel-shell" id="stepContent" data-module-id="" data-step-index="0">
-        <div class="step-meta">
-          <div>
-            <div class="pill">Single path forward</div>
-            <h2 id="stepTitle" class="section-title" style="margin:6px 0;">Loading step…</h2>
-          </div>
-          <div class="pill" id="stepCountPill">Step</div>
-        </div>
-        <div class="overview-area" id="overviewContainer"></div>
-        <div class="runtime-area" id="runtimeContainer">
-          <p class="small">Training content runs inside the player. If loading takes more than a few seconds, refresh or reopen this module.</p>
-          <iframe id="runtimeFrame" title="CSIR runtime"></iframe>
-        </div>
-      </section>
+      <section class="content" id="contentHost"></section>
     </main>
   </div>
 
-  <div class="drawer-scrim" id="drawerScrim"></div>
-  <div class="stepper-bar">
-    <button id="prevStep" class="secondary">Back</button>
-    <div class="stepper-status">
-      <span class="meta" id="stepIndicator">Step navigation</span>
-      <div class="progress-bar stepper-progress slim"><div class="progress-fill" id="stepperBar" style="width:0;"></div></div>
-    </div>
-    <button id="nextStep" class="primary" aria-live="polite">Next</button>
+  <div class="stepper">
+    <button id="btnBack" class="secondary">Back</button>
+    <div class="stepper-meta" id="stepperMeta">Module and step</div>
+    <button id="btnNext" class="primary">Next</button>
   </div>
 
-  <div class="toast" id="toast" role="status"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="js/player-curriculum.js"></script>
-  <script type="module" src="js/player-state.js"></script>
-  <script type="module" src="js/player.js"></script>
+  <script type="module" src="js/progress-store.js"></script>
+  <script src="js/tracks/csir-cert.js"></script>
+  <script src="js/tracks/csir-interactive.js"></script>
+  <script type="module" src="js/player-ui.js"></script>
+  <script type="module" src="js/track-router.js"></script>
 </body>
 </html>
