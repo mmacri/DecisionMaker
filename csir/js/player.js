@@ -18,7 +18,7 @@ function qs(sel) {
 }
 
 function formatBreadcrumb(module, step) {
-  return `Home / Start › ${module.title} › Step ${step.index + 1}: ${step.data.title}`;
+  return `${module.title} — Step ${step.index + 1} of ${module.steps.length} · ${step.data.title}`;
 }
 
 async function loadOverview(moduleId) {
@@ -40,17 +40,13 @@ function runtimeSrc(step) {
   return `learn.html?embed=1${hash}`;
 }
 
-function renderModuleDropdown(currentId) {
-  const dropdown = qs('#moduleSelect');
-  dropdown.innerHTML = '';
-  modules.forEach((module) => {
-    const option = document.createElement('option');
-    option.value = module.id;
-    option.textContent = module.title;
-    option.selected = module.id === currentId;
-    option.disabled = !canAccessModule(module.id);
-    dropdown.appendChild(option);
-  });
+function moduleState(moduleId) {
+  const progress = getProgress();
+  const completed = progress.completedModules.includes(moduleId);
+  const current = progress.current?.moduleId === moduleId;
+  const steps = moduleSteps(moduleId);
+  const hasProgress = steps.some((s) => progress.completedSteps.includes(s.id));
+  return { completed, current, hasProgress };
 }
 
 function renderCourseMap(currentId) {
@@ -60,11 +56,12 @@ function renderCourseMap(currentId) {
   modules.forEach((module, idx) => {
     const li = document.createElement('li');
     li.dataset.id = module.id;
-    const completed = progress.completedModules.includes(module.id);
-    const current = module.id === currentId;
+    const { completed, current, hasProgress } = moduleState(module.id);
     const unlocked = canAccessModule(module.id);
     li.className = `map-item ${completed ? 'complete' : current ? 'active' : unlocked ? 'open' : 'locked'}`;
-    li.innerHTML = `<span class="status"></span><span class="label">${module.title}</span>`;
+    const stateText = completed ? 'Complete' : current ? 'In progress' : hasProgress ? 'In progress' : 'Not started';
+    const icon = completed ? '✓' : current || hasProgress ? '◐' : '○';
+    li.innerHTML = `<span class="status-icon" aria-hidden="true">${icon}</span><span class="label"><span class="title">${module.title}</span><span class="state">${stateText}</span></span>`;
     li.addEventListener('click', () => {
       if (!unlocked) {
         showToast('Complete earlier modules before opening this one.');
@@ -87,9 +84,14 @@ function showToast(message) {
 
 function updateProgressUi(moduleId, stepIndex) {
   const overall = qs('#overallProgress');
-  const moduleStep = qs('#moduleStep');
   const indicator = qs('#stepIndicator');
   const bar = qs('#overallBar');
+  const moduleStep = qs('#moduleStep');
+  const stepBar = qs('#stepBar');
+  const stepperBar = qs('#stepperBar');
+  const moduleTitle = qs('#moduleTitle');
+  const moduleBreadcrumb = qs('#moduleBreadcrumb');
+  const stepCountPill = qs('#stepCountPill');
   const module = modules.find((m) => m.id === moduleId);
   if (!module) return;
   const steps = module.steps || [];
@@ -99,11 +101,16 @@ function updateProgressUi(moduleId, stepIndex) {
   if (overall) {
     overall.textContent = `Overall progress: ${completedModules} of ${total} modules complete`;
   }
-  if (moduleStep) {
-    moduleStep.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
-  }
-  if (indicator) indicator.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+  const stepLabel = `Step ${stepIndex + 1} of ${steps.length}`;
+  if (moduleStep) moduleStep.textContent = stepLabel;
+  if (indicator) indicator.textContent = stepLabel;
+  if (stepCountPill) stepCountPill.textContent = stepLabel;
+  if (moduleTitle) moduleTitle.textContent = module.title;
+  if (moduleBreadcrumb) moduleBreadcrumb.textContent = `Module ${modules.indexOf(module) + 1} — ${stepLabel}`;
   if (bar) bar.style.width = `${percent}%`;
+  const modulePercent = steps.length ? Math.round(((stepIndex + 1) / steps.length) * 100) : 0;
+  if (stepBar) stepBar.style.width = `${modulePercent}%`;
+  if (stepperBar) stepperBar.style.width = `${modulePercent}%`;
 }
 
 function updateStepperButtons(moduleId, stepIndex) {
@@ -117,7 +124,6 @@ function updateStepperButtons(moduleId, stepIndex) {
 
   if (prev) prev.disabled = isFirst;
   if (next) {
-    next.disabled = false;
     if (isLastModule && isLastStep) {
       next.textContent = 'Finish course';
     } else if (isLastStep) {
@@ -128,13 +134,13 @@ function updateStepperButtons(moduleId, stepIndex) {
   }
 }
 
-function syncDropdownLabel(moduleId) {
-  renderModuleDropdown(moduleId);
-  const label = qs('#moduleDropdownLabel');
-  if (label) {
-    const module = modules.find((m) => m.id === moduleId);
-    label.textContent = module ? module.title : 'Module';
-  }
+function setNextEnabled(step, force = null) {
+  const next = qs('#nextStep');
+  if (!next || !step) return;
+  const isComplete = getProgress().completedSteps.includes(step.id);
+  const autoAdvance = step.type === 'overview';
+  const enabled = force !== null ? force : (autoAdvance || isComplete);
+  next.disabled = !enabled;
 }
 
 async function renderStep(moduleId, stepIndex) {
@@ -185,7 +191,7 @@ async function renderStep(moduleId, stepIndex) {
   setCurrent(moduleId, stepIndex);
   updateProgressUi(moduleId, stepIndex);
   updateStepperButtons(moduleId, stepIndex);
-  syncDropdownLabel(moduleId);
+  setNextEnabled(step);
   renderCourseMap(moduleId);
 }
 
@@ -201,6 +207,10 @@ function lockedExamAttempt(targetModuleId) {
 function loadModule(moduleId, stepIndex = 0) {
   if (lockedExamAttempt(moduleId)) return;
   renderStep(moduleId, stepIndex);
+  const drawer = qs('.course-map');
+  if (drawer?.classList.contains('open')) {
+    toggleDrawer();
+  }
 }
 
 function nextStep() {
@@ -211,6 +221,7 @@ function nextStep() {
   const steps = moduleSteps(moduleId);
   const step = steps[stepIndex];
   if (!step) return;
+  if (qs('#nextStep')?.disabled) return;
 
   markStepComplete(step.id);
 
@@ -245,7 +256,10 @@ function prevStep() {
 
 function toggleDrawer() {
   const drawer = qs('.course-map');
-  drawer.classList.toggle('open');
+  const scrim = qs('#drawerScrim');
+  const isOpen = drawer.classList.toggle('open');
+  document.body.classList.toggle('drawer-open', isOpen);
+  if (scrim) scrim.style.display = isOpen ? 'block' : 'none';
 }
 
 function syncRolePill() {
@@ -257,15 +271,21 @@ function syncRolePill() {
 function bindEvents() {
   qs('#nextStep')?.addEventListener('click', nextStep);
   qs('#prevStep')?.addEventListener('click', prevStep);
-  qs('#moduleSelect')?.addEventListener('change', (e) => loadModule(e.target.value, 0));
   qs('#mapToggle')?.addEventListener('click', toggleDrawer);
+  qs('#drawerScrim')?.addEventListener('click', toggleDrawer);
   qs('#exitTraining')?.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
   window.addEventListener('message', (event) => {
     if (event.data?.type === 'CSIR_STEP_COMPLETE' && event.data.stepId) {
       markStepComplete(event.data.stepId);
-      renderCourseMap(qs('#stepContent').dataset.moduleId);
+      const currentModuleId = qs('#stepContent').dataset.moduleId;
+      renderCourseMap(currentModuleId);
+      const currentModule = modules.find((m) => m.id === currentModuleId);
+      const currentStepIndex = Number(qs('#stepContent').dataset.stepIndex || 0);
+      const currentStep = currentModule?.steps[currentStepIndex];
+      if (currentStep) setNextEnabled(currentStep, true);
+      updateProgressUi(currentModuleId, currentStepIndex);
     }
   });
 }

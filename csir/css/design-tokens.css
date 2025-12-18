@@ -1,0 +1,40 @@
+:root {
+  /* neutrals */
+  --bg: #0b1220;
+  --surface: #0f1b2d;
+  --surface-2: #13253d;
+  --card: #0f1b2d;
+  --border: rgba(255, 255, 255, 0.10);
+
+  /* text */
+  --text: rgba(255, 255, 255, 0.92);
+  --text-2: rgba(255, 255, 255, 0.75);
+  --muted: rgba(255, 255, 255, 0.62);
+
+  /* primary */
+  --primary: #2b78ff;
+  --primary-ink: #08101f;
+
+  /* semantic */
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+
+  /* spacing + radius */
+  --r: 14px;
+  --r-sm: 10px;
+  --pad: 16px;
+  --pad-lg: 22px;
+
+  /* typography */
+  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  --h1: 28px;
+  --h2: 20px;
+  --h3: 16px;
+  --body: 15px;
+  --small: 13px;
+  --lh: 1.5;
+
+  /* shadows */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}

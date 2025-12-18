@@ -5,50 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SCL OT CSIR Course Player</title>
   <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/player.css">
 </head>
 <body class="player-shell">
   <header class="player-header">
     <div class="bar">
       <div class="brand"><img src="assets/logo.svg" alt="SCL">SCL OT CSIR Training</div>
-      <div class="header-actions" style="flex:1; justify-content:center;">
-        <button id="mapToggle" class="map-toggle" aria-expanded="false">☰ Course map</button>
-        <div class="dropdown">
-          <div class="small muted">Module</div>
-          <div id="moduleDropdownLabel" class="pill">Loading…</div>
-          <select id="moduleSelect" aria-label="Select module"></select>
-        </div>
-      </div>
       <div class="header-actions">
+        <button id="mapToggle" class="map-toggle" aria-expanded="false">☰ Course map</button>
         <div class="role-pill" id="rolePill">Loading role…</div>
-        <button class="secondary" id="helpBtn">Help / Tour</button>
-        <button class="primary" id="exitTraining">Exit training</button>
+        <button class="tertiary" id="helpBtn">Help / Tour</button>
+        <button class="tertiary" id="exitTraining">Exit training</button>
       </div>
     </div>
   </header>
 
   <div class="player-layout">
-    <aside class="course-map">
+    <aside class="course-map" aria-label="Course map">
       <h3>Course map</h3>
-      <ol id="courseMap" class="map-list"></ol>
+      <div class="map-list-wrap">
+        <ol id="courseMap" class="map-list"></ol>
+      </div>
+      <div class="progress-row">
+        <div id="overallProgress" class="meta">Overall progress</div>
+        <div class="progress-bar slim"><div class="progress-fill" id="overallBar" style="width:0;"></div></div>
+      </div>
     </aside>
 
     <main class="main-pane">
-      <div class="breadcrumb" id="breadcrumb">Home / Start</div>
-      <div class="progress-row">
-        <div id="overallProgress">Overall progress</div>
-        <div style="flex:1; min-width:180px;">
-          <div class="progress-bar"><div class="progress-fill" id="overallBar" style="width:0;"></div></div>
+      <section class="location-banner">
+        <div>
+          <div class="meta-line" id="moduleBreadcrumb">Module and step</div>
+          <h1 id="moduleTitle">Loading module…</h1>
+          <div class="breadcrumb" id="breadcrumb">Module location</div>
         </div>
-      </div>
+        <div class="module-progress">
+          <div class="meta" id="moduleStep">Step</div>
+          <div class="progress-bar slim"><div class="progress-fill" id="stepBar" style="width:0;"></div></div>
+        </div>
+      </section>
 
       <section class="panel-shell" id="stepContent" data-module-id="" data-step-index="0">
         <div class="step-meta">
           <div>
-            <div class="pill" id="moduleStep">Step</div>
+            <div class="pill">Single path forward</div>
             <h2 id="stepTitle" class="section-title" style="margin:6px 0;">Loading step…</h2>
           </div>
-          <div class="pill">Single path forward</div>
+          <div class="pill" id="stepCountPill">Step</div>
         </div>
         <div class="overview-area" id="overviewContainer"></div>
         <div class="runtime-area" id="runtimeContainer">
@@ -56,13 +61,17 @@
           <iframe id="runtimeFrame" title="CSIR runtime"></iframe>
         </div>
       </section>
-
-      <div class="stepper">
-        <button id="prevStep" class="secondary">Previous</button>
-        <div id="stepIndicator">Step navigation</div>
-        <button id="nextStep" class="primary">Next</button>
-      </div>
     </main>
+  </div>
+
+  <div class="drawer-scrim" id="drawerScrim"></div>
+  <div class="stepper-bar">
+    <button id="prevStep" class="secondary">Back</button>
+    <div class="stepper-status">
+      <span class="meta" id="stepIndicator">Step navigation</span>
+      <div class="progress-bar stepper-progress slim"><div class="progress-fill" id="stepperBar" style="width:0;"></div></div>
+    </div>
+    <button id="nextStep" class="primary" aria-live="polite">Next</button>
   </div>
 
   <div class="toast" id="toast" role="status"></div>
