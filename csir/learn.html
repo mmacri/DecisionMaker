@@ -5,10 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSIR Course Runner</title>
   <link rel="stylesheet" href="css/theme.css">
+  <style>
+    body.embed-mode .header,
+    body.embed-mode .drawer-toggle,
+    body.embed-mode #backToCurriculum,
+    body.embed-mode #resetProgress,
+    body.embed-mode #completionBanner {
+      display: none !important;
+    }
+    body.embed-mode .app-layout {
+      grid-template-columns: 1fr !important;
+    }
+    body.embed-mode .sidebar,
+    body.embed-mode #drawerMobile {
+      display: none !important;
+    }
+  </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="page course-runner" data-role-label="">
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('embed') === '1') {
+        document.body.classList.add('embed-mode');
+      }
+    })();
+  </script>
   <header class="header">
     <div class="header-inner">
       <div class="brand"><img src="assets/logo.svg" alt="">SCL OT CSIR Training</div>
