@@ -1,5 +1,10 @@
 import { getName, getRole, getMode, setMode, getProgress, setProgress } from './storage.js';
 
+function isEmbeddedMode() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('mode') === 'embedded';
+}
+
 function resolveModuleByHash(hash) {
   const curriculum = window.CSIR_CURRICULUM || [];
   return curriculum.find((m) => m.runtimeHash === hash) || curriculum[0];
@@ -35,6 +40,10 @@ function gateAccess() {
 }
 
 function enforceMode() {
+  if (isEmbeddedMode()) {
+    setMode('embedded');
+    return;
+  }
   if (getMode() !== 'guided') setMode('guided');
 }
 
@@ -96,6 +105,7 @@ function initHashGuard() {
 window.addEventListener('DOMContentLoaded', () => {
   if (!gateAccess()) return;
   enforceMode();
+  if (isEmbeddedMode()) return;
   const progress = getProgress();
   initCertificateGate(progress);
   initHashGuard();

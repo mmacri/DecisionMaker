@@ -15,6 +15,26 @@ import {
 import { requireRoleAndName } from './router.js';
 import { renderQuiz, bindQuiz } from './quiz.js';
 
+const EMBEDDED_MODULE_STEPS = {
+  m1: ['mission-control', 'csir-basics'],
+  m2: ['roles', 'comms'],
+  m3: ['definitions', 'severity'],
+  m4: ['workflow', 'response'],
+  m5: ['reporting', 'evidence'],
+  m6: ['scenarios', 'audit-etiquette'],
+  m7: ['final-exam', 'checklist', 'completion'],
+};
+
+const PLAYER_STEP_IDS = {
+  m1: 'm1s2',
+  m2: 'm2s2',
+  m3: 'm3s2',
+  m4: 'm4s2',
+  m5: 'm5s2',
+  m6: 'm6s2',
+  m7: 'm7s2',
+};
+
 async function fetchPack(courseId = 'scl-csir') {
   const res = await fetch(`contentpacks/${courseId}/pack.json`);
   return res.json();
@@ -93,6 +113,26 @@ function interactionResult(step, progress) {
   const existing = progress.interactionScores[step.id];
   if (!existing) return '';
   return `<div class="result">Score: ${existing.score}/${existing.total} (${existing.percent}%)${existing.passed ? ' • Passed' : ''}</div>`;
+}
+
+function getSearchParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    moduleId: params.get('module') || 'm1',
+    stepId: params.get('step') || 's2',
+    role: params.get('role'),
+    mode: params.get('mode'),
+    exam: params.get('exam') === '1',
+    resume: params.get('resume') === '1',
+  };
+}
+
+function setRoleFromParams(roleId) {
+  if (!roleId) return;
+  const progress = loadProgress();
+  if (progress.roleId !== roleId) {
+    saveProgress({ ...progress, roleId });
+  }
 }
 
 function evaluateInteraction(step, container, onPassed) {
@@ -190,6 +230,23 @@ function computeProgress(steps, progress) {
   return { completed, total, percent: Math.round((completed / total) * 100) };
 }
 
+function moduleTrainingCompleted(progress) {
+  const targets = EMBEDDED_MODULE_STEPS[activeModuleId] || [];
+  if (!targets.length) return false;
+  return targets.every((id) => progress.completedSteps.includes(id));
+}
+
+function notifyParentCompletion(progress) {
+  if (!embeddedMode) return;
+  if (!moduleTrainingCompleted(progress)) return;
+  if (notifiedModules.has(activeModuleId)) return;
+  const stepId = PLAYER_STEP_IDS[activeModuleId] || 's2';
+  const payload = { type: 'CSIR_STEP_COMPLETE', moduleId: activeModuleId, stepId };
+  window.parent?.postMessage(payload, window.location.origin);
+  window.parent?.postMessage({ type: 'CSIR_MODULE_COMPLETE', moduleId: activeModuleId }, window.location.origin);
+  notifiedModules.add(activeModuleId);
+}
+
 function updateProgressBar(progressData) {
   byId('progressText').textContent = `${progressData.completed} / ${progressData.total} steps complete (${progressData.percent}%)`;
   document.querySelector('.progress-fill').style.width = `${progressData.percent}%`;
@@ -247,6 +304,9 @@ let stepsCache = [];
 let packCache;
 let roleLabelCache = '';
 let currentIndex = 0;
+let embeddedMode = false;
+let activeModuleId = 'm1';
+const notifiedModules = new Set();
 
 function isStepCompleted(step, progress) {
   if (progress.completedSteps.includes(step.id)) return true;
@@ -270,6 +330,7 @@ function updateAfterCompletion() {
   updateProgressBar(progressData);
   ensureCompletionState(stepsCache, progress, packCache);
   bindNavButtons(progress);
+  notifyParentCompletion(progress);
 }
 
 function bindNavButtons(progress) {
@@ -406,11 +467,44 @@ function setupDrawer() {
   mobile?.addEventListener('click', (e) => { if (e.target.classList.contains('step')) closeDrawer(); });
 }
 
+function configureEmbeddedLayout(params, roleLabel) {
+  embeddedMode = params.mode === 'embedded';
+  if (!embeddedMode) return;
+  document.body.classList.add('embedded');
+  activeModuleId = params.moduleId || 'm1';
+  roleLabelCache = roleLabel;
+}
+
+function selectModuleSteps(moduleId, steps) {
+  const list = EMBEDDED_MODULE_STEPS[moduleId] || [];
+  if (!list.length) return steps;
+  return steps.filter((s) => list.includes(s.id));
+}
+
+function initialStepIndex(moduleId, progress, resume) {
+  const subset = EMBEDDED_MODULE_STEPS[moduleId] || [];
+  if (!resume) return 0;
+  const firstIncomplete = subset.findIndex((id) => !progress.completedSteps.includes(id));
+  return firstIncomplete >= 0 ? firstIncomplete : 0;
+}
+
+function loadEmbeddedModuleTraining(moduleId, resume = false) {
+  activeModuleId = moduleId;
+  const subset = selectModuleSteps(moduleId, packCache.steps);
+  stepsCache = subset;
+  buildStepper(stepsCache, subset.map((s) => s.id), loadProgress());
+  const idx = initialStepIndex(moduleId, loadProgress(), resume);
+  navigateTo(idx);
+  window.parent?.postMessage({ type: 'CSIR_RUNTIME_READY' }, window.location.origin);
+}
+
 async function initCourseRunner() {
   if (!requireRoleAndName()) return;
+  const params = getSearchParams();
   packCache = await fetchPack('scl-csir');
   let progress = clearIfDifferentCourse(packCache.course.version);
   progress = loadProgress();
+  setRoleFromParams(params.role);
   const role = packCache.roles.find((r) => r.id === progress.roleId);
   roleLabelCache = role?.label || 'Role';
   document.querySelector('[data-role-label]')?.setAttribute('data-role-label', roleLabelCache);
@@ -418,52 +512,72 @@ async function initCourseRunner() {
   byId('courseMeta').textContent = `${packCache.course.version} • Est. ${role?.estMinutes || packCache.course.estMinutes} minutes`;
   byId('learnerInfo').textContent = `${progress.learnerName} • ${roleLabelCache}`;
 
-  stepsCache = packCache.steps;
-  buildStepper(stepsCache, role.requiredStepIds, progress);
-  setupDrawer();
+  configureEmbeddedLayout(params, roleLabelCache);
 
-  const list = byId('stepList');
-  list.addEventListener('click', (e) => {
-    const target = e.target.closest('.step');
-    if (!target) return;
-    const idx = Array.from(list.children).indexOf(target);
-    if (!computeUnlocked(idx, stepsCache, loadProgress())) {
-      byId('lockedModal').showModal();
-      return;
-    }
-    navigateTo(idx);
-  });
+  stepsCache = embeddedMode ? selectModuleSteps(params.moduleId, packCache.steps) : packCache.steps;
+  buildStepper(stepsCache, embeddedMode ? stepsCache.map((s) => s.id) : role.requiredStepIds, progress);
+  if (!embeddedMode) setupDrawer();
 
-  const mobileList = byId('drawerMobile');
-  if (mobileList) {
-    mobileList.innerHTML = list.innerHTML;
-    mobileList.addEventListener('click', (e) => {
-      const t = e.target.closest('.step');
-      if (!t) return;
-      const idx = Array.from(mobileList.children).indexOf(t);
+  if (!embeddedMode) {
+    const list = byId('stepList');
+    list.addEventListener('click', (e) => {
+      const target = e.target.closest('.step');
+      if (!target) return;
+      const idx = Array.from(list.children).indexOf(target);
       if (!computeUnlocked(idx, stepsCache, loadProgress())) {
         byId('lockedModal').showModal();
         return;
       }
       navigateTo(idx);
-      byId('drawerOverlay').classList.remove('open');
-      byId('drawerMobile').classList.remove('open');
     });
+
+    const mobileList = byId('drawerMobile');
+    if (mobileList) {
+      mobileList.innerHTML = list.innerHTML;
+      mobileList.addEventListener('click', (e) => {
+        const t = e.target.closest('.step');
+        if (!t) return;
+        const idx = Array.from(mobileList.children).indexOf(t);
+        if (!computeUnlocked(idx, stepsCache, loadProgress())) {
+          byId('lockedModal').showModal();
+          return;
+        }
+        navigateTo(idx);
+        byId('drawerOverlay').classList.remove('open');
+        byId('drawerMobile').classList.remove('open');
+      });
+    }
   }
 
-  const initialIndex = stepsCache.findIndex((s) => !isStepCompleted(s, progress)) === -1 ? 0 : stepsCache.findIndex((s) => !isStepCompleted(s, progress));
+  const initialIndex = embeddedMode
+    ? initialStepIndex(params.moduleId, progress, params.resume)
+    : (stepsCache.findIndex((s) => !isStepCompleted(s, progress)) === -1 ? 0 : stepsCache.findIndex((s) => !isStepCompleted(s, progress)));
   navigateTo(initialIndex >= 0 ? initialIndex : 0);
   ensureCompletionState(stepsCache, progress, packCache);
 
-  byId('closeModal')?.addEventListener('click', () => byId('lockedModal').close());
-  byId('resetProgress')?.addEventListener('click', () => {
-    byId('confirmReset').showModal();
+  if (!embeddedMode) {
+    byId('closeModal')?.addEventListener('click', () => byId('lockedModal').close());
+    byId('resetProgress')?.addEventListener('click', () => {
+      byId('confirmReset').showModal();
+    });
+    byId('confirmResetYes')?.addEventListener('click', () => {
+      resetProgress();
+      window.location.href = 'role.html';
+    });
+    byId('confirmResetNo')?.addEventListener('click', () => byId('confirmReset').close());
+  }
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const msg = event.data || {};
+    if (msg.type === 'CSIR_LOAD_STEP' && msg.moduleId) {
+      loadEmbeddedModuleTraining(msg.moduleId, msg.resume === true || msg.resume === '1');
+    }
   });
-  byId('confirmResetYes')?.addEventListener('click', () => {
-    resetProgress();
-    window.location.href = 'role.html';
-  });
-  byId('confirmResetNo')?.addEventListener('click', () => byId('confirmReset').close());
+
+  if (embeddedMode) {
+    window.parent?.postMessage({ type: 'CSIR_RUNTIME_READY' }, window.location.origin);
+  }
 }
 
 window.addEventListener('DOMContentLoaded', initCourseRunner);
