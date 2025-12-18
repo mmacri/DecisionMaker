@@ -10,20 +10,15 @@
   <header class="header">
     <div class="header-inner">
       <div class="brand"><img src="assets/logo.svg" alt="SCL">SCL OT CSIR Training</div>
-      <nav class="top-nav">
-        <a href="#home">Home / Start</a>
-        <a href="player.html">Open course player</a>
-      </nav>
-      <div class="footer-actions">
-        <a class="button ghost" href="../index.html">Training home</a>
-        <button id="switchRole" class="button secondary">Switch role</button>
-        <a class="button" id="enterTrainingNav" href="player.html">Open course player</a>
+      <div class="footer-actions" style="gap:12px;">
+        <a class="button ghost" href="index.html">Back to Launcher</a>
+        <a class="button secondary" href="learn.html">Start Training</a>
       </div>
     </div>
   </header>
 
   <main class="container layout-shell">
-    <section class="panel card mode-selector" style="margin-bottom:16px;">
+    <section class="panel card" style="margin-bottom:16px;">
       <div class="pill">Choose your training mode</div>
       <div class="grid two">
         <div class="mode-card primary-mode">
@@ -34,7 +29,7 @@
             <li>Locked sequence keeps you on track for the exam.</li>
             <li>Earn a downloadable certificate after passing.</li>
           </ul>
-          <a class="button" href="player.html?track=csir-cert&m=1&s=1">Start Certification Mode</a>
+          <a class="button" href="learn.html?track=csir-cert&m=1&s=1">Start Certification Mode</a>
         </div>
         <div class="mode-card secondary-mode">
           <h2>Interactive Mode (Deep Dive)</h2>
@@ -44,11 +39,11 @@
             <li>Manual completion gating avoids out-of-order steps.</li>
             <li>Jump back to the fast track anytime.</li>
           </ul>
-          <a class="button secondary" href="player.html?track=csir-interactive">Start Interactive Mode</a>
+          <a class="button secondary" href="learn.html?track=csir-interactive">Start Interactive Mode</a>
         </div>
       </div>
       <div class="footer-actions" style="margin-top:12px;">
-        <a class="button ghost" href="player.html?resume=1">Resume where I left off</a>
+        <a class="button ghost" href="learn.html?resume=1">Resume where I left off</a>
       </div>
     </section>
 
@@ -85,25 +80,42 @@
           </ul>
           <div class="banner" style="margin-top:14px;">Certification: complete Modules 1–6, pass the Module 7 exam (≥80% overall and classification/reporting ≥70%), and complete at least one full Module 6 scenario.</div>
           <div class="footer-actions">
-            <a class="button" id="enterTrainingHero" href="player.html?module=m1">Start Module 1</a>
-            <a class="button secondary" href="player.html">Open Course Player</a>
-            <a class="button ghost" id="resumeLink" href="player.html" style="display:none;">Resume</a>
+            <a class="button" id="enterTrainingHero" href="learn.html?start=1">Start Module 1</a>
+            <a class="button secondary" href="learn.html">Open Course Player</a>
+            <a class="button ghost" id="resumeLink" href="learn.html?resume=1" style="display:none;">Resume</a>
           </div>
-          <div class="module-rail" id="moduleRail" aria-label="CSIR modules progress"></div>
         </div>
-        <div class="hero-graphic">
-          <div class="shield"></div>
-          <div class="ot-node substation">Substation</div>
-          <div class="ot-node plant">Generation</div>
-          <div class="ot-node control">Control Center</div>
-          <div class="ot-node comms">Comms Link</div>
-          <div class="ot-link link-a"></div>
-          <div class="ot-link link-b"></div>
-          <div class="ot-link link-c"></div>
-          <div class="legend">
-            <div class="pill">OT landscape under CSIR shield</div>
-            <p class="small">Substations, generation, control center, and communications paths stay protected by the CSIR workflow.</p>
+        <div class="workflow-summary">
+          <div class="pill">CSIR workflow spine</div>
+          <h3 class="section-title" style="margin:4px 0;">Preparation → Identification → Investigation → Response → Recovery → Follow-up</h3>
+          <p class="section-sub" style="margin-bottom:6px;">Every module maps to one of the six phases. Start at the left and move right with a single, continuous runbook.</p>
+          <div class="workflow-track">
+            <div class="workflow-phase">
+              <strong>Preparation</strong>
+              <p>Keep plans current, confirm monitoring/logging, and stage backups/images.</p>
+            </div>
+            <div class="workflow-phase">
+              <strong>Identification</strong>
+              <p>Spot signals fast, classify, and notify the right leads.</p>
+            </div>
+            <div class="workflow-phase">
+              <strong>Investigation</strong>
+              <p>Confirm severity, assess scope, and align roles before acting.</p>
+            </div>
+            <div class="workflow-phase">
+              <strong>Response</strong>
+              <p>Contain, eradicate, and document actions with approvals.</p>
+            </div>
+            <div class="workflow-phase">
+              <strong>Recovery</strong>
+              <p>Restore safely, validate systems, and prevent recurrence.</p>
+            </div>
+            <div class="workflow-phase">
+              <strong>Follow-up</strong>
+              <p>Capture lessons learned, finalize reporting, and update the plan.</p>
+            </div>
           </div>
+          <div class="workflow-meta">You are guided step-by-step. Locked steps keep the workflow aligned and traceable.</div>
         </div>
       </div>
 
@@ -156,7 +168,7 @@
           </div>
         </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m1">Start this module</a>
+          <a class="button start-module" href="learn.html?module=1">Start this module in Training</a>
         </div>
       </div>
 
@@ -186,7 +198,7 @@
         <div class="grid two">
           <div>
             <h3>Communications flow</h3>
-            <p>Internal notifications move from local OT teams to Incident Commander and Technical Lead, with ECS and Compliance coordinating regulatory messaging. Severe or Tier 1/AtC cases escalate to City IMT and external agencies (E‑ISAC, CISA/NCCIC, regulators).</p>
+            <p>Internal notifications move from local OT teams to Incident Commander and Technical Lead, with ECS and Compliance coordinating regulatory messaging. Severe or Tier 1/AtC cases escalate to City IMT and external agencies (E-ISAC, CISA/NCCIC, regulators).</p>
             <div class="rings">
               <div class="ring inner">Dispatchers • Field Ops • Engineering • System Owners</div>
               <div class="ring middle">Incident Commander • Technical Lead • ECS • CSIR Team • NERC‑CIP</div>
@@ -205,8 +217,11 @@
             </div>
           </div>
         </div>
+        <div id="escalation" class="banner" style="margin-top:12px;">
+          Tier 1 and AtC notifications route up through the CSIR plan’s incident bridge, Incident Commander, and City IMT escalations before regulators are notified.
+        </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m2">Start this module</a>
+          <a class="button start-module" href="learn.html?module=2">Start this module in Training</a>
         </div>
       </div>
 
@@ -227,17 +242,15 @@
               <p class="small">Shows how terms overlap as impact and reportability rise.</p>
             </div>
             <h3>Incident categories</h3>
-            <p class="small">Select a threat slice to see an OT-specific example.</p>
-            <div class="threat-wheel" role="list" aria-label="Incident categories with OT examples">
-              <button class="threat-segment" data-example="Spyware on engineering workstation used for relay configs." role="listitem">Malicious Code</button>
-              <button class="threat-segment" data-example="Breach of substation jump host account from unknown source." role="listitem">Intrusion</button>
-              <button class="threat-segment" data-example="Flooding firewall interface that disrupts SCADA polling." role="listitem">Denial of Service</button>
-              <button class="threat-segment" data-example="Port scan against RTU gateway during off-hours." role="listitem">Reconnaissance</button>
-              <button class="threat-segment" data-example="Privilege escalation on OT admin account." role="listitem">Unauthorized Access</button>
-              <button class="threat-segment" data-example="Phishing text asking for engineering VPN credentials." role="listitem">Phishing</button>
-              <button class="threat-segment" data-example="Safety system anomaly or social engineering not captured elsewhere." role="listitem">Other</button>
-            </div>
-            <div id="threatDetail" class="alert" aria-live="polite">Select a category to view an example.</div>
+            <ul class="list">
+              <li>Malicious Code</li>
+              <li>Intrusion Incident</li>
+              <li>Denial of Service</li>
+              <li>Reconnaissance</li>
+              <li>Unauthorized Access</li>
+              <li>Phishing</li>
+              <li>Other</li>
+            </ul>
           </div>
           <div>
             <h3>Severity levels</h3>
@@ -253,7 +266,7 @@
           </div>
         </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m3">Start this module</a>
+          <a class="button start-module" href="learn.html?module=3">Start this module in Training</a>
         </div>
       </div>
 
@@ -296,7 +309,7 @@
           </div>
         </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m4">Start this module</a>
+          <a class="button start-module" href="learn.html?module=4">Start this module in Training</a>
         </div>
       </div>
 
@@ -340,7 +353,7 @@
           </div>
         </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m5">Start this module</a>
+          <a class="button start-module" href="learn.html?module=5">Start this module in Training</a>
         </div>
       </div>
 
@@ -374,7 +387,7 @@
           </div>
         </div>
         <div class="footer-actions">
-          <a class="button start-module" href="player.html?module=m6">Start this module</a>
+          <a class="button start-module" href="learn.html?module=6">Start this module in Training</a>
         </div>
       </div>
 
@@ -398,8 +411,8 @@
               <li>On pass: display “CSIR Training Completed,” log date/score, unlock downloadable certificate.</li>
             </ul>
             <div class="footer-actions">
-              <a class="button start-module" href="player.html?module=m7">Start this module</a>
-              <a class="button secondary" href="player.html?module=m7&step=2">View certificate</a>
+              <a class="button start-module" href="learn.html?module=7">Start this module in Training</a>
+              <a class="button secondary" href="learn.html?module=7&step=2">View certificate</a>
             </div>
           </div>
         </div>

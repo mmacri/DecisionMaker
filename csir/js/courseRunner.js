@@ -115,15 +115,33 @@ function interactionResult(step, progress) {
   return `<div class="result">Score: ${existing.score}/${existing.total} (${existing.percent}%)${existing.passed ? ' • Passed' : ''}</div>`;
 }
 
+function normalizeModuleParam(value) {
+  if (!value) return null;
+  const candidate = value.toString().trim().toLowerCase();
+  if (/^m[1-7]$/.test(candidate)) return candidate;
+  if (/^[1-7]$/.test(candidate)) return `m${candidate}`;
+  return null;
+}
+
+function getModuleStartIndex(moduleId, steps) {
+  const lookup = EMBEDDED_MODULE_STEPS[moduleId] || [];
+  if (!lookup.length) return -1;
+  const firstStep = lookup[0];
+  return steps.findIndex((s) => s.id === firstStep);
+}
+
 function getSearchParams() {
   const params = new URLSearchParams(window.location.search);
+  const moduleParam = normalizeModuleParam(params.get('module'));
   return {
-    moduleId: params.get('module') || 'm1',
+    moduleId: moduleParam || 'm1',
+    requestedModule: moduleParam,
     stepId: params.get('step') || 's2',
     role: params.get('role'),
     mode: params.get('mode'),
     exam: params.get('exam') === '1',
     resume: params.get('resume') === '1',
+    start: params.get('start') === '1',
   };
 }
 
@@ -549,9 +567,12 @@ async function initCourseRunner() {
     }
   }
 
+  const firstIncomplete = stepsCache.findIndex((s) => !isStepCompleted(s, progress));
+  const moduleOverride = params.requestedModule || (params.start ? 'm1' : null);
+  const moduleStartIndex = !embeddedMode && moduleOverride ? getModuleStartIndex(moduleOverride, stepsCache) : -1;
   const initialIndex = embeddedMode
     ? initialStepIndex(params.moduleId, progress, params.resume)
-    : (stepsCache.findIndex((s) => !isStepCompleted(s, progress)) === -1 ? 0 : stepsCache.findIndex((s) => !isStepCompleted(s, progress)));
+    : (moduleStartIndex >= 0 ? moduleStartIndex : (firstIncomplete === -1 ? 0 : firstIncomplete));
   navigateTo(initialIndex >= 0 ? initialIndex : 0);
   ensureCompletionState(stepsCache, progress, packCache);
 

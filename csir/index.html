@@ -7,166 +7,66 @@
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/index-launcher.css">
 </head>
-<body class="page">
+<body class="page launcher">
   <header class="header">
     <div class="header-inner">
       <div class="brand">
         <img src="assets/logo.svg" alt="SCL">
         <span>Seattle City Light – OT CSIR Training</span>
       </div>
-      <nav class="top-nav">
-        <a href="curriculum.html">Curriculum Overview</a>
-        <a href="my-learning.html">My Learning</a>
-        <a href="#help">Help</a>
-      </nav>
+      <div class="footer-actions header-cta">
+        <a class="button" href="learn.html?start=1">Resume Training</a>
+        <a class="button secondary" href="curriculum.html">Course Map / Curriculum</a>
+        <a class="button secondary" href="my-learning.html">My Learning</a>
+        <a class="button ghost" href="resources.html">Help / Audit Etiquette</a>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <section class="panel card hero">
-      <div>
-        <p class="pill">Mission control</p>
-        <h1>Launch the guided CSIR experience from this page</h1>
-        <p class="hero-subtitle">Choose a mode, complete the role-aware walkthroughs, and certify your readiness for OT incident response.</p>
-        <ul class="hero-list">
-          <li>Understand CSIR scope, roles, and communications.</li>
-          <li>Practice threats with locked progression and micro-checks.</li>
-          <li>Pass the exam to earn the downloadable certificate.</li>
-        </ul>
-        <div class="footer-actions hero-actions">
-          <a class="button" href="player.html?track=csir-cert&m=1&s=1">Start Certification (recommended)</a>
-          <a class="button secondary" href="player.html?track=csir-interactive">Start Interactive (deep dive)</a>
-          <a class="button ghost" href="player.html?resume=1">Resume where I left off</a>
-        </div>
+  <main class="container launcher-shell">
+    <section class="panel card hero-brief">
+      <p class="pill">Mission control</p>
+      <h1>SCL OT Cyber Security Incident Response (CSIR) Training</h1>
+      <p class="hero-subtitle">Guided, role-aware training shaped by the Seattle City Light CSIR plan for OT cyber assets and the people who defend them.</p>
+      <div class="hero-grid">
+        <article class="hero-card primary-card">
+          <h3>Start Guided Training</h3>
+          <p>Follow the recommended certification path with locked modules, knowledge checks, and the exam gate that issues your certificate.</p>
+          <a class="button" href="learn.html?start=1">Start Guided Training</a>
+        </article>
+        <article class="hero-card secondary-card">
+          <h3>Select / Change Role</h3>
+          <p>Pick the role that matches your responsibilities so scenarios and callouts stay relevant.</p>
+          <a class="button secondary" href="role.html">Select / Change Role</a>
+        </article>
+        <article class="hero-card secondary-card">
+          <h3>How Certification Works</h3>
+          <p>Modules unlock in order, knowledge checks gate progress, and the final exam unlocks both the checklist and certificate.</p>
+          <a class="button ghost" href="#cert-info">See certification flow</a>
+        </article>
       </div>
     </section>
 
-    <section class="panel card mode-grid">
-      <article class="mode-card">
-        <h2>Certification Mode (Fast Track)</h2>
-        <p>Linear modules, knowledge checks per topic, and a wrap-up exam that issues a certificate.</p>
-        <ul class="list-tight">
-          <li>Seven concise modules with guided summaries.</li>
-          <li>Locked sequence keeps you focused on the exam path.</li>
-          <li>Passing score unlocks the downloadable certificate.</li>
-        </ul>
-      </article>
-      <article class="mode-card">
-        <h2>Interactive Mode (Deep Dive)</h2>
-        <p>Full runtime experience with additional drills, manual completion gating, and scenario-rich prompts.</p>
-        <ul class="list-tight">
-          <li>Embeds the full fifteen-step runtime.</li>
-          <li>Manual “done” controls keep modules orderly.</li>
-          <li>Switch back to the fast track anytime.</li>
-        </ul>
-      </article>
+    <section class="panel card rules-card">
+      <h3>Certification rules</h3>
+      <p>Complete modules in order → pass knowledge checks → unlock the final exam → download your certificate.</p>
+      <p class="small">Certificate is downloadable immediately after passing the final assessment with the required minimums.</p>
     </section>
 
-    <section class="panel card steps-strip">
-      <h3>How this works</h3>
-      <div class="steps">
-        <div class="step">
-          <strong>1. Pick your mode</strong>
-          <p>Choose certification or interactive based on the depth you need.</p>
-        </div>
-        <div class="step">
-          <strong>2. Complete modules</strong>
-          <p>Work through the locked sequence, knowledge checks, and scenarios.</p>
-        </div>
-        <div class="step">
-          <strong>3. Pass exam</strong>
-          <p>A good score unlocks the certificate and checklist.</p>
-        </div>
-        <div class="step">
-          <strong>4. Download certificate</strong>
-          <p>Capture your name, role, and completion details.</p>
-        </div>
-      </div>
+    <section class="panel card red-phone">
+      <h3>Red Phone</h3>
+      <p>If an incident needs immediate escalation, follow the CSIR response path in the Curriculum Overview.</p>
+      <a class="button ghost" href="curriculum.html#escalation">Escalation &amp; incident bridge</a>
     </section>
 
-    <section class="panel card modules-accordion">
-      <div class="modules-header">
-        <div>
-          <h3>Minimal course outline</h3>
-          <p class="content-note">All detailed module content, visuals, and references remain available in Curriculum Overview.</p>
-        </div>
+    <section id="cert-info" class="panel card certification-info">
+      <h3>How certification works</h3>
+      <div class="cert-flow">
+        <span>1. Pick your mode (certification or interactive)</span>
+        <span>2. Complete the locked modules + knowledge checks</span>
+        <span>3. Pass the final exam (80% overall / 70% reporting)</span>
+        <span>4. Download your certificate and checklist</span>
       </div>
-      <div class="accordion">
-        <details>
-          <summary>
-            <span>Module 1 – CSIR Overview</span>
-          </summary>
-          <p>Purpose, goals, scope, and assumptions that keep the CSIR plan operational.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=1&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=1&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 2 – Roles, Responsibilities, Communications</span></summary>
-          <p>Review CSIR roles, responsibilities, and tiered communications.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=2&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=2&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 3 – Terminology, Classification, Severity</span></summary>
-          <p>Define events, incidents, AtCs, and severity levels that drive reporting.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=3&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=3&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 4 – Workflow by Phase</span></summary>
-          <p>Walk through the six-phase CSIR workflow and swimlane responsibilities.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=4&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=4&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 5 – Reporting &amp; Documentation</span></summary>
-          <p>Reporting decision tree, documentation checklist, and retention expectations.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=5&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=5&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 6 – OT Scenarios &amp; Drills</span></summary>
-          <p>Hands-on scenario practice with scoring focused on classification, reporting, and evidence.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=6&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=6&s=1">Start in Interactive</a>
-          </div>
-        </details>
-        <details>
-          <summary><span>Module 7 – Certification Exam</span></summary>
-          <p>Objective exam plus mini-scenarios; pass with at least 80% overall and 70% reporting.</p>
-          <div class="module-actions">
-            <a class="button small" href="player.html?track=csir-cert&m=7&s=1">Start in Certification</a>
-            <a class="button secondary small" href="player.html?track=csir-interactive&m=7&s=1">Start in Interactive</a>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <section class="panel card curriculum-cta">
-      <p>Need the full curriculum? All module descriptions, workflows, and hero graphics remain available in the Curriculum Overview.</p>
-      <div class="footer-actions">
-        <a class="button" href="curriculum.html">Open Full Curriculum Overview</a>
-      </div>
-    </section>
-
-    <section id="help" class="panel card faq">
-      <h3>Help &amp; FAQ</h3>
-      <ul>
-        <li><strong>Curriculum Overview:</strong> Contains the long-form hero, modules, and role-aware copy.</li>
-        <li><strong>Interactive vs Certification:</strong> Interactive unlocks every drill; certification keeps a locked path to the exam.</li>
-        <li><strong>Need support?</strong> Reach out to your OT training coordinator for role assignment or browser assistance.</li>
-      </ul>
     </section>
   </main>
 </body>
