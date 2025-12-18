@@ -20,6 +20,23 @@
     body.embed-mode #drawerMobile {
       display: none !important;
     }
+
+    body.embedded .header,
+    body.embedded .drawer-toggle,
+    body.embedded #backToCurriculum,
+    body.embedded #resetProgress,
+    body.embedded #completionBanner,
+    body.embedded .sidebar,
+    body.embedded #drawerMobile,
+    body.embedded .progress,
+    body.embedded .banner,
+    body.embedded .footer-actions .button.secondary,
+    body.embedded .footer-actions .button.ghost {
+      display: none !important;
+    }
+    body.embedded .app-layout {
+      grid-template-columns: 1fr !important;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -30,6 +47,9 @@
       const params = new URLSearchParams(window.location.search);
       if (params.get('embed') === '1') {
         document.body.classList.add('embed-mode');
+      }
+      if (params.get('mode') === 'embedded') {
+        document.body.classList.add('embedded');
       }
     })();
   </script>

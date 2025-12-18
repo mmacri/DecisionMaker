@@ -14,6 +14,17 @@ const modules = window.CSIR_PLAYER?.modules || [];
 const moduleRegistry = new Map(modules.map((m) => [m.id, m]));
 const stepRegistry = new Map();
 const CURRICULUM = window.CSIR_CURRICULUM || [];
+const ALLOWED_ORIGINS = [window.location.origin, 'http://localhost:3000', 'http://127.0.0.1:5500'];
+
+function buildRuntimeUrl({ moduleId, stepId, role, exam }) {
+  const url = new URL('learn.html', window.location.href);
+  url.searchParams.set('module', moduleId);
+  url.searchParams.set('step', stepId);
+  url.searchParams.set('role', role || 'all-staff');
+  url.searchParams.set('mode', 'embedded');
+  if (exam) url.searchParams.set('exam', '1');
+  return url.toString();
+}
 
 modules.forEach((module) => {
   module.steps.forEach((step) => {
@@ -46,6 +57,11 @@ function getCourseSteps(moduleId) {
 
 function getCourseStep(moduleId, stepId) {
   return getCourseSteps(moduleId).find((s) => s.id === stepId);
+}
+
+function getCurrentStep() {
+  const content = qs('#stepContent');
+  return { moduleId: content?.dataset.moduleId, stepId: content?.dataset.stepId };
 }
 
 function sequenceIndex(moduleId, stepId) {
@@ -116,14 +132,10 @@ async function loadOverview(moduleId) {
   return html;
 }
 
-function runtimeSrc(step) {
-  if (step.runtimeTarget?.kind === 'page') {
-    const hasQuery = step.runtimeTarget.value.includes('?');
-    const joiner = hasQuery ? '&' : '?';
-    return `${step.runtimeTarget.value}${joiner}embed=1`;
-  }
-  const hash = step.runtimeTarget?.value || '';
-  return `learn.html?embed=1${hash}`;
+function runtimeSrc(step, moduleId) {
+  const role = localStorage.getItem('scl_csir_role') || 'all-staff';
+  const exam = moduleId === 'm7';
+  return buildRuntimeUrl({ moduleId, stepId: step.id, role, exam });
 }
 
 function moduleState(moduleId) {
@@ -230,6 +242,27 @@ function setNextEnabled(step, force = null) {
   next.disabled = !enabled;
 }
 
+function unlockNext() {
+  const { moduleId, stepId } = getCurrentStep();
+  const { registryStep } = resolveStep(moduleId, stepId);
+  setNextEnabled(registryStep, true);
+}
+
+function postRuntimeLoadCurrent() {
+  const frame = qs('#runtimeFrame');
+  if (!frame?.contentWindow) return;
+  const current = getCurrentStep();
+  if (!current.moduleId || !current.stepId) return;
+  const payload = {
+    type: 'CSIR_LOAD_STEP',
+    moduleId: current.moduleId,
+    stepId: current.stepId,
+    role: localStorage.getItem('scl_csir_role'),
+    mode: 'embedded',
+  };
+  frame.contentWindow.postMessage(payload, window.location.origin);
+}
+
 async function renderStep(moduleId, stepId) {
   const { registryModule: module, registryStep: step, stepIndex } = resolveStep(moduleId, stepId);
   if (!module || !step || stepIndex < 0) return;
@@ -263,17 +296,50 @@ async function renderStep(moduleId, stepId) {
   if (step.type === 'runtime') {
     runtimeContainer.innerHTML = '<p class="small">Training content runs inside the player. If loading takes more than a few seconds, refresh or reopen this module.</p><iframe id="runtimeFrame" title="CSIR runtime"></iframe>';
     const frame = qs('#runtimeFrame');
-    if (frame) frame.src = runtimeSrc(step);
+    if (frame) {
+      frame.src = runtimeSrc(step, moduleId);
+      frame.onload = () => postRuntimeLoadCurrent();
+    }
   }
 
   content.dataset.moduleId = moduleId;
   content.dataset.stepId = stepId;
   content.dataset.stepIndex = stepIndex;
+  setCurrent(moduleId, stepId);
   updateProgressUi(moduleId, stepIndex);
   updateStepperButtons(moduleId, stepIndex);
   setNextEnabled(step);
   renderCourseMap(moduleId);
   window.location.hash = `#${stepId}`;
+}
+
+function handleRuntimeMessage(event) {
+  if (!ALLOWED_ORIGINS.includes(event.origin)) return;
+  const msg = event.data || {};
+  if (!msg.type) return;
+
+  switch (msg.type) {
+    case 'CSIR_RUNTIME_READY':
+      postRuntimeLoadCurrent();
+      break;
+    case 'CSIR_STEP_COMPLETE': {
+      const currentModuleId = msg.moduleId || qs('#stepContent')?.dataset.moduleId;
+      const currentStepId = msg.stepId || qs('#stepContent')?.dataset.stepId;
+      if (currentModuleId && currentStepId) {
+        markStepComplete(currentModuleId, currentStepId);
+        unlockNext();
+      }
+      break;
+    }
+    case 'CSIR_MODULE_COMPLETE':
+      if (msg.moduleId) markModuleComplete(msg.moduleId);
+      break;
+    case 'CSIR_PROGRESS_UPDATE':
+      renderCourseMap(getCurrentStep().moduleId);
+      break;
+    default:
+      break;
+  }
 }
 
 function lockedExamAttempt(targetModuleId) {
@@ -359,18 +425,7 @@ function bindEvents() {
   qs('#exitTraining')?.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
-  window.addEventListener('message', (event) => {
-    if (event.origin !== window.location.origin) return;
-    const msg = event.data || {};
-    if (msg.type === 'CSIR_STEP_COMPLETE') {
-      const currentModuleId = msg.moduleId || qs('#stepContent')?.dataset.moduleId;
-      const currentStepId = msg.stepId || qs('#stepContent')?.dataset.stepId;
-      if (currentModuleId && currentStepId) {
-        markStepComplete(currentModuleId, currentStepId);
-        navigateNext(currentModuleId, currentStepId);
-      }
-    }
-  });
+  window.addEventListener('message', handleRuntimeMessage);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
