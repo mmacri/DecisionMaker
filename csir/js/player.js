@@ -3,16 +3,17 @@ import {
   getProgress,
   setCurrent,
   markStepComplete,
-  markModuleComplete,
   canAccessModule,
   canStartExam,
   moduleSteps,
   totalModulesCompleted,
+  getNext,
 } from './player-state.js';
 
 const modules = window.CSIR_PLAYER?.modules || [];
 const moduleRegistry = new Map(modules.map((m) => [m.id, m]));
 const stepRegistry = new Map();
+const CURRICULUM = window.CSIR_CURRICULUM || [];
 
 modules.forEach((module) => {
   module.steps.forEach((step) => {
@@ -20,117 +21,84 @@ modules.forEach((module) => {
   });
 });
 
-const COURSE = [
-  {
-    moduleId: 'm1',
-    title: 'Module 1 — CSIR Overview',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm1s1' },
-      { stepId: 2, type: 'runtime', key: 'm1s2' },
-    ],
-  },
-  {
-    moduleId: 'm2',
-    title: 'Module 2 — Roles, Responsibilities, Communications',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm2s1' },
-      { stepId: 2, type: 'runtime', key: 'm2s2' },
-    ],
-  },
-  {
-    moduleId: 'm3',
-    title: 'Module 3 — Terminology, Classification, Severity',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm3s1' },
-      { stepId: 2, type: 'runtime', key: 'm3s2' },
-    ],
-  },
-  {
-    moduleId: 'm4',
-    title: 'Module 4 — Workflow by Phase',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm4s1' },
-      { stepId: 2, type: 'runtime', key: 'm4s2' },
-    ],
-  },
-  {
-    moduleId: 'm5',
-    title: 'Module 5 — Reporting & Documentation',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm5s1' },
-      { stepId: 2, type: 'runtime', key: 'm5s2' },
-    ],
-  },
-  {
-    moduleId: 'm6',
-    title: 'Module 6 — OT Scenarios & Drills',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm6s1' },
-      { stepId: 2, type: 'runtime', key: 'm6s2' },
-    ],
-  },
-  {
-    moduleId: 'm7',
-    title: 'Module 7 — Exam + Certification',
-    steps: [
-      { stepId: 1, type: 'overview', key: 'm7s1' },
-      { stepId: 2, type: 'runtime', key: 'm7s2' },
-      { stepId: 3, type: 'runtime', key: 'm7s3' },
-    ],
-  },
-];
-
-COURSE.forEach((courseModule) => {
-  if (!moduleRegistry.has(courseModule.moduleId)) {
-    // eslint-disable-next-line no-console
-    console.warn(`Course module ${courseModule.moduleId} missing from registry`);
-  }
-  courseModule.steps.forEach((step) => {
-    if (!stepRegistry.has(step.key)) {
-      // eslint-disable-next-line no-console
-      console.warn(`Course step ${step.key} missing from registry`);
-    }
-  });
-});
+const LINEAR_SEQUENCE = CURRICULUM.flatMap((module) => module.steps.map((stepId) => ({ moduleId: module.moduleId, stepId })));
 const partialCache = {};
 
 function qs(sel) {
   return document.querySelector(sel);
 }
 
-function getCourseModule(moduleId) {
-  return COURSE.find((m) => m.moduleId === moduleId);
+function getModuleSequence(moduleId) {
+  return CURRICULUM.find((m) => m.moduleId === moduleId)?.steps || [];
 }
 
 function getCourseModuleIndex(moduleId) {
-  return COURSE.findIndex((m) => m.moduleId === moduleId);
+  return CURRICULUM.findIndex((m) => m.moduleId === moduleId);
 }
 
 function getCourseSteps(moduleId) {
-  return getCourseModule(moduleId)?.steps || [];
+  const module = moduleRegistry.get(moduleId);
+  const sequence = getModuleSequence(moduleId);
+  if (!module) return sequence.map((id) => ({ id, title: id }));
+  const map = new Map(module.steps.map((s) => [s.id, s]));
+  return sequence.map((id) => map.get(id)).filter(Boolean);
 }
 
 function getCourseStep(moduleId, stepId) {
-  return getCourseSteps(moduleId).find((s) => s.stepId === stepId);
+  return getCourseSteps(moduleId).find((s) => s.id === stepId);
 }
 
-function getCourseStepFromIndex(moduleId, stepIndex) {
-  const steps = getCourseSteps(moduleId);
-  return steps[stepIndex] || null;
+function sequenceIndex(moduleId, stepId) {
+  return LINEAR_SEQUENCE.findIndex((entry) => entry.moduleId === moduleId && entry.stepId === stepId);
+}
+
+function getPrevStep(moduleId, stepId) {
+  const idx = sequenceIndex(moduleId, stepId);
+  if (idx <= 0) return null;
+  return LINEAR_SEQUENCE[idx - 1];
+}
+
+function defaultStep() {
+  const firstModule = CURRICULUM[0];
+  const firstStepId = firstModule?.steps?.[0] || 'm1s1';
+  return { moduleId: firstModule?.moduleId || modules[0]?.id || 'm1', stepId: firstStepId };
+}
+
+function progressAnchor(progress) {
+  return progress.current || defaultStep();
+}
+
+function unlockedIndex(progress) {
+  const completed = progress.completedSteps || [];
+  const completedIdx = completed
+    .map((id) => {
+      const modId = stepRegistry.get(id)?.moduleId;
+      return sequenceIndex(modId, id);
+    })
+    .filter((i) => i >= 0);
+  const maxCompleted = completedIdx.length ? Math.max(...completedIdx) : -1;
+  const anchor = progressAnchor(progress);
+  const anchorIdx = sequenceIndex(anchor.moduleId, anchor.stepId);
+  return Math.max(anchorIdx, maxCompleted);
+}
+
+function clampToUnlocked(target, progress) {
+  const fallback = progressAnchor(progress);
+  const targetIdx = sequenceIndex(target.moduleId, target.stepId);
+  if (targetIdx < 0) return fallback;
+  return targetIdx <= unlockedIndex(progress) ? target : fallback;
 }
 
 function resolveStep(moduleId, stepId) {
-  const courseModule = getCourseModule(moduleId);
-  const courseStep = getCourseStep(moduleId, stepId);
+  const module = moduleRegistry.get(moduleId);
+  const step = getCourseStep(moduleId, stepId);
   const steps = getCourseSteps(moduleId);
-  const stepIndex = steps.indexOf(courseStep);
-  const registryModule = moduleRegistry.get(moduleId);
-  const registryStep = courseStep ? stepRegistry.get(courseStep.key) : null;
+  const stepIndex = steps.indexOf(step);
   return {
-    courseModule,
-    courseStep,
-    registryModule,
-    registryStep,
+    courseModule: module,
+    courseStep: step,
+    registryModule: module,
+    registryStep: step,
     stepIndex,
   };
 }
@@ -171,8 +139,8 @@ function renderCourseMap(currentId) {
   const list = qs('#courseMap');
   list.innerHTML = '';
   const progress = getProgress();
-  COURSE.forEach((courseModule, idx) => {
-    const module = moduleRegistry.get(courseModule.moduleId) || courseModule;
+  CURRICULUM.forEach((courseModule, idx) => {
+    const module = moduleRegistry.get(courseModule.moduleId) || { ...courseModule, title: courseModule.moduleId };
     const li = document.createElement('li');
     li.dataset.id = courseModule.moduleId;
     const { completed, current, hasProgress } = moduleState(courseModule.moduleId);
@@ -186,10 +154,10 @@ function renderCourseMap(currentId) {
         showToast('Complete earlier modules before opening this one.');
         return;
       }
-      loadModule(courseModule.moduleId, 1);
+      loadModule(courseModule.moduleId);
     });
     list.appendChild(li);
-    if (idx === COURSE.length - 1) return;
+    if (idx === CURRICULUM.length - 1) return;
   });
 }
 
@@ -211,11 +179,10 @@ function updateProgressUi(moduleId, stepIndex) {
   const moduleTitle = qs('#moduleTitle');
   const moduleBreadcrumb = qs('#moduleBreadcrumb');
   const stepCountPill = qs('#stepCountPill');
-  const module = moduleRegistry.get(moduleId) || getCourseModule(moduleId);
-  if (!module) return;
+  const module = moduleRegistry.get(moduleId) || { id: moduleId, title: moduleId };
   const steps = getCourseSteps(moduleId);
   const completedModules = totalModulesCompleted();
-  const total = COURSE.length;
+  const total = CURRICULUM.length;
   const percent = total ? Math.round((completedModules / total) * 100) : 0;
   if (overall) {
     overall.textContent = `Overall progress: ${completedModules} of ${total} modules complete`;
@@ -239,48 +206,19 @@ function updateStepperButtons(moduleId, stepIndex) {
   const steps = getCourseSteps(moduleId);
   const isFirst = moduleIdx === 0 && stepIndex === 0;
   const isLastStep = stepIndex === steps.length - 1;
-  const isLastModule = moduleIdx === COURSE.length - 1;
+  const isLastModule = moduleIdx === CURRICULUM.length - 1;
 
   if (prev) prev.disabled = isFirst;
   if (next) {
     if (isLastModule && isLastStep) {
       next.textContent = 'Finish course';
     } else if (isLastStep) {
-      const nextModule = moduleRegistry.get(COURSE[moduleIdx + 1].moduleId) || COURSE[moduleIdx + 1];
+      const nextModule = moduleRegistry.get(CURRICULUM[moduleIdx + 1].moduleId) || CURRICULUM[moduleIdx + 1];
       next.textContent = `Continue to ${nextModule.title}`;
     } else {
       next.textContent = 'Next';
     }
   }
-}
-
-function getNextStep(moduleId, stepId) {
-  const moduleIdx = getCourseModuleIndex(moduleId);
-  if (moduleIdx < 0) return null;
-  const steps = getCourseSteps(moduleId);
-  const stepIdx = steps.findIndex((s) => s.stepId === stepId);
-  if (stepIdx < 0) return null;
-  if (stepIdx + 1 < steps.length) {
-    return { moduleId, stepId: steps[stepIdx + 1].stepId };
-  }
-  const nextModule = COURSE[moduleIdx + 1];
-  if (!nextModule) return null;
-  return { moduleId: nextModule.moduleId, stepId: nextModule.steps[0].stepId };
-}
-
-function getPrevStep(moduleId, stepId) {
-  const moduleIdx = getCourseModuleIndex(moduleId);
-  if (moduleIdx < 0) return null;
-  const steps = getCourseSteps(moduleId);
-  const stepIdx = steps.findIndex((s) => s.stepId === stepId);
-  if (stepIdx > 0) {
-    return { moduleId, stepId: steps[stepIdx - 1].stepId };
-  }
-  const prevModule = COURSE[moduleIdx - 1];
-  if (!prevModule) return null;
-  const prevSteps = getCourseSteps(prevModule.moduleId);
-  if (!prevSteps.length) return null;
-  return { moduleId: prevModule.moduleId, stepId: prevSteps[prevSteps.length - 1].stepId };
 }
 
 function setNextEnabled(step, force = null) {
@@ -323,24 +261,19 @@ async function renderStep(moduleId, stepId) {
   }
 
   if (step.type === 'runtime') {
-    if (step.id === 'm7s3' && !progress.exam?.passed) {
-      runtimeContainer.style.display = 'block';
-      runtimeContainer.innerHTML = '<div class="alert">Pass the final exam before downloading the certificate.</div>';
-    } else {
-      runtimeContainer.innerHTML = '<p class="small">Training content runs inside the player. If loading takes more than a few seconds, refresh or reopen this module.</p><iframe id="runtimeFrame" title="CSIR runtime"></iframe>';
-      const frame = qs('#runtimeFrame');
-      if (frame) frame.src = runtimeSrc(step);
-    }
+    runtimeContainer.innerHTML = '<p class="small">Training content runs inside the player. If loading takes more than a few seconds, refresh or reopen this module.</p><iframe id="runtimeFrame" title="CSIR runtime"></iframe>';
+    const frame = qs('#runtimeFrame');
+    if (frame) frame.src = runtimeSrc(step);
   }
 
   content.dataset.moduleId = moduleId;
-  content.dataset.stepId = String(stepId);
+  content.dataset.stepId = stepId;
   content.dataset.stepIndex = stepIndex;
-  setCurrent(moduleId, stepIndex);
   updateProgressUi(moduleId, stepIndex);
   updateStepperButtons(moduleId, stepIndex);
   setNextEnabled(step);
   renderCourseMap(moduleId);
+  window.location.hash = `#${stepId}`;
 }
 
 function lockedExamAttempt(targetModuleId) {
@@ -352,45 +285,46 @@ function lockedExamAttempt(targetModuleId) {
   return false;
 }
 
-function loadModule(moduleId, stepId = 1) {
+function loadModule(moduleId, stepId = null) {
   if (lockedExamAttempt(moduleId)) return;
-  renderStep(moduleId, stepId);
+  const sequence = getModuleSequence(moduleId);
+  const targetStep = stepId || sequence[0];
+  if (!targetStep) return;
+  const progress = getProgress();
+  const allowed = clampToUnlocked({ moduleId, stepId: targetStep }, progress);
+  renderStep(allowed.moduleId, allowed.stepId);
   const drawer = qs('.course-map');
   if (drawer?.classList.contains('open')) {
     toggleDrawer();
   }
 }
 
-function nextStep() {
-  const content = qs('#stepContent');
-  const moduleId = content.dataset.moduleId;
-  const stepId = Number(content.dataset.stepId || 1);
-  const { registryStep: step } = resolveStep(moduleId, stepId);
-  if (!step) return;
-  if (qs('#nextStep')?.disabled) return;
-
-  markStepComplete(step.id);
-
-  const steps = getCourseSteps(moduleId);
-  const stepIdx = steps.findIndex((s) => s.stepId === stepId);
-  const isLastStep = stepIdx === steps.length - 1;
-  if (isLastStep) {
-    markModuleComplete(moduleId);
-  }
-
-  const next = getNextStep(moduleId, stepId);
+function navigateNext(moduleId, stepId) {
+  const next = getNext(moduleId, stepId);
   if (next) {
     if (lockedExamAttempt(next.moduleId)) return;
     renderStep(next.moduleId, next.stepId);
     return;
   }
-  showToast('Course complete.');
+  window.location.href = 'certificate.html';
+}
+
+function nextStep() {
+  const content = qs('#stepContent');
+  const moduleId = content.dataset.moduleId;
+  const stepId = content.dataset.stepId;
+  const { registryStep: step } = resolveStep(moduleId, stepId);
+  if (!step) return;
+  if (qs('#nextStep')?.disabled) return;
+
+  markStepComplete(moduleId, step.id);
+  navigateNext(moduleId, step.id);
 }
 
 function prevStep() {
   const content = qs('#stepContent');
   const moduleId = content.dataset.moduleId;
-  const stepId = Number(content.dataset.stepId || 1);
+  const stepId = content.dataset.stepId;
   const prev = getPrevStep(moduleId, stepId);
   if (prev) renderStep(prev.moduleId, prev.stepId);
 }
@@ -409,6 +343,14 @@ function syncRolePill() {
   if (pill) pill.textContent = role ? `Role: ${role}` : 'Role not set';
 }
 
+function startFromHash(progress) {
+  const hashStepId = window.location.hash ? window.location.hash.slice(1) : '';
+  if (!hashStepId) return null;
+  const moduleId = stepRegistry.get(hashStepId)?.moduleId;
+  if (!moduleId) return null;
+  return clampToUnlocked({ moduleId, stepId: hashStepId }, progress);
+}
+
 function bindEvents() {
   qs('#nextStep')?.addEventListener('click', nextStep);
   qs('#prevStep')?.addEventListener('click', prevStep);
@@ -418,19 +360,14 @@ function bindEvents() {
     window.location.href = 'index.html';
   });
   window.addEventListener('message', (event) => {
-    if (event.data?.type === 'CSIR_STEP_COMPLETE') {
-      const currentModuleId = qs('#stepContent').dataset.moduleId;
-      const eventModuleId = event.data.moduleId || currentModuleId;
-      const eventStepId = Number(event.data.stepId);
-      const courseStep = (!Number.isNaN(eventStepId) && eventModuleId) ? getCourseStep(eventModuleId, eventStepId) : null;
-      const registryStepId = courseStep?.key || (typeof event.data.stepId === 'string' ? event.data.stepId : null);
-      if (registryStepId) {
-        markStepComplete(registryStepId);
-        renderCourseMap(currentModuleId);
-        const activeStepId = Number(qs('#stepContent').dataset.stepId || 1);
-        const resolved = resolveStep(currentModuleId, activeStepId);
-        if (resolved?.registryStep) setNextEnabled(resolved.registryStep, true);
-        updateProgressUi(currentModuleId, Number(qs('#stepContent').dataset.stepIndex || 0));
+    if (event.origin !== window.location.origin) return;
+    const msg = event.data || {};
+    if (msg.type === 'CSIR_STEP_COMPLETE') {
+      const currentModuleId = msg.moduleId || qs('#stepContent')?.dataset.moduleId;
+      const currentStepId = msg.stepId || qs('#stepContent')?.dataset.stepId;
+      if (currentModuleId && currentStepId) {
+        markStepComplete(currentModuleId, currentStepId);
+        navigateNext(currentModuleId, currentStepId);
       }
     }
   });
@@ -441,17 +378,13 @@ window.addEventListener('DOMContentLoaded', () => {
   bindEvents();
   syncRolePill();
   const progress = getProgress();
-  const params = new URLSearchParams(window.location.search);
-  const requestedModule = params.get('module');
-  const requestedStepIndex = Number(params.get('step'));
-  const firstModuleId = COURSE[0]?.moduleId || modules[0]?.id;
-  const startModule = (requestedModule && canAccessModule(requestedModule))
-    ? requestedModule
-    : (progress.current?.moduleId || firstModuleId);
-  const fallbackStepIndex = progress.current?.stepIndex || 0;
-  const startStepIndex = Number.isNaN(requestedStepIndex) ? fallbackStepIndex : requestedStepIndex;
-  const startCourseStep = getCourseStepFromIndex(startModule, startStepIndex) || getCourseStepFromIndex(startModule, 0);
-  const startStepId = startCourseStep?.stepId || 1;
-  renderCourseMap(startModule);
-  renderStep(startModule, startStepId);
+  if (!progress.current) {
+    const fallbackCurrent = defaultStep();
+    setCurrent(fallbackCurrent.moduleId, fallbackCurrent.stepId);
+  }
+  const requestedStart = startFromHash(progress);
+  const fallback = progressAnchor(progress);
+  const start = requestedStart || fallback;
+  renderCourseMap(start.moduleId);
+  renderStep(start.moduleId, start.stepId);
 });
