@@ -1,11 +1,42 @@
 import { ProgressStore } from './progress-store.js';
 import PlayerUI from './player-ui.js';
 
-const params = new URLSearchParams(window.location.search);
-const requestedTrack = params.get('track') || 'csir-cert';
-const resumeFlag = params.get('resume') === '1';
+function qp(name, fallback = null) {
+  const params = new URLSearchParams(window.location.search);
+  const value = params.get(name);
+  return value === null ? fallback : value;
+}
 
-const track = window.TRAINING_TRACKS?.[requestedTrack] || window.TRAINING_TRACKS?.['csir-cert'];
+function setQp(updates) {
+  const params = new URLSearchParams(window.location.search);
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value === undefined || value === null) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+  });
+  history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+}
+
+function normalizeTrackForPlayer(track) {
+  if (!track || track.id !== 'csir-cert') return track;
+  const modules = track.modules.map((module, index) => ({
+    ...module,
+    id: module.id ?? index + 1,
+  }));
+  return { ...track, modules };
+}
+
+function getActiveTrack(trackId) {
+  const raw = window.TRAINING_TRACKS?.[trackId];
+  return normalizeTrackForPlayer(raw);
+}
+
+const requestedTrack = qp('track', 'csir-cert');
+const resumeFlag = qp('resume') === '1';
+
+const track = getActiveTrack(requestedTrack) || getActiveTrack('csir-cert');
 const ui = new PlayerUI();
 
 if (!track) {
@@ -17,11 +48,12 @@ let progress = ProgressStore.getProgress(track.id);
 
 function getStartLocation() {
   if (resumeFlag && progress.lastLocation && progress.lastLocation.trackId === track.id) {
-    return { m: progress.lastLocation.m, s: progress.lastLocation.s };
+    return { m: progress.lastLocation.m, s: progress.lastLocation.s, ms: 1 };
   }
-  const m = parseInt(params.get('m') || '1', 10) || 1;
-  const s = parseInt(params.get('s') || '1', 10) || 1;
-  return { m, s };
+  const m = parseInt(qp('m', '1'), 10) || 1;
+  const s = parseInt(qp('s', '1'), 10) || 1;
+  const ms = parseInt(qp('ms', '1'), 10) || 1;
+  return { m, s, ms };
 }
 
 let location = enforceBounds(getStartLocation());
@@ -45,12 +77,17 @@ function enforceBounds(loc) {
   }
   const steps = track.modules[m - 1].steps.length;
   let s = Math.min(Math.max(1, loc.s), steps);
-  return { m, s };
+  const ms = Math.max(1, loc.ms || 1);
+  return { m, s, ms };
 }
 
 function updateUrl() {
-  const search = new URLSearchParams({ track: track.id, m: location.m, s: location.s });
-  history.replaceState({}, '', `${window.location.pathname}?${search.toString()}`);
+  setQp({
+    track: track.id,
+    m: location.m,
+    s: location.s,
+    ms: location.ms,
+  });
 }
 
 function render() {
@@ -137,13 +174,13 @@ function goNext() {
     return;
   }
   if (location.s < module.steps.length) {
-    location = { m: location.m, s: location.s + 1 };
+    location = { m: location.m, s: location.s + 1, ms: 1 };
   } else if (location.m < track.modules.length) {
     if (!moduleUnlocked(location.m + 1)) {
       ui.showToast('Finish current module to unlock the next.');
       return;
     }
-    location = { m: location.m + 1, s: 1 };
+    location = { m: location.m + 1, s: 1, ms: 1 };
   }
   render();
 }
@@ -151,10 +188,10 @@ function goNext() {
 function goBack() {
   if (location.m === 1 && location.s === 1) return;
   if (location.s > 1) {
-    location = { m: location.m, s: location.s - 1 };
+    location = { m: location.m, s: location.s - 1, ms: 1 };
   } else {
     const prevModuleSteps = track.modules[location.m - 2].steps.length;
-    location = { m: location.m - 1, s: prevModuleSteps };
+    location = { m: location.m - 1, s: prevModuleSteps, ms: 1 };
   }
   render();
 }
