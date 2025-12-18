@@ -27,11 +27,14 @@ const roleClose = document.getElementById('roleClose');
 const roleBadge = document.getElementById('roleBadge');
 const roleSummaryEl = document.getElementById('roleSummary');
 const moduleProgress = document.getElementById('moduleProgress');
+const moduleRail = document.getElementById('moduleRail');
 const switchRole = document.getElementById('switchRole');
 const remindSwitch = document.getElementById('remindSwitch');
 const assumptionCards = document.querySelectorAll('.assumption-card');
 const assumptionDetail = document.getElementById('assumptionDetail');
 const resumeLink = document.getElementById('resumeLink');
+const threatSegments = document.querySelectorAll('.threat-segment');
+const threatDetail = document.getElementById('threatDetail');
 
 let selectedRole = null;
 
@@ -46,6 +49,7 @@ function renderModules(progress) {
   const completed = progress.completedSteps || [];
   const fragments = [];
   const entries = Object.entries(moduleStepMap);
+  const railItems = [];
 
   entries.forEach(([label, steps]) => {
     const done = steps.every((id) => completed.includes(id));
@@ -54,10 +58,22 @@ function renderModules(progress) {
     item.className = 'module-chip' + (done ? ' complete' : started ? ' in-progress' : '');
     item.innerHTML = `<div class="module-title">${label}</div><div class="module-status">${done ? 'Complete' : started ? 'In progress' : 'Not started'}</div>`;
     fragments.push(item);
+
+    if (moduleRail) {
+      const rail = document.createElement('div');
+      rail.className = 'rail-item' + (done ? ' complete' : started ? ' in-progress' : '');
+      rail.innerHTML = `<div class="rail-dot"></div><div>${label.replace('Module ', 'M')}</div>`;
+      railItems.push(rail);
+    }
   });
 
   moduleProgress.innerHTML = '';
   fragments.forEach((f) => moduleProgress.appendChild(f));
+
+  if (moduleRail) {
+    moduleRail.innerHTML = '';
+    railItems.forEach((r) => moduleRail.appendChild(r));
+  }
 }
 
 function updateRoleUI(roleId, pack) {
@@ -115,6 +131,17 @@ function wireAssumptions() {
   });
 }
 
+function wireThreatWheel() {
+  if (!threatSegments.length || !threatDetail) return;
+  threatSegments.forEach((segment) => {
+    segment.addEventListener('click', () => {
+      threatSegments.forEach((s) => s.classList.remove('active'));
+      segment.classList.add('active');
+      threatDetail.textContent = segment.dataset.example || '';
+    });
+  });
+}
+
 function updateResumeLink(progress) {
   if (!resumeLink) return;
   const hasProgress =
@@ -156,3 +183,4 @@ loadPack()
   });
 
 wireAssumptions();
+wireThreatWheel();

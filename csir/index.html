@@ -89,38 +89,21 @@
             <a class="button secondary" href="player.html">Open Course Player</a>
             <a class="button ghost" id="resumeLink" href="player.html" style="display:none;">Resume</a>
           </div>
+          <div class="module-rail" id="moduleRail" aria-label="CSIR modules progress"></div>
         </div>
-        <div class="workflow-summary">
-          <div class="pill">CSIR workflow spine</div>
-          <h3 class="section-title" style="margin:4px 0;">Preparation → Identification → Investigation → Response → Recovery → Follow-up</h3>
-          <p class="section-sub" style="margin-bottom:6px;">Every module maps to one of the six phases. Start at the left and move right with a single, continuous runbook.</p>
-          <div class="workflow-track">
-            <div class="workflow-phase">
-              <strong>Preparation</strong>
-              <p>Keep plans current, confirm monitoring/logging, and stage backups/images.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Identification</strong>
-              <p>Spot signals fast, classify, and notify the right leads.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Investigation</strong>
-              <p>Confirm severity, assess scope, and align roles before acting.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Response</strong>
-              <p>Contain, eradicate, and document actions with approvals.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Recovery</strong>
-              <p>Restore safely, validate systems, and prevent recurrence.</p>
-            </div>
-            <div class="workflow-phase">
-              <strong>Follow-up</strong>
-              <p>Capture lessons learned, finalize reporting, and update the plan.</p>
-            </div>
+        <div class="hero-graphic">
+          <div class="shield"></div>
+          <div class="ot-node substation">Substation</div>
+          <div class="ot-node plant">Generation</div>
+          <div class="ot-node control">Control Center</div>
+          <div class="ot-node comms">Comms Link</div>
+          <div class="ot-link link-a"></div>
+          <div class="ot-link link-b"></div>
+          <div class="ot-link link-c"></div>
+          <div class="legend">
+            <div class="pill">OT landscape under CSIR shield</div>
+            <p class="small">Substations, generation, control center, and communications paths stay protected by the CSIR workflow.</p>
           </div>
-          <div class="workflow-meta">You are guided step-by-step. Locked steps keep the workflow aligned and traceable.</div>
         </div>
       </div>
 
@@ -244,15 +227,17 @@
               <p class="small">Shows how terms overlap as impact and reportability rise.</p>
             </div>
             <h3>Incident categories</h3>
-            <ul class="list">
-              <li>Malicious Code</li>
-              <li>Intrusion Incident</li>
-              <li>Denial of Service</li>
-              <li>Reconnaissance</li>
-              <li>Unauthorized Access</li>
-              <li>Phishing</li>
-              <li>Other</li>
-            </ul>
+            <p class="small">Select a threat slice to see an OT-specific example.</p>
+            <div class="threat-wheel" role="list" aria-label="Incident categories with OT examples">
+              <button class="threat-segment" data-example="Spyware on engineering workstation used for relay configs." role="listitem">Malicious Code</button>
+              <button class="threat-segment" data-example="Breach of substation jump host account from unknown source." role="listitem">Intrusion</button>
+              <button class="threat-segment" data-example="Flooding firewall interface that disrupts SCADA polling." role="listitem">Denial of Service</button>
+              <button class="threat-segment" data-example="Port scan against RTU gateway during off-hours." role="listitem">Reconnaissance</button>
+              <button class="threat-segment" data-example="Privilege escalation on OT admin account." role="listitem">Unauthorized Access</button>
+              <button class="threat-segment" data-example="Phishing text asking for engineering VPN credentials." role="listitem">Phishing</button>
+              <button class="threat-segment" data-example="Safety system anomaly or social engineering not captured elsewhere." role="listitem">Other</button>
+            </div>
+            <div id="threatDetail" class="alert" aria-live="polite">Select a category to view an example.</div>
           </div>
           <div>
             <h3>Severity levels</h3>
