@@ -52,13 +52,13 @@ button {
 
 button.primary {
   background: var(--primary);
-  color: var(--primary-ink);
+  color: #ffffff;
   font-weight: 700;
-  border-color: rgba(43, 120, 255, 0.9);
+  border-color: var(--primary);
 }
 
 button.secondary {
-  background: transparent;
+  background: #ffffff;
   border-color: var(--border);
   color: var(--text);
 }
